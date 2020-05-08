@@ -1,0 +1,2 @@
+rootProject.name='Urban Arts'
+include ':app'
