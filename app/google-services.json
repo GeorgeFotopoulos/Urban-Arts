@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "723259912244",
+    "firebase_url": "https://aeps-a0e6f.firebaseio.com",
+    "project_id": "aeps-a0e6f",
+    "storage_bucket": "aeps-a0e6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723259912244:android:f41ffae863372620931a61",
+        "android_client_info": {
+          "package_name": "com.aueb.urbanarts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "723259912244-9p35rb9e0ofu20n3pqje6fj5cbl6kjvu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpluwlLRlxo3dMruqM6rNy9YIU8xU3rU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "723259912244-9p35rb9e0ofu20n3pqje6fj5cbl6kjvu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
