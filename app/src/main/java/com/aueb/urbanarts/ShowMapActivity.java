@@ -72,7 +72,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         boolean hideStores = googleMap.setMapStyle(new MapStyleOptions(getResources()
                 .getString(R.string.hide_stores)));
         map = googleMap;
-//        init();
+        init();
     }
 
     public void checkPermission() {
