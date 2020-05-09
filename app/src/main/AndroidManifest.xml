@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ShowMapActivity"></activity>
+        <activity android:name=".ReportUser"></activity>
         <activity
-            android:name=".ReportUser"
+            android:name=".HomePage"
             android:label="Urban Arts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
