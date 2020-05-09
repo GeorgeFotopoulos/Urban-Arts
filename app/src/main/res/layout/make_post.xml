@@ -24,15 +24,14 @@
         style="@style/Widget.AppCompat.TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="What kind of art?"
         android:textColor="#b71e42"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -59,13 +58,13 @@
                 android:text="Painter" />
 
             <CheckBox
-                android:id="@+id/checkBox2"
+                android:id="@+id/checkBox3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="CheckBox" />
 
             <CheckBox
-                android:id="@+id/checkBox3"
+                android:id="@+id/checkBox2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="CheckBox" />
@@ -88,11 +87,12 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="44dp"
         android:text="Do you know the artist?"
         android:textColor="#b71e42"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
@@ -100,12 +100,13 @@
         android:id="@+id/editText5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="36dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="ex. Papadopoulos"
         android:textColor="#b71e42"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -113,7 +114,7 @@
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="56dp"
         android:background="#0FFFFFFF"
         android:button="#B71E42"
         android:checked="false"
@@ -124,6 +125,7 @@
         android:textCursorDrawable="#b71e42"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText5" />
 
@@ -132,14 +134,23 @@
         style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:background="#A3A2A2"
         android:text="Upload media"
         android:textColor="#B71E42"
         android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proceed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1"
-        app:layout_constraintVertical_bias="0.311" />
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
