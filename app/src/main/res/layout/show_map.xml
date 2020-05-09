@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/address_text"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="30dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -20,7 +20,7 @@
         android:layout_marginRight="0dp"
         android:gravity="center"
         android:text="ADDRESS HERE!"
-        android:textSize="20sp"  />
+        android:textSize="16sp"  />
 
     <fragment
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -37,7 +37,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginBottom="0dp"

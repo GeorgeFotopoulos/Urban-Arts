@@ -2,4 +2,35 @@
 <resources>
     <string name="app_name">Urban Arts</string>
     <string name="map_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDNdJjyANsnAKaEHZN-1GSNyKq8Tun2vVE</string>
+    <string name="hide_stores">
+          [
+            {
+              \"featureType\": \"poi.business\",
+              \"elementType\": \"all\",
+              \"stylers\": [
+                {
+                  \"visibility\": \"off\"
+                }
+              ]
+            },
+            {
+              \"featureType\": \"poi\",
+              \"elementType\": \"all\",
+              \"stylers\": [
+                {
+                  \"visibility\": \"off\"
+                }
+              ]
+            },
+            {
+              \"featureType\": \"transit\",
+              \"elementType\": \"labels.icon\",
+              \"stylers\": [
+                {
+                  \"visibility\": \"off\"
+                }
+              ]
+            }
+          ]
+    </string>
 </resources>

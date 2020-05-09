@@ -15,8 +15,7 @@
         <activity android:name=".ShowMapActivity"></activity>
         <activity android:name=".ReportUser"></activity>
         <activity
-            android:name=".HomePage"
-            android:label="Urban Arts">
+            android:name=".HomePage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +25,6 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:label="Urban Arts"
             android:value="@string/map_key" />
     </application>
 
