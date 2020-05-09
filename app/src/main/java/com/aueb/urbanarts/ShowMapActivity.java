@@ -6,7 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class ShowMap extends AppCompatActivity {
+public class ShowMapActivity extends AppCompatActivity {
 
 
     @Override
