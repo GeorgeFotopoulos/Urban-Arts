@@ -72,7 +72,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         boolean hideStores = googleMap.setMapStyle(new MapStyleOptions(getResources()
                 .getString(R.string.hide_stores)));
         map = googleMap;
-        init();
+//        init();
     }
 
     public void checkPermission() {
@@ -93,9 +93,9 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onLocationChanged(Location location) {
-        int height = 90;
-        int width = 90;
-        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker);
+        int height = 110;
+        int width = 110;
+        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker_new);
         Bitmap b = markerImage.getBitmap();
         Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
