@@ -1,6 +1,5 @@
 package com.aueb.urbanarts;
 
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -35,7 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings("deprecation")
 public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     GoogleMap map;
@@ -86,7 +85,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     public void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5, 5, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
         } catch (SecurityException se) {
             se.printStackTrace();
         }
@@ -99,10 +98,12 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker);
         Bitmap b = markerImage.getBitmap();
         Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
-        locate();
+
+
         lat = location.getLatitude();
         lon = location.getLongitude();
         LatLng position = new LatLng(lat, lon);
+        locate();
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.setMyLocationEnabled(false);
         map.addMarker(
@@ -130,11 +131,6 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     protected void locate() {
         Geocoder geocoder = new Geocoder(ShowMapActivity.this);
         List<Address> addressList = new ArrayList<>();
-        int height = 90;
-        int width = 90;
-        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker);
-        Bitmap b = markerImage.getBitmap();
-        Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
         try {
             addressList = geocoder.getFromLocation(lat, lon, 1);
