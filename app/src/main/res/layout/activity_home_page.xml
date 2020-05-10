@@ -18,23 +18,24 @@
         app:columnCount="2">
 
     <androidx.cardview.widget.CardView
+        android:layout_margin="8dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
         app:cardCornerRadius="15dp"
         app:layout_rowWeight="1"
         app:layout_columnWeight="1">
 
         <LinearLayout
-            android:layout_width="141dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:weightSum="3">
 
             <ImageView
+                android:layout_margin="8dp"
+                android:id="@+id/logIn"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="15dp"
                 android:layout_weight="2"
                 android:src="@drawable/log_in" />
 
@@ -45,13 +46,12 @@
                 android:text="@string/log_in"
                 android:textSize="24sp" />
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_margin="8dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
@@ -63,10 +63,11 @@
                 >
 
                 <ImageView
-                    android:layout_weight="2"
+                    android:layout_margin="8dp"
+                    android:id="@+id/register"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="15dp"
+                    android:layout_weight="2"
                     android:src="@drawable/register" />
 
                 <TextView
@@ -79,9 +80,9 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_margin="8dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
@@ -93,10 +94,11 @@
                 >
 
                 <ImageView
-                    android:layout_weight="2"
+                    android:layout_margin="8dp"
+                    android:id="@+id/filters"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="15dp"
+                    android:layout_weight="2"
                     android:src="@drawable/filters" />
 
                 <TextView
@@ -106,12 +108,12 @@
                     android:textSize="24sp"
                     android:layout_gravity="center" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
+
         <androidx.cardview.widget.CardView
+            android:layout_margin="8dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
@@ -123,10 +125,11 @@
                 >
 
                 <ImageView
-                    android:layout_weight="2"
+                    android:layout_margin="8dp"
+                    android:id="@+id/liveFeed"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="15dp"
+                    android:layout_weight="2"
                     android:src="@drawable/live_feed" />
 
                 <TextView
@@ -139,9 +142,9 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_margin="8dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
@@ -153,10 +156,11 @@
                 >
 
                 <ImageView
-                    android:layout_weight="2"
+                    android:layout_margin="8dp"
+                    android:id="@+id/createPost"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="15dp"
+                    android:layout_weight="2"
                     android:src="@drawable/create_post" />
 
                 <TextView
@@ -166,12 +170,12 @@
                     android:text="@string/create_post"
                     android:textSize="24sp" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
+
         <androidx.cardview.widget.CardView
+            android:layout_margin="8dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
@@ -183,10 +187,11 @@
                 >
 
                 <ImageView
-                    android:layout_weight="2"
+                    android:layout_margin="8dp"
+                    android:id="@+id/favorites"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="15dp"
+                    android:layout_weight="2"
                     android:src="@drawable/favorites" />
 
                 <TextView
