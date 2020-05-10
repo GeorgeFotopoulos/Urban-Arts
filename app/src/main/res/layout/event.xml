@@ -47,12 +47,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView6"
+            <ListView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No comments yet"
-                android:textSize="18sp" />
+                android:layout_height="match_parent" />
         </LinearLayout>
     </ScrollView>
 
