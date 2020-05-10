@@ -33,4 +33,10 @@
             }
           ]
     </string>
+    <string name="log_in">Log In</string>
+    <string name="filters">Filters</string>
+    <string name="live_feed">Live Feed</string>
+    <string name="create_post">Create Post</string>
+    <string name="favorites">Favorites</string>
+    <string name="register">Register</string>
 </resources>

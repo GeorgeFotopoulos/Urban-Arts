@@ -20,11 +20,11 @@
 
         </activity>
         <activity android:name=".ReportUser"></activity>
-        <activity android:name=".HomePage">
+        <activity android:name=".ArtistProfileActivity">
 
         </activity>
 
-        <activity android:name=".ArtistProfileActivity">
+        <activity android:name=".HomePage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
