@@ -12,7 +12,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/reportButton"
@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:text="Send"
+                android:text="@string/send"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:background="@drawable/pink_button"
@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Inappropriate Username"
+                android:text="@string/inappropriate_username"
                 app:layout_constraintBottom_toTopOf="@+id/spam"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -71,7 +71,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Misinformation"
+                android:text="@string/misinformation"
                 app:layout_constraintBottom_toTopOf="@+id/copyrightIssues"
                 app:layout_constraintEnd_toEndOf="@+id/inappropriateUsername"
                 app:layout_constraintStart_toStartOf="@+id/inappropriateUsername" />
@@ -81,7 +81,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Hate Speech"
+                android:text="@string/hate_speech"
                 app:layout_constraintBottom_toTopOf="@+id/misinformation"
                 app:layout_constraintEnd_toEndOf="@+id/inappropriateUsername"
                 app:layout_constraintStart_toStartOf="@+id/inappropriateUsername" />
@@ -91,7 +91,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Spam"
+                android:text="@string/spam"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
                 app:layout_constraintEnd_toEndOf="@+id/inappropriateUsername"
                 app:layout_constraintStart_toStartOf="@+id/inappropriateUsername" />
@@ -106,7 +106,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="32dp"
                 android:gravity="fill_horizontal"
-                android:text="In order to help us understand the reason you are reporting this user, tick one or more options of those mentioned below. Contact information is required, in case we need further information regarding this report. If you feel the need to include any additional information, please fill in the text box below."
+                android:text="@string/in_order_to_help_us_understand_the_reason_you_are_reporting_this_user_tick_one_or_more_options_of_those_mentioned_below_contact_information_is_required_in_case_we_need_further_information_regarding_this_report_if_you_feel_the_need_to_include_any_additional_information_please_fill_in_the_text_box_below"
                 app:layout_constraintBottom_toTopOf="@+id/hateSpeech"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Full Name"
+                android:text="@string/full_name"
                 app:layout_constraintBottom_toTopOf="@+id/fullNameInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Email Address"
+                android:text="@string/email_address"
                 app:layout_constraintBottom_toTopOf="@+id/emailInput"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -160,7 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Report User"
+                android:text="@string/report_user"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

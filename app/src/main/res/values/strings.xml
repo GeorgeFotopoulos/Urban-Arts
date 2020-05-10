@@ -46,4 +46,26 @@
     <string name="email">Email</string>
     <string name="create_account">Create Account</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="title_activity_log_in">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="username_email">Username/Email</string>
+    <string name="keep_in_touch_with_anything_happening_around_you">Keep in touch with anything happening around you!</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="send">Send</string>
+    <string name="misinformation">Misinformation</string>
+    <string name="inappropriate_username">Inappropriate Username</string>
+    <string name="hate_speech">Hate Speech</string>
+    <string name="spam">Spam</string>
+    <string name="full_name">Full Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="in_order_to_help_us_understand_the_reason_you_are_reporting_this_user_tick_one_or_more_options_of_those_mentioned_below_contact_information_is_required_in_case_we_need_further_information_regarding_this_report_if_you_feel_the_need_to_include_any_additional_information_please_fill_in_the_text_box_below">In order to help us understand the reason you are reporting this user, tick one or more options of those mentioned below. Contact information is required, in case we need further information regarding this report. If you feel the need to include any additional information, please fill in the text box below.</string>
+    <string name="report_user">Report User</string>
 </resources>

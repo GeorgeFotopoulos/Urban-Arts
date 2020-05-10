@@ -23,6 +23,15 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+         ImageView signIn = (ImageView) findViewById(R.id.logIn);
+         signIn.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent myIntent = new Intent(HomePage.this, LogIn.class);
+                 HomePage.this.startActivity(myIntent);
+             }
+         });
+
         //ImageButton live = (ImageButton) findViewById(R.id.liveFeed);
         //live.setOnClickListener(new View.OnClickListener(){
         //    @Override

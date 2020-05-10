@@ -13,29 +13,25 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".LogIn"/>
         <activity
             android:name=".ShowMapActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
-
-        </activity>
-        <activity android:name=".ReportUser"></activity>
-        <activity android:name=".ArtistProfileActivity"></activity>
-        <activity android:name=".ShowPostOnMapActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
-        </activity>
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ReportUser" />
+        <activity android:name=".ArtistProfileActivity" />
         <activity
-            android:name=".HomePage">
+            android:name=".ShowPostOnMapActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".HomePage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".SignUp">
-
-        </activity>
+        <activity android:name=".SignUp" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
