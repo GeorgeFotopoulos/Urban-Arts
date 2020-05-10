@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     GoogleMap map;
     Marker marker;
@@ -59,7 +59,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_map);
+        setContentView(R.layout.show_post_on_map);
         checkPermission();
         getLocation();
         showAddress = (EditText) findViewById(R.id.address_text);
@@ -138,8 +138,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     public void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 1, this);
-
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, 1, this);
         } catch (SecurityException se) {
             se.printStackTrace();
         }
@@ -167,7 +166,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
                     onPause();
 
-                    geocoder = new Geocoder(ShowMapActivity.this);
+                    geocoder = new Geocoder(ShowPostOnMapActivity.this);
                     try {
 
                         addressList = geocoder.getFromLocationName(String.valueOf(showAddress.getText()), 5);
@@ -236,7 +235,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         lon = location.getLongitude();
         position = new LatLng(lat, lon);
 
-        geocoder = new Geocoder(ShowMapActivity.this);
+        geocoder = new Geocoder(ShowPostOnMapActivity.this);
 
         try {
             addressList = geocoder.getFromLocation(lat, lon, 1);
@@ -275,7 +274,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(ShowMapActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ShowPostOnMapActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -283,3 +282,4 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     }
 }
+
