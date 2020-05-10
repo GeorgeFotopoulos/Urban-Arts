@@ -18,7 +18,7 @@
         app:columnCount="2">
 
     <androidx.cardview.widget.CardView
-        android:layout_margin="8dp"
+        android:layout_margin="7dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:cardCornerRadius="15dp"
@@ -29,14 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:weightSum="3">
+            android:weightSum="9">
 
             <ImageView
-                android:layout_margin="8dp"
+                android:layout_margin="7dp"
                 android:id="@+id/logIn"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_weight="8"
                 android:src="@drawable/log_in" />
 
             <TextView
@@ -44,123 +44,123 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/log_in"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="8dp"
+            android:layout_margin="7dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
             <LinearLayout
-                android:weightSum="3"
+                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 >
 
                 <ImageView
-                    android:layout_margin="8dp"
+                    android:layout_margin="7dp"
                     android:id="@+id/register"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="8"
                     android:src="@drawable/register" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/register"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:layout_gravity="center" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="8dp"
+            android:layout_margin="7dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
             <LinearLayout
-                android:weightSum="3"
+                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 >
 
                 <ImageView
-                    android:layout_margin="8dp"
+                    android:layout_margin="7dp"
                     android:id="@+id/filters"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="8"
                     android:src="@drawable/filters" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/filters"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:layout_gravity="center" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="8dp"
+            android:layout_margin="7dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
             <LinearLayout
-                android:weightSum="3"
+                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 >
 
                 <ImageView
-                    android:layout_margin="8dp"
+                    android:layout_margin="7dp"
                     android:id="@+id/liveFeed"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="8"
                     android:src="@drawable/live_feed" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/live_feed"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:layout_gravity="center" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="8dp"
+            android:layout_margin="7dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
             <LinearLayout
-                android:weightSum="3"
+                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 >
 
                 <ImageView
-                    android:layout_margin="8dp"
+                    android:layout_margin="7dp"
                     android:id="@+id/createPost"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="8"
                     android:src="@drawable/create_post" />
 
                 <TextView
@@ -168,30 +168,30 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/create_post"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="8dp"
+            android:layout_margin="7dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:cardCornerRadius="15dp"
             app:layout_rowWeight="1"
             app:layout_columnWeight="1">
             <LinearLayout
-                android:weightSum="3"
+                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 >
 
                 <ImageView
-                    android:layout_margin="8dp"
+                    android:layout_margin="7dp"
                     android:id="@+id/favorites"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="8"
                     android:src="@drawable/favorites" />
 
                 <TextView
@@ -199,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/favorites"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
