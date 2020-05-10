@@ -16,9 +16,15 @@
         <activity
             android:name=".ShowMapActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"></activity>
+            tools:ignore="LockedOrientationActivity">
+
+        </activity>
         <activity android:name=".ReportUser"></activity>
         <activity android:name=".HomePage">
+
+        </activity>
+
+        <activity android:name=".ArtistProfileActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

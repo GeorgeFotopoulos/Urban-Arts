@@ -2,6 +2,7 @@ package com.aueb.urbanarts;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -11,7 +12,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -38,8 +42,10 @@ import java.util.List;
 public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     GoogleMap map;
+    Marker marker;
     LocationManager locationManager;
     protected EditText showAddress;
+    protected LatLng position;
     double lat;
     double lon;
 
@@ -49,10 +55,21 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         setContentView(R.layout.show_map);
         checkPermission();
         showAddress = (EditText) findViewById(R.id.address_text);
+        showAddress.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
         mapFragment.getMapAsync(this);
+
+        findViewById(R.id.find_me).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (map != null) {
+                    locate();
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16.0f));
+                }
+
+            }
+        });
     }
 
     @Override
@@ -93,20 +110,21 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onLocationChanged(Location location) {
-        int height = 110;
-        int width = 110;
+        int height = 120;
+        int width = 120;
         BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker_new);
         Bitmap b = markerImage.getBitmap();
         Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
+        if (marker != null) {
+            marker.remove();
+        }
 
         lat = location.getLatitude();
         lon = location.getLongitude();
-        LatLng position = new LatLng(lat, lon);
+        position = new LatLng(lat, lon);
         locate();
-        map.getUiSettings().setMyLocationButtonEnabled(true);
-        map.setMyLocationEnabled(false);
-        map.addMarker(
+        marker = map.addMarker(
                 new MarkerOptions()
                         .position(position)
                         .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
@@ -151,7 +169,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onProviderEnabled(String provider) {
-        Toast.makeText(this, "Enabled new provider!" + provider,
+        Toast.makeText(this, "Location Found! ",
                 Toast.LENGTH_SHORT).show();
 
     }
