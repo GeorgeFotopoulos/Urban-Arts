@@ -20,10 +20,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,11 +44,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     GoogleMap map;
     Marker marker;
     LocationManager locationManager;
+    GoogleApiClient mGoogleApiClient;
+    Location currLocation;
     protected EditText showAddress;
     protected LatLng position;
     double lat;
@@ -64,12 +71,29 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         findViewById(R.id.find_me).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (map != null) {
-                    locate();
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16.0f));
+                    getLocation();
+                    if (currLocation != null) locate(currLocation);
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
                 }
 
             }
         });
+
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        currLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (currLocation != null) {
+            lat = currLocation.getLatitude();
+            lon = currLocation.getLongitude();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 
     @Override
@@ -89,6 +113,16 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         boolean hideStores = googleMap.setMapStyle(new MapStyleOptions(getResources()
                 .getString(R.string.hide_stores)));
         map = googleMap;
+
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            public void onMapClick(LatLng point) {
+                Location newLocation = new Location("New Location");
+                newLocation.setLatitude(point.latitude);
+                newLocation.setLongitude(point.longitude);
+                onLocationChanged(newLocation);
+            }
+        });
+
         init();
     }
 
@@ -102,7 +136,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     public void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000,1, this);
         } catch (SecurityException se) {
             se.printStackTrace();
         }
@@ -110,25 +144,13 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onLocationChanged(Location location) {
-        int height = 120;
-        int width = 120;
-        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker_new);
-        Bitmap b = markerImage.getBitmap();
-        Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
         if (marker != null) {
             marker.remove();
         }
 
-        lat = location.getLatitude();
-        lon = location.getLongitude();
-        position = new LatLng(lat, lon);
-        locate();
-        marker = map.addMarker(
-                new MarkerOptions()
-                        .position(position)
-                        .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
+        locate(location);
+
     }
 
     protected void init() {
@@ -139,14 +161,38 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || keyEvent.getAction() == KeyEvent.ACTION_DOWN
                         || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
-                    locate();
+
                 }
                 return false;
             }
         });
     }
 
-    protected void locate() {
+    protected void locate(Location location) {
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+
+
+        int height = 120;
+        int width = 120;
+        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker_new);
+        Bitmap b = markerImage.getBitmap();
+        Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
+
+        lat = location.getLatitude();
+        lon = location.getLongitude();
+        position = new LatLng(lat, lon);
+
+
         Geocoder geocoder = new Geocoder(ShowMapActivity.this);
         List<Address> addressList = new ArrayList<>();
 
@@ -160,6 +206,17 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
             String address = (addressList.get(0)).getAddressLine(0);
             showAddress.setText(address);
         }
+
+
+        if (marker != null) {
+            marker.remove();
+        }
+
+        marker = map.addMarker(
+                new MarkerOptions()
+                        .position(position)
+                        .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
     }
 
     @Override
@@ -177,5 +234,10 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onProviderDisabled(String provider) {
         Toast.makeText(ShowMapActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
