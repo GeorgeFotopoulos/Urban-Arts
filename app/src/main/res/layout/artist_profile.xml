@@ -27,8 +27,28 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:background="#fff"
+                android:adjustViewBounds="true"
+                android:maxWidth="40dp"
+                android:maxHeight="40dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/report"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/home_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@null"
+                android:adjustViewBounds="true"
+                android:maxWidth="40dp"
+                android:maxHeight="40dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/home"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -161,16 +181,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:gravity="center"
+                    app:animateOnBoundary="true"
+                    app:autoPlay="true"
                     app:fillColor="#b71e42"
                     app:pageColor="#00000000"
+                    app:pageTransformInterval="1000"
                     app:radius="6dp"
                     app:slideInterval="6000"
                     app:strokeColor="#FF777777"
-                    app:strokeWidth="1dp"
-                    app:animateOnBoundary="true"
-                    app:pageTransformInterval="1000"
-                    app:autoPlay="true"/>
+                    app:strokeWidth="1dp" />
             </RelativeLayout>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

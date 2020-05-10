@@ -30,6 +30,14 @@ public class ArtistProfileActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.home_button).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                finish();
+                Intent intent = new Intent(ArtistProfileActivity.this, HomePage.class);
+                startActivity(intent);
+            }
+        });
+
         final ToggleButton follow = (ToggleButton) findViewById(R.id.follow_button);
         follow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
