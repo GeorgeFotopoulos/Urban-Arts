@@ -39,4 +39,11 @@
     <string name="create_post">Create Post</string>
     <string name="favorites">Favorites</string>
     <string name="register">Register</string>
+    <string name="i_accept_the_terms_of_service">I accept the Terms of Service</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="create_account">Create Account</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>
