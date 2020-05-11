@@ -1,10 +1,15 @@
 package com.aueb.urbanarts;
 
 import android.Manifest;
+import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -14,12 +19,16 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -40,6 +49,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.PendingIntent.getActivity;
 
 @SuppressWarnings("deprecation")
 public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -64,6 +75,8 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         getLocation();
         showAddress = (EditText) findViewById(R.id.address_text);
         showAddress.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        showAddress.requestFocus();
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
@@ -76,10 +89,71 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                     if (currLocation != null) locate(currLocation);
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
                 }
+            }
+        });
+
+        showAddress.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showAddress.getText().clear();
+            }
+        });
+
+        findViewById(R.id.post_button).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                confirmNewPost();
+            }
+        });
+    }
+
+    protected void confirmNewPost() {
+
+        Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.create_post_popup);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button yes = (Button) dialog.findViewById(R.id.yes);
+        Button createnew = (Button) dialog.findViewById(R.id.createnew);
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
 
+
+        createnew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setCancelable(true);
+//        builder.setTitle("Oops...");
+//        builder.setMessage("There is another post near your current Location!" +
+//                "Is there any chance is the same as:");
+//        builder.setPositiveButton("Confirm",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+//        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//            }
+//        });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
     }
 
     @Override
@@ -114,6 +188,11 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         boolean hideStores = googleMap.setMapStyle(new MapStyleOptions(getResources()
                 .getString(R.string.hide_stores)));
         map = googleMap;
+
+        lat = 37.983810;
+        lon = 23.727539;
+        position = new LatLng(lat, lon);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 5.0f));
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             public void onMapClick(LatLng point) {
@@ -280,6 +359,12 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
 

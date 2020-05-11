@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -61,9 +62,11 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_map);
         checkPermission();
+
         getLocation();
         showAddress = (EditText) findViewById(R.id.address_text);
         showAddress.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        showAddress.requestFocus();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
@@ -77,6 +80,12 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
                 }
 
+            }
+        });
+
+        showAddress.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showAddress.getText().clear();
             }
         });
 
@@ -114,6 +123,11 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         boolean hideStores = googleMap.setMapStyle(new MapStyleOptions(getResources()
                 .getString(R.string.hide_stores)));
         map = googleMap;
+
+        lat = 37.983810;
+        lon = 23.727539;
+        position = new LatLng(lat, lon);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 5.0f));
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             public void onMapClick(LatLng point) {
@@ -281,5 +295,11 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

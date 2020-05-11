@@ -32,14 +32,14 @@ public class HomePage extends AppCompatActivity {
              }
          });
 
-        //ImageButton live = (ImageButton) findViewById(R.id.liveFeed);
-        //live.setOnClickListener(new View.OnClickListener(){
-        //    @Override
-        //    public void onClick(View v) {
-        //        Intent myIntent = new Intent(HomePage.this, ShowMapActivity.class);
-        //        HomePage.this.startActivity(myIntent);
-        //    }
-        //});
+        ImageView live = (ImageView) findViewById(R.id.liveFeed);
+        live.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(HomePage.this, ShowMapActivity.class);
+                HomePage.this.startActivity(myIntent);
+            }
+        });
     }
 
 
