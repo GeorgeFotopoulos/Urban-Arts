@@ -135,25 +135,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         dialog.getWindow().setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
         dialog.show();
 
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setCancelable(true);
-//        builder.setTitle("Oops...");
-//        builder.setMessage("There is another post near your current Location!" +
-//                "Is there any chance is the same as:");
-//        builder.setPositiveButton("Confirm",
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                });
-//        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//            }
-//        });
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
     }
 
     @Override
