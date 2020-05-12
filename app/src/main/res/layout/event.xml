@@ -20,8 +20,8 @@
 
     <com.synnapps.carouselview.CarouselView
         android:id="@+id/gallery"
-        android:layout_width="407dp"
-        android:layout_height="231dp"
+        android:layout_width="405dp"
+        android:layout_height="392dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
         app:animateOnBoundary="true"
@@ -41,25 +41,21 @@
         android:id="@+id/scrollView3"
         style="@android:style/Widget.ScrollView"
         android:layout_width="409dp"
-        android:layout_height="300dp"
+        android:layout_height="191dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6">
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        app:layout_constraintVertical_bias="0.775">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="318dp" />
-        </LinearLayout>
+            android:layout_height="wrap_content" />
     </ScrollView>
 
     <EditText
@@ -75,9 +71,7 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView3"
-        app:layout_constraintVertical_bias="0.609" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView6"
