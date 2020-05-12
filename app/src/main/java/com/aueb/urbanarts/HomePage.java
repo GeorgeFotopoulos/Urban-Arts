@@ -36,7 +36,7 @@ public class HomePage extends AppCompatActivity {
         live.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(HomePage.this, ShowMapActivity.class);
+                Intent myIntent = new Intent(HomePage.this, Feed.class);
                 HomePage.this.startActivity(myIntent);
             }
         });
