@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="Post Something!"
-        android:textColor="#b71e42"
+
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="What kind of art?"
-        android:textColor="#b71e42"
+
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="Do you know the artist?"
-        android:textColor="#b71e42"
+
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -48,8 +48,8 @@
 
     <EditText
         android:id="@+id/editText5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="297dp"
+        android:layout_height="46dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="ex. Papadopoulos"
@@ -68,7 +68,7 @@
         android:background="#0FFFFFFF"
         android:checked="false"
         android:text="Is it live?"
-        android:textColor="#b71e42"
+
         android:textColorLink="#b71e42"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
