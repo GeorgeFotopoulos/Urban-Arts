@@ -40,6 +40,7 @@
                 android:src="@drawable/log_in" />
 
             <TextView
+                android:id="@+id/tv_logIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -71,11 +72,12 @@
                     android:src="@drawable/register" />
 
                 <TextView
+                    android:id="@+id/tv_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/register"
-                    android:textSize="20sp"
-                    android:layout_gravity="center" />
+                    android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -102,11 +104,12 @@
                     android:src="@drawable/filters" />
 
                 <TextView
+                    android:id="@+id/tv_filters"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/filters"
-                    android:textSize="20sp"
-                    android:layout_gravity="center" />
+                    android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -133,11 +136,12 @@
                     android:src="@drawable/live_feed" />
 
                 <TextView
+                    android:id="@+id/tv_liveFeed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/live_feed"
-                    android:textSize="20sp"
-                    android:layout_gravity="center" />
+                    android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -164,6 +168,7 @@
                     android:src="@drawable/create_post" />
 
                 <TextView
+                    android:id="@+id/tv_createPost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -195,6 +200,7 @@
                     android:src="@drawable/favorites" />
 
                 <TextView
+                    android:id="@+id/tv_favorites"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
