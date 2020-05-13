@@ -57,8 +57,8 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // Stelne me sto EditAccountActivity
-                    // Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
-                    // HomePage.this.startActivity(myIntent);
+                     Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
+                     startActivity(myIntent);
                 }
             });
         } else {
@@ -102,7 +102,7 @@ public class HomePage extends AppCompatActivity {
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(HomePage.this, ShowPostOnMapActivity.class);
+                Intent myIntent = new Intent(HomePage.this, ArtistAccountRequestActivity.class);
                 HomePage.this.startActivity(myIntent);
             }
         });

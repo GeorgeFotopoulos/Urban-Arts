@@ -79,7 +79,6 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                     if (currLocation != null) locate(currLocation);
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
                 }
-
             }
         });
 
