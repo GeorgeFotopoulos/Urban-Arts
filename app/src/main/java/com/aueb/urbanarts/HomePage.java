@@ -75,7 +75,7 @@ public class HomePage extends AppCompatActivity {
         filters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(HomePage.this, ArtistProfileActivity.class);
+                Intent myIntent = new Intent(HomePage.this, SearchFilters.class);
                 HomePage.this.startActivity(myIntent);
             }
         });
@@ -93,7 +93,7 @@ public class HomePage extends AppCompatActivity {
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(HomePage.this, ShowMapActivity.class);
+                Intent myIntent = new Intent(HomePage.this, PostSomething.class);
                 HomePage.this.startActivity(myIntent);
             }
         });
