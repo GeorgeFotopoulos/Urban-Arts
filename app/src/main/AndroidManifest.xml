@@ -24,14 +24,14 @@
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ReportUser" />
         <activity android:name=".SearchFilters" />
-        <activity android:name=".PostSomething" />
+        <activity android:name=".LogIn" />
         <activity android:name=".Event" />
         <activity android:name=".ArtistProfileActivity" />
         <activity
             android:name=".ShowPostOnMapActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".LogIn">
+        <activity android:name=".PostSomething">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
