@@ -26,8 +26,9 @@ String TAG;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.make_post);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+//        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         final List<String> genres =new ArrayList<String>();
+
         fStore.collection("genre")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -36,21 +37,17 @@ String TAG;
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 genres.add(document.getId()+"");
+
                             }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostSomething.this, android.R.layout.simple_spinner_item, genres);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            Spinner sItems = (Spinner) findViewById(R.id.genresspinner);
+                            sItems.setAdapter(adapter);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, genres);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner sItems = (Spinner) findViewById(R.id.genresspinner);
-        sItems.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
     }
 }
