@@ -17,6 +17,7 @@
         <activity android:name=".LogIn" />
         <activity android:name=".item" />
         <activity android:name=".Adapter" />
+        <activity android:name=".ArtistAccountRequestActivity" />
         <activity
             android:name=".ShowMapActivity"
             android:screenOrientation="portrait"

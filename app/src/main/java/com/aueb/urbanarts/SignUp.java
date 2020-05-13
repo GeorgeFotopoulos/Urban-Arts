@@ -29,7 +29,7 @@ public class SignUp extends AppCompatActivity {
     public static final String TAG = "TAG";
     TextView tv_username, tv_email, tv_password;
     private FirebaseAuth mAuth;
-    FirebaseFirestore fStore;
+    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     Button btn_createAccount;
     String userID;
 
@@ -100,22 +100,26 @@ public class SignUp extends AppCompatActivity {
                             Log.d(TAG, "mphke2");
                             userID = mAuth.getCurrentUser().getUid();
                             Log.d(TAG, userID);
-                            //DocumentReference documentReference = fStore.collection("users").document(userID);
+                            DocumentReference documentReference = fStore.collection("users").document(userID);
+
                             Map<String, Object> user = new HashMap<>();
+                            user.put("user_id", userID);
                             user.put("username", username);
                             user.put("email", email);
                             user.put("password", password);
-                            //documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            //    @Override
-                            //    public void onSuccess(Void aVoid) {
-                            //        Log.d(TAG, "onSuccess: user Profile is created for " + userID);
-                            //    }
-                            //}).addOnFailureListener(new OnFailureListener() {
-                            //    @Override
-                            //    public void onFailure(@NonNull Exception e) {
-                            //        Log.d(TAG, "onFailure: " + e.toString());
-                            //    }
-                            //});
+                            user.put("profile_pic", "none");
+
+                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "onSuccess: user Profile is created for " + userID);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "onFailure: " + e.toString());
+                                }
+                            });
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
                         } else {
                             // If sign in fails, display a message to the user.
