@@ -52,6 +52,15 @@ public class ArtistProfileActivity extends AppCompatActivity {
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(artistImages.length);
         carouselView.setImageListener(imageListener);
+
+        ImageView report = (ImageView) findViewById(R.id.report);
+        report.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(ArtistProfileActivity.this, ReportUser.class);
+                ArtistProfileActivity.this.startActivity(myIntent);
+            }
+        });
     }
 
     ImageListener imageListener = new ImageListener() {

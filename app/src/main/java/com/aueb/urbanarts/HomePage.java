@@ -32,11 +32,38 @@ public class HomePage extends AppCompatActivity {
              }
          });
 
+        ImageView filters = (ImageView) findViewById(R.id.filters);
+        filters.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(HomePage.this, ArtistProfileActivity.class);
+                HomePage.this.startActivity(myIntent);
+            }
+        });
+
         ImageView live = (ImageView) findViewById(R.id.liveFeed);
         live.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(HomePage.this, Feed.class);
+                HomePage.this.startActivity(myIntent);
+            }
+        });
+
+        ImageView createPost = (ImageView) findViewById(R.id.createPost);
+        createPost.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(HomePage.this, ShowMapActivity.class);
+                HomePage.this.startActivity(myIntent);
+            }
+        });
+
+        ImageView favorites = (ImageView) findViewById(R.id.favorites);
+        favorites.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(HomePage.this, ShowPostOnMapActivity.class);
                 HomePage.this.startActivity(myIntent);
             }
         });
