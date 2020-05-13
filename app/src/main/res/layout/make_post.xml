@@ -79,10 +79,10 @@
     <Button
         android:id="@+id/button"
         style="@style/Widget.AppCompat.Button.Small"
-        android:background="@drawable/pink_button"
         android:layout_width="117dp"
         android:layout_height="33dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/pink_button"
         android:text="Upload media"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
@@ -105,13 +105,15 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="296dp"
-        android:layout_height="31dp"
+        style="@style/FirebaseUI.CountrySpinner"
+        android:layout_width="297dp"
+        android:layout_height="44dp"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
+        android:scrollbarStyle="outsideInset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
