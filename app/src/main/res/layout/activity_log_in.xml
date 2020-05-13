@@ -33,16 +33,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/forgotPassword" />
 
             <EditText
-                android:id="@+id/usernameEmail"
+                android:id="@+id/email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="64dp"
-                android:layout_marginLeft="64dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginLeft="48dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="64dp"
-                android:layout_marginRight="64dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginRight="48dp"
                 android:ems="10"
-                android:hint="@string/username_email"
+                android:hint="@string/email"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -51,17 +51,17 @@
                 android:id="@+id/password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="64dp"
-                android:layout_marginLeft="64dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginLeft="48dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="64dp"
-                android:layout_marginRight="64dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginRight="48dp"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/usernameEmail" />
+                app:layout_constraintTop_toBottomOf="@+id/email" />
 
             <ImageView
                 android:id="@+id/logo"
@@ -76,7 +76,6 @@
                 android:id="@+id/forgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="@string/forgot_password"
                 app:layout_constraintEnd_toEndOf="@+id/password"
                 app:layout_constraintTop_toBottomOf="@+id/password" />
