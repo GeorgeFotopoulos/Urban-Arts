@@ -3,126 +3,151 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="auto"
+    android:focusableInTouchMode="true">
 
-    <Button
-        android:id="@+id/search_dentist_with_filters"
-        style="@android:style/Widget.DeviceDefault.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/pink_button"
-        android:text="SEARCH"
-        android:textColor="#FFFFFF"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch2" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/lastname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:hint="e.g. Melissia"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/firstname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="e.g Giannis Giannakis"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/lastname"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            <Button
+                android:id="@+id/search_dentist_with_filters"
+                style="@android:style/Widget.DeviceDefault.Button"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/pink_button"
+                android:text="Search"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switch2" />
 
-    <Spinner
-        android:id="@+id/genresspinner"
-        style="@android:style/Widget.Spinner"
-        android:layout_width="290dp"
-        android:layout_height="44dp"
-        android:gravity="center"
-        android:scrollbarStyle="outsideInset"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+            <EditText
+                android:id="@+id/lastname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:ems="10"
+                android:hint="e.g. Melissia"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="60dp"
-        android:gravity="left|center_vertical"
-        android:text="Type of Art"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/genresspinner"
-        app:layout_constraintTop_toBottomOf="@+id/firstname" />
+            <EditText
+                android:id="@+id/firstname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="e.g. Giannis Giannakis"
+                android:inputType="textPersonName"
+                app:layout_constraintStart_toStartOf="@+id/lastname"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="48dp"
-        android:text="Location (Region)"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/lastname"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            <Spinner
+                android:id="@+id/spinner"
+                style="@android:style/Widget.Spinner"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:scrollbarStyle="outsideInset"
+                app:layout_constraintEnd_toEndOf="@+id/firstname"
+                app:layout_constraintStart_toStartOf="@+id/firstname"
+                app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="Artist Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/firstname"
-        app:layout_constraintTop_toBottomOf="@+id/lastname" />
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="32dp"
+                android:text="Type of Art"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="@+id/firstname"
+                app:layout_constraintStart_toStartOf="@+id/firstname"
+                app:layout_constraintTop_toBottomOf="@+id/firstname" />
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Search With Filters"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="32dp"
+                android:text="Location (Region)"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="@+id/lastname"
+                app:layout_constraintStart_toStartOf="@+id/lastname"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
-    <TextView
-        android:id="@+id/textView32"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Artist Name"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="@+id/firstname"
+                app:layout_constraintStart_toStartOf="@+id/firstname"
+                app:layout_constraintTop_toBottomOf="@+id/lastname" />
 
-    <Switch
-        android:id="@+id/switch2"
-        android:layout_width="96dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="48dp"
-        android:text="Live"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/genresspinner" />
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Search with Filters"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginTop="24dp"
+                android:text="Live (n/Y) "
+                android:textColor="#80000000"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

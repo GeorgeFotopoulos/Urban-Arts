@@ -2,7 +2,6 @@ package com.aueb.urbanarts;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -42,7 +41,7 @@ String TAG;
 
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostSomething.this, android.R.layout.simple_spinner_item, genres);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            Spinner sItems = (Spinner) findViewById(R.id.genresspinner);
+                            Spinner sItems = (Spinner) findViewById(R.id.genreSpinner);
                             sItems.setAdapter(adapter);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
