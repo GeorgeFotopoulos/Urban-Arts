@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -52,6 +53,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     private Uri filePath;
     private Bitmap bitmap;
     private StorageReference storageReference;
+    String indiv_or_group;
+    private boolean uploaded = false;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -75,7 +78,11 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         final EditText description = findViewById(R.id.description);
         final DatePicker calendar = findViewById(R.id.calendar);
         final TextView years = findViewById(R.id.years);
-
+        final TextView group = findViewById(R.id.group);
+        final TextView individual = findViewById(R.id.individual);
+        individual.setTextColor(Color.parseColor("#b71e42"));
+        group.setTextColor(Color.parseColor("#808080"));
+        indiv_or_group = "individual";
 
         List<String> genres = new ArrayList<>();
 
@@ -90,10 +97,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                 this, android.R.layout.simple_spinner_item, genres);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner sItems = (Spinner) findViewById(R.id.genre);
+        final Spinner sItems = (Spinner) findViewById(R.id.genre);
         sItems.setAdapter(adapter);
-
-        final String artistType = sItems.getSelectedItem().toString();
 
         findViewById(R.id.upload_image).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -103,13 +108,20 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             }
         });
 
+
         indiv_group.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 if ((years.getText().toString()).equals("Date of Birth:")) {
                     years.setText("Est.");
+                    group.setTextColor(Color.parseColor("#b71e42"));
+                    individual.setTextColor(Color.parseColor("#808080"));
+                    indiv_or_group = "group";
                 } else {
                     years.setText("Date of Birth:");
+                    individual.setTextColor(Color.parseColor("#b71e42"));
+                    group.setTextColor(Color.parseColor("#808080"));
+                    indiv_or_group = "individual";
                 }
 
             }
@@ -119,24 +131,28 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             public void onClick(View v) {
                 uploadPhoto();
 
-                if (artistType != "") {
-                    makeArtist(artistType, String.valueOf(calendar.getYear()), description.getText().toString());
-                    finish();
-                    Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
-                    startActivity(myIntent);
+                String artistType = sItems.getSelectedItem().toString();
+
+                if (!artistType.equals("")) {
+                    makeArtist(artistType, indiv_or_group, String.valueOf(calendar.getYear()), description.getText().toString());
                 }
             }
         });
 
     }
 
-    public void makeArtist(String artistType, String year, String description) {
+    public void makeArtist(String artistType, String groupType, String year, String description) {
         Map<String, Object> userMap = new HashMap<>();
 
         Map<String, Object> artist = new HashMap<>();
         artist.put("user_id", user.getUid());
         artist.put("genre", artistType);
-        artist.put("Year of Birth", year);
+        artist.put("year", year);
+        artist.put("followers", 0);
+        artist.put("artist_type", groupType);
+        artist.put("gallery", "");
+
+
         userMap.put("is_artist", true);
         if (description.equals("")) {
             artist.put("description", "No Description.");
@@ -152,12 +168,18 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("123", "DocumentSnapshot added with ID: " + documentReference.getId());
+                        Toast.makeText(getApplicationContext(), "Artist Account Made!", Toast.LENGTH_LONG).show();
+
+                        finish();
+                        Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
+                        startActivity(myIntent);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("123", "Error adding document", e);
+                        Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -185,6 +207,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                             percentage.setVisibility(View.INVISIBLE);
                             progress.setVisibility(View.INVISIBLE);
                             Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
+                            uploaded = true;
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

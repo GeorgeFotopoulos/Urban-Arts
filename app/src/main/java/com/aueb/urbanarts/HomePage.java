@@ -57,8 +57,8 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // Stelne me sto EditAccountActivity
-                    // Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
-                    // startActivity(myIntent);
+                     Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
+                     startActivity(myIntent);
                 }
             });
         } else {

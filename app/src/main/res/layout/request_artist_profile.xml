@@ -43,7 +43,7 @@
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="50dp"
                 android:text="Artist's Type:"
                 android:textColor="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
                 android:id="@+id/years"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="50dp"
                 android:text="Date of Birth:"
                 android:textColor="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
                 android:id="@+id/textView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="Description:"
                 android:textColor="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +93,7 @@
                 android:id="@+id/request"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/pink_button"
                 android:text="REQUEST"
@@ -102,7 +102,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
             <Button
                 android:id="@+id/upload_image"
@@ -173,6 +173,30 @@
                 app:layout_constraintStart_toEndOf="@+id/textView9"
                 app:layout_constraintTop_toTopOf="@+id/textView9" />
 
+            <TextView
+                android:id="@+id/require"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:text="*"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/group"
+                app:layout_constraintTop_toTopOf="@+id/group" />
+
+            <TextView
+                android:id="@+id/require3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="*"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/group"
+                app:layout_constraintStart_toStartOf="@+id/textView17"
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
             <DatePicker
                 android:id="@+id/calendar"
                 android:layout_width="wrap_content"
@@ -188,13 +212,13 @@
                 android:id="@+id/indiv_group"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/genre" />
 
             <TextView
-                android:id="@+id/textView20"
+                android:id="@+id/individual"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -205,7 +229,7 @@
                 app:layout_constraintTop_toTopOf="@+id/indiv_group" />
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -214,6 +238,17 @@
                 app:layout_constraintBottom_toBottomOf="@+id/indiv_group"
                 app:layout_constraintStart_toEndOf="@+id/indiv_group"
                 app:layout_constraintTop_toTopOf="@+id/indiv_group" />
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="8dp"
+                android:text="required fields"
+                app:layout_constraintStart_toEndOf="@+id/require3"
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
