@@ -111,6 +111,7 @@ public class SignUp extends AppCompatActivity {
                             user.put("user_id", userID);
                             user.put("username", username);
                             user.put("email", email);
+                            user.put("is_artist", false);
 
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
