@@ -18,15 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostSomething extends AppCompatActivity {
-String TAG;
+    String TAG;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.make_post);
-//        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        final List<String> genres =new ArrayList<String>();
+
+        final List<String> genres = new ArrayList<>();
 
         fStore.collection("genre")
                 .get()
@@ -35,13 +35,11 @@ String TAG;
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                genres.add(document.getId()+"");
-
+                                genres.add(document.getId() + "");
                             }
-
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostSomething.this, android.R.layout.simple_spinner_item, genres);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(PostSomething.this, android.R.layout.simple_spinner_item, genres);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            Spinner sItems = (Spinner) findViewById(R.id.genreSpinner);
+                            Spinner sItems = findViewById(R.id.genreSpinner);
                             sItems.setAdapter(adapter);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());

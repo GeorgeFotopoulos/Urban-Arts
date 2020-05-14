@@ -153,3 +153,5 @@ public class LogIn extends AppCompatActivity {
 
     }
 }
+
+// SIGN IN ΚΟΥΜΠΙ CLICKABLE FALSE
