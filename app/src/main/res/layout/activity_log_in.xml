@@ -105,11 +105,9 @@
                 android:id="@+id/noAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="24dp"
                 android:text="Don't have an account yet?"
-                app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
+                app:layout_constraintEnd_toEndOf="@+id/signIn"
                 app:layout_constraintTop_toBottomOf="@+id/signIn" />
 
             <TextView

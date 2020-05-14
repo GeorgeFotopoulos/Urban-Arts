@@ -1,8 +1,9 @@
 package com.aueb.urbanarts;
 
 public class item {
-    int profilePhoto, likeCount, commentCount, shareCount;
+    int profilePhoto, likeCount, commentCount;
     String artistName, eventType, address;
+    boolean liveEvent;
 
     public item() {
 
@@ -15,7 +16,7 @@ public class item {
         this.address = item.address;
         this.likeCount = item.likeCount;
         this.commentCount = item.commentCount;
-        this.shareCount = item.shareCount;
+        this.liveEvent = item.liveEvent;
     }
 
     public item(int profilePhoto, String artistName, String eventType, String address) {
@@ -25,17 +26,17 @@ public class item {
         this.address = address;
         this.likeCount = 0;
         this.commentCount = 0;
-        this.shareCount = 0;
+        this.liveEvent = true;
     }
 
-    public item(int profilePhoto, String artistName, String eventType, String address, int likeCount, int commentCount, int shareCount) {
+    public item(int profilePhoto, String artistName, String eventType, String address, int likeCount, int commentCount, boolean liveEvent) {
         this.profilePhoto = profilePhoto;
         this.artistName = artistName;
         this.eventType = eventType;
         this.address = address;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
-        this.shareCount = shareCount;
+        this.liveEvent = liveEvent;
     }
 
     public int getProfilePhoto() {
@@ -62,8 +63,8 @@ public class item {
         return this.commentCount;
     }
 
-    public int getShareCount() {
-        return this.shareCount;
+    public boolean getLiveEvent() {
+        return this.liveEvent;
     }
 
     public void setProfilePhoto(int profilePhoto) {
@@ -78,8 +79,8 @@ public class item {
         this.commentCount = commentCount;
     }
 
-    public void setShareCount(int shareCount) {
-        this.shareCount = shareCount;
+    public void setLiveEvent(boolean liveEvent) {
+        this.liveEvent = liveEvent;
     }
 
     public void setArtistName(String artistName) {

@@ -32,7 +32,6 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mAuth.signOut();
-                    // kane log out
                     Intent myIntent = new Intent(HomePage.this, HomePage.class);
                     HomePage.this.startActivity(myIntent);
                 }
@@ -56,7 +55,6 @@ public class HomePage extends AppCompatActivity {
             register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Stelne me sto EditAccountActivity
                      Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
                      startActivity(myIntent);
                 }

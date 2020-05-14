@@ -94,15 +94,16 @@
                 card_view:srcCompat="@drawable/like" />
 
             <ImageView
-                android:id="@+id/shareImage"
+                android:id="@+id/liveImage"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/likeImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/likeImage"
-                card_view:srcCompat="@drawable/share" />
+                card_view:srcCompat="@drawable/live_event_yes" />
 
             <TextView
                 android:id="@+id/likeCount"
@@ -119,18 +120,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@+id/likeCount"
-                app:layout_constraintEnd_toStartOf="@+id/shareCount"
-                app:layout_constraintStart_toEndOf="@+id/likeCount"
-                app:layout_constraintTop_toTopOf="@+id/likeCount" />
-
-            <TextView
-                android:id="@+id/shareCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginRight="4dp"
-                app:layout_constraintBottom_toBottomOf="@+id/likeCount"
-                app:layout_constraintEnd_toStartOf="@+id/shareImage"
+                app:layout_constraintEnd_toStartOf="@+id/liveImage"
+                app:layout_constraintStart_toStartOf="@+id/likeImage"
                 app:layout_constraintTop_toTopOf="@+id/likeCount" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
