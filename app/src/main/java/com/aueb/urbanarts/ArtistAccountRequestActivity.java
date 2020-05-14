@@ -29,12 +29,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -51,6 +56,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     private final int PERMISSION_CODE = 2342;
     private final int PICK_IMAGE_REQUEST = 22;
     private Uri filePath;
+    private String photoPath;
     private Bitmap bitmap;
     private StorageReference storageReference;
     String indiv_or_group;
@@ -58,6 +64,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    Spinner sItems;
 
 
     @Override
@@ -84,21 +92,29 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         group.setTextColor(Color.parseColor("#808080"));
         indiv_or_group = "individual";
 
-        List<String> genres = new ArrayList<>();
+        final List<String> artist_type = new ArrayList<>();
 
-        genres.add("Musician/Band");
-        genres.add("Magician");
-        genres.add("Dancer/Dance Group");
-        genres.add("Street Artist/Graffiti");
-        genres.add("Painter");
-        genres.add("Other");
+        fStore.collection("artist_type")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                artist_type.add(document.getId() + "");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, genres);
+                            }
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        final Spinner sItems = (Spinner) findViewById(R.id.genre);
-        sItems.setAdapter(adapter);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(ArtistAccountRequestActivity.this, android.R.layout.simple_spinner_item, artist_type);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            sItems = (Spinner) findViewById(R.id.genre);
+                            sItems.setAdapter(adapter);
+                        } else {
+                            Log.d("123", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
 
         findViewById(R.id.upload_image).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -129,13 +145,13 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
 
         findViewById(R.id.request).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                uploadPhoto();
+                if (sItems != null) {
 
-                String artistType = sItems.getSelectedItem().toString();
-
-                if (!artistType.equals("")) {
-                    makeArtist(artistType, indiv_or_group, String.valueOf(calendar.getYear()), description.getText().toString());
+                    String artistType = sItems.getSelectedItem().toString();
+                    uploadPhoto(artistType, indiv_or_group, String.valueOf(calendar.getYear()), description.getText().toString());
                 }
+
+
             }
         });
 
@@ -150,6 +166,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         artist.put("year", year);
         artist.put("followers", 0);
         artist.put("artist_type", groupType);
+        artist.put("profile_image_url", photoPath);
         artist.put("gallery", "");
 
 
@@ -162,6 +179,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
 
 
 // Add a new document with a generated ID
+        final ProgressBar progress = findViewById(R.id.progressBar);
+        final TextView percentage = findViewById(R.id.perc);
         db.collection("artists")
                 .add(artist)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -169,7 +188,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("123", "DocumentSnapshot added with ID: " + documentReference.getId());
                         Toast.makeText(getApplicationContext(), "Artist Account Made!", Toast.LENGTH_LONG).show();
-
+                        percentage.setVisibility(View.INVISIBLE);
+                        progress.setVisibility(View.INVISIBLE);
                         finish();
                         Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
                         startActivity(myIntent);
@@ -188,7 +208,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
 
     }
 
-    public void uploadPhoto() {
+    public void uploadPhoto(final String artistType, String groupType, final String year, final String description) {
 
         if (filePath != null) {
             final ProgressBar progress = findViewById(R.id.progressBar);
@@ -199,7 +219,9 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-            StorageReference riversRef = storageReference.child("profiles/profile" + user.getUid() + ".jpg");
+            final StorageReference riversRef = storageReference.child("profiles/profile" + user.getUid() + ".jpg");
+
+
             riversRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -208,6 +230,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                             progress.setVisibility(View.INVISIBLE);
                             Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
                             uploaded = true;
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -226,6 +249,37 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                         }
                     });
 
+
+            riversRef.putFile(filePath).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+
+                        throw task.getException();
+                    }
+                    // Continue with the task to get the download URL
+                    return riversRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        if (downloadUri == null)
+                            return;
+                        else {
+                            if (!artistType.equals("")) {
+                                percentage.setText("Waiting to finish...");
+                                percentage.setVisibility(View.VISIBLE);
+                                progress.setVisibility(View.VISIBLE);
+                                photoPath = String.valueOf(downloadUri);
+                                makeArtist(artistType, indiv_or_group, year, description);
+                            }
+                        }
+
+                    }
+                }
+            });
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         }
@@ -240,12 +294,13 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission Granted!", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Permission Not Granted!", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Permission Not Granted!", Toast.LENGTH_LONG).show();
             }
         }
     }
