@@ -32,6 +32,7 @@ public class SignUp extends AppCompatActivity {
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     Button btn_createAccount;
     String userID;
+    boolean correctInput = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,22 +60,30 @@ public class SignUp extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(username)) {
                     tv_username.setError("Username is required.");
+                    correctInput = false;
                     return;
                 }
 
                 if (TextUtils.isEmpty(email)) {
                     tv_email.setError("Email is required.");
+                    correctInput = false;
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
                     tv_password.setError("Password is required.");
+                    correctInput = false;
                     return;
                 }
 
                 if (password.length() < 8) {
                     tv_password.setError("Password must be >= 8 characters.");
+                    correctInput = false;
                     return;
+                }
+
+                if(correctInput = true) {
+                    btn_createAccount.setEnabled(false);
                 }
 
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -82,9 +91,7 @@ public class SignUp extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // send verification link
-                            Log.d(TAG, "mphke1");
                             FirebaseUser fuser = mAuth.getCurrentUser();
-                            Log.d(TAG, fuser.toString());
                             fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -97,17 +104,13 @@ public class SignUp extends AppCompatActivity {
                                 }
                             });
                             Toast.makeText(SignUp.this, "User Created.", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "mphke2");
                             userID = mAuth.getCurrentUser().getUid();
-                            Log.d(TAG, userID);
                             DocumentReference documentReference = fStore.collection("users").document(userID);
 
                             Map<String, Object> user = new HashMap<>();
                             user.put("user_id", userID);
                             user.put("username", username);
                             user.put("email", email);
-                            user.put("password", password);
-                            user.put("profile_pic", "none");
 
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -123,9 +126,7 @@ public class SignUp extends AppCompatActivity {
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
                             finish();
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(SignUp.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
+                            Toast.makeText(SignUp.this, "Error! Could not log in." + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

@@ -29,6 +29,7 @@ public class LogIn extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     String userID;
+    boolean correctInput = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +67,27 @@ public class LogIn extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is Required.");
+                    correctInput = false;
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
                     mPassword.setError("Password is Required.");
+                    correctInput = false;
                     return;
                 }
 
                 if (password.length() < 8) {
                     mPassword.setError("Password Must be >= 8 Characters");
+                    correctInput = false;
                     return;
                 }
 
+                if(correctInput = true) {
+                    mLoginBtn.setEnabled(false);
+                }
 
                 // authenticate the user
-
                 fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -92,12 +98,10 @@ public class LogIn extends AppCompatActivity {
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
                             finish();
                         } else {
-                            Toast.makeText(LogIn.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LogIn.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
-
             }
         });
 
@@ -144,14 +148,10 @@ public class LogIn extends AppCompatActivity {
                         // close the dialog
                     }
                 });
-
                 passwordResetDialog.create().show();
-
             }
         });
 
 
     }
 }
-
-// SIGN IN ΚΟΥΜΠΙ CLICKABLE FALSE
