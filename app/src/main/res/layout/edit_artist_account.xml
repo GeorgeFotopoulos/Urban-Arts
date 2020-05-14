@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/scrollView4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,7 +25,7 @@
                 android:layout_height="200dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/artist"
+                android:src="@drawable/white_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -32,17 +33,44 @@
 
             <Button
                 android:id="@+id/deactivate"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/artist_image"
+                android:layout_marginTop="32dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="24dp"
+                android:layout_toStartOf="@+id/middle"
+                android:layout_toLeftOf="@+id/middle"
+                android:background="@drawable/pink_button"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="DEACTIVATE"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <Button
+                android:id="@+id/terminate"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/artist_image"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="24dp"
+                android:layout_toEndOf="@+id/middle"
+                android:layout_toRightOf="@+id/middle"
+                android:background="@drawable/pink_button"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="TERMINATE"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/middle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/artist_image"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/pink_button"
-                android:text="DEACTIVATE"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp"
-                android:textColor="#fff"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
             <EditText
@@ -147,19 +175,6 @@
                 android:layout_marginRight="64dp"
                 android:text="Warning: Be sure to fill only the fields you would like to change/update!" />
 
-            <ImageView
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_delete" />
 
             <ProgressBar
                 android:id="@+id/image_progress"
@@ -181,6 +196,40 @@
 
         </RelativeLayout>
 
+
     </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView4">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/perc"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="Please wait! This may take a moment."
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
