@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -22,13 +23,14 @@ public class HomePage extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        ImageView signIn = findViewById(R.id.logIn);
+        ImageView loginImg = findViewById(R.id.logIn);
+        CardView login = findViewById(R.id.cardView1);
         if (mAuth.getCurrentUser() != null) {
-            signIn.setImageResource(R.drawable.log_out);
+            loginImg.setImageResource(R.drawable.log_out);
             tempStr = "Log Out";
             temp = findViewById(R.id.tv_logIn);
             temp.setText(tempStr);
-            signIn.setOnClickListener(new View.OnClickListener() {
+            login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mAuth.signOut();
@@ -37,7 +39,7 @@ public class HomePage extends AppCompatActivity {
                 }
             });
         } else {
-            signIn.setOnClickListener(new View.OnClickListener() {
+            login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent myIntent = new Intent(HomePage.this, LogIn.class);
@@ -46,10 +48,11 @@ public class HomePage extends AppCompatActivity {
             });
         }
 
-        ImageView register = findViewById(R.id.register);
+        ImageView registerImg = findViewById(R.id.register);
+        CardView register = findViewById(R.id.cardView2);
         if (mAuth.getCurrentUser() != null) {
-            register.setImageResource(R.drawable.edit_account);
-            tempStr = "Edit Account";
+            registerImg.setImageResource(R.drawable.edit_account);
+            tempStr = "My Account";
             temp = findViewById(R.id.tv_register);
             temp.setText(tempStr);
             register.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +72,7 @@ public class HomePage extends AppCompatActivity {
             });
         }
 
-        ImageView filters = findViewById(R.id.filters);
+        CardView filters = findViewById(R.id.cardView3);
         filters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +81,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        ImageView live = findViewById(R.id.liveFeed);
+        CardView live = findViewById(R.id.cardView4);
         live.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +90,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        ImageView createPost = findViewById(R.id.createPost);
+        CardView createPost = findViewById(R.id.cardView5);
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +99,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        ImageView favorites = findViewById(R.id.favorites);
+        CardView favorites = findViewById(R.id.cardView6);
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

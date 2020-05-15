@@ -52,7 +52,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/textInputLayout1"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayout1"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout1"
-                app:startIconDrawable="@drawable/ic_password_small">
+                app:startIconDrawable="@drawable/ic_password_small"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"

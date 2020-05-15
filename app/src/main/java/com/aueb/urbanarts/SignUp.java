@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
     public static final String TAG = "TAG";
-    TextView tv_username, tv_email, tv_password;
+    TextView tv_username, tv_email, tv_password, tv_login;
     private FirebaseAuth mAuth;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     Button btn_createAccount;
@@ -42,6 +42,7 @@ public class SignUp extends AppCompatActivity {
         tv_username = findViewById(R.id.username);
         tv_email = findViewById(R.id.email);
         tv_password = findViewById(R.id.password);
+        tv_login = findViewById(R.id.logIn);
         btn_createAccount = findViewById(R.id.createAccount);
 
         mAuth = FirebaseAuth.getInstance();
@@ -50,6 +51,15 @@ public class SignUp extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), HomePage.class));
             finish();
         }
+
+        tv_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(SignUp.this, LogIn.class);
+                SignUp.this.startActivity(myIntent);
+                finish();
+            }
+        });
 
         btn_createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
