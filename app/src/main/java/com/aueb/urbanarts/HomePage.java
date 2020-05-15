@@ -4,19 +4,38 @@ import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomePage extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -29,6 +48,11 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
 
         mAuth = FirebaseAuth.getInstance();
+
+        final ProgressBar loadingIimage = findViewById(R.id.loading_image);
+        loadingIimage.setVisibility(View.INVISIBLE);
+
+        showUserInfo(loadingIimage);
 
         ImageView loginImg = findViewById(R.id.logIn);
         CardView login = findViewById(R.id.cardView1);
@@ -122,6 +146,79 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showUserInfo(final ProgressBar loadingIimage) {
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QueryDocumentSnapshot[] user = new QueryDocumentSnapshot[1];
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("123", document.getId() + " => " + document.getData());
+                                if (document.getId().equals(mAuth.getUid())) {
+                                    user[0] = document;
+
+                                    String userName = document.getString("username");
+                                    TextView displayName = findViewById(R.id.username_display);
+
+                                    displayName.setSelected(true);
+
+                                    displayName.setText(userName);
+
+                                }
+                            }
+
+                            final CircleImageView accountImage = findViewById(R.id.account);
+
+                            if (user[0].getBoolean("is_artist")) {
+
+                                loadingIimage.setVisibility(View.VISIBLE);
+                                db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                if (document.getString("user_id").equals(mAuth.getUid())) {
+
+
+                                                    if (!document.getString("profile_image_url").equals("none")) {
+                                                        Picasso.with(getApplicationContext()).load(document.getString("profile_image_url")).into(accountImage, new com.squareup.picasso.Callback() {
+                                                            @Override
+                                                            public void onSuccess() {
+                                                                loadingIimage.setVisibility(View.INVISIBLE);
+                                                            }
+
+                                                            @Override
+                                                            public void onError() {
+
+                                                            }
+                                                        });
+                                                    } else {
+                                                        accountImage.setImageResource(R.drawable.uknown_artist);
+                                                    }
+
+                                                } else {
+                                                    Log.d("123", "Not the same user!: ", task.getException());
+                                                }
+                                            }
+                                        } else {
+                                            Log.d("123", "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
+                            } else {
+                                accountImage.setImageResource(R.drawable.uknown_artist);
+                            }
+                        } else {
+                            Log.d("123", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
     protected void openDialog() {

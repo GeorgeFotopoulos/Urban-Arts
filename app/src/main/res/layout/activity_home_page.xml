@@ -2,20 +2,82 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:weightSum="3"
     android:orientation="vertical"
+    android:weightSum="3"
     tools:context=".HomePage">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Urban Arts"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/account"
+            android:layout_width="45dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/loading_image"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="@+id/account"
+            app:layout_constraintEnd_toEndOf="@+id/account"
+            app:layout_constraintStart_toStartOf="@+id/account"
+            app:layout_constraintTop_toTopOf="@+id/account" />
+
+
+        >
+
+        <TextView
+            android:id="@+id/username_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="@+id/account"
+            app:layout_constraintEnd_toStartOf="@+id/account"
+            app:layout_constraintStart_toEndOf="@+id/textView18"
+            app:layout_constraintTop_toTopOf="@+id/account" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.gridlayout.widget.GridLayout
         android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="3"
         android:padding="10dp"
-        android:layout_height="0dp"
-        app:rowCount="3"
-        app:columnCount="2">
+        app:columnCount="2"
+        app:rowCount="3">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView1"

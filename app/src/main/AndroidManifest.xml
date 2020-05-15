@@ -32,7 +32,10 @@
             android:name=".ShowPostOnMapActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".HomePage">
+        <activity
+            android:name=".HomePage"
+            android:theme="@style/AppThemeNoLabel">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

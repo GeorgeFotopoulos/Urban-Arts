@@ -1,5 +1,6 @@
 package com.aueb.urbanarts;
 
+
 import android.Manifest;
 import android.app.ActionBar;
 import android.app.Dialog;
