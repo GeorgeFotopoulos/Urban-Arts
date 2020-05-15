@@ -27,11 +27,11 @@
             android:text="YES"
             android:textColor="#000000"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/createnew"
-            app:layout_constraintEnd_toStartOf="@+id/createnew" />
+            app:layout_constraintBottom_toBottomOf="@+id/signUp"
+            app:layout_constraintEnd_toStartOf="@+id/signUp" />
 
         <Button
-            android:id="@+id/createnew"
+            android:id="@+id/signUp"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"
@@ -49,7 +49,7 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id="@+id/oops"
+            android:id="@+id/errorMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -62,7 +62,7 @@
             app:layout_constraintTop_toBottomOf="@+id/warning" />
 
         <TextView
-            android:id="@+id/error"
+            android:id="@+id/errorTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="32dp"
@@ -72,7 +72,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/oops" />
+            app:layout_constraintTop_toBottomOf="@+id/errorMsg" />
 
         <TextView
             android:id="@+id/art_address"
@@ -117,8 +117,8 @@
             android:textColor="#b71e42"
             android:textSize="18sp"
             android:textStyle="italic"
-            app:layout_constraintStart_toStartOf="@+id/error"
-            app:layout_constraintTop_toBottomOf="@+id/error" />
+            app:layout_constraintStart_toStartOf="@+id/errorTxt"
+            app:layout_constraintTop_toBottomOf="@+id/errorTxt" />
 
         <TextView
             android:id="@+id/address"
@@ -162,7 +162,7 @@
             android:layout_height="30dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/warning"
-            app:layout_constraintBottom_toTopOf="@+id/oops"
+            app:layout_constraintBottom_toTopOf="@+id/errorMsg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

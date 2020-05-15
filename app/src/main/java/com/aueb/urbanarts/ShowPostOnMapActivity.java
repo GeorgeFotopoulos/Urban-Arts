@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -50,10 +48,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @SuppressWarnings("deprecation")
 public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
     GoogleMap map;
     Marker marker;
     LocationManager locationManager;
@@ -72,7 +68,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         setContentView(R.layout.show_post_on_map);
         checkPermission();
         getLocation();
-        showAddress = (EditText) findViewById(R.id.address_text);
+        showAddress = findViewById(R.id.address_text);
         showAddress.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         showAddress.requestFocus();
 
@@ -105,15 +101,14 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     protected void confirmNewPost() {
-
         Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.create_post_popup);
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        Button yes = (Button) dialog.findViewById(R.id.yes);
-        Button createnew = (Button) dialog.findViewById(R.id.createnew);
+        Button yes = dialog.findViewById(R.id.yes);
+        Button createnew = dialog.findViewById(R.id.signUp);
 
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +116,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
             }
         });
-
 
         createnew.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +127,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
         dialog.show();
-
     }
 
     @Override
@@ -183,7 +176,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                 onLocationChanged(newLocation);
             }
         });
-
         searchByName();
     }
 
@@ -205,13 +197,10 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     public void onLocationChanged(Location location) {
-
         if (marker != null) {
             marker.remove();
         }
-
         locate(location);
-
     }
 
     protected void searchByName() {
@@ -272,7 +261,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     protected void locate(Location location) {
-
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)

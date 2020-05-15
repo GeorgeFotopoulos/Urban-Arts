@@ -1,8 +1,15 @@
 package com.aueb.urbanarts;
 
+import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,8 +65,8 @@ public class HomePage extends AppCompatActivity {
             register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                     Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
-                     startActivity(myIntent);
+                    Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
+                    startActivity(myIntent);
                 }
             });
         } else {
@@ -94,8 +101,12 @@ public class HomePage extends AppCompatActivity {
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(HomePage.this, PostSomething.class);
-                HomePage.this.startActivity(myIntent);
+                if (mAuth.getCurrentUser() != null) {
+                    Intent myIntent = new Intent(HomePage.this, PostSomething.class);
+                    HomePage.this.startActivity(myIntent);
+                } else {
+                    openDialog();
+                }
             }
         });
 
@@ -103,10 +114,53 @@ public class HomePage extends AppCompatActivity {
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(HomePage.this, ArtistAccountRequestActivity.class);
-                HomePage.this.startActivity(myIntent);
+                if (mAuth.getCurrentUser() != null) {
+                    Intent myIntent = new Intent(HomePage.this, ArtistAccountRequestActivity.class);
+                    HomePage.this.startActivity(myIntent);
+                } else {
+                    openDialog();
+                }
             }
         });
     }
 
+    protected void openDialog() {
+        final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.login_dialog);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button cancel = dialog.findViewById(R.id.cancel);
+        Button login = dialog.findViewById(R.id.signIn);
+        Button register = dialog.findViewById(R.id.signUp);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                Intent myIntent = new Intent(HomePage.this, LogIn.class);
+                HomePage.this.startActivity(myIntent);
+            }
+        });
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                Intent myIntent = new Intent(HomePage.this, SignUp.class);
+                HomePage.this.startActivity(myIntent);
+            }
+        });
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
 }

@@ -14,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
-    Context mContext;
-    List<item> mData;
+    private Context mContext;
+    private List<item> mData;
 
-    public Adapter(Context mContext, List<item> mData) {
+    Adapter(Context mContext, List<item> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }
@@ -36,8 +36,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         holder.artistName.setText(mData.get(position).getArtistName());
         holder.eventType.setText(mData.get(position).getEventType());
         holder.address.setText(mData.get(position).getAddress());
-        holder.likeCount.setText(mData.get(position).getLikeCount() + "");
-        holder.commentCount.setText(mData.get(position).getCommentCount() + "");
+        holder.likeCount.setText(String.valueOf(mData.get(position).getLikeCount()));
+        holder.commentCount.setText(String.valueOf(mData.get(position).getCommentCount()));
         if (mData.get(position).getLiveEvent()) {
             holder.liveImage.setVisibility(View.VISIBLE);
         }
@@ -48,16 +48,15 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         return mData.size();
     }
 
-    public class myViewHolder extends RecyclerView.ViewHolder {
-        ImageView profilePhoto, likeImage, commentImage, shareImage, liveImage;
+    static class myViewHolder extends RecyclerView.ViewHolder {
+        ImageView profilePhoto, likeImage, commentImage, liveImage;
         TextView artistName, eventType, address, likeCount, commentCount;
 
-        public myViewHolder(View itemView) {
+        myViewHolder(View itemView) {
             super(itemView);
             profilePhoto = itemView.findViewById(R.id.profilePhoto);
             likeImage = itemView.findViewById(R.id.likeImage);
             commentImage = itemView.findViewById(R.id.commentImage);
-            shareImage = itemView.findViewById(R.id.liveImage);
             artistName = itemView.findViewById(R.id.artistName);
             eventType = itemView.findViewById(R.id.eventType);
             address = itemView.findViewById(R.id.address);
