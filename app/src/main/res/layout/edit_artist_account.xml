@@ -194,6 +194,16 @@
                 android:layout_marginRight="80dp"
                 android:layout_marginBottom="80dp" />
 
+            <ImageView
+                android:id="@+id/view_artist_profile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                app:srcCompat="@drawable/view_profile" />
+
         </RelativeLayout>
 
 

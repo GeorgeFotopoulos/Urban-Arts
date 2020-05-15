@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -60,7 +61,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private StorageReference storageReference;
     String indiv_or_group;
-    private boolean uploaded = false;
+    private final String uknownArtistURL = "https://firebasestorage.googleapis.com/v0/b/aeps-a0e6f.appspot.com/o/profiles%2Fuknown_artist.png?alt=media&token=ea50f1a2-5c68-4b63-b8a4-6125d9727905";
+    private boolean newImageChosen = false;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -157,54 +159,75 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
 
     }
 
-    public void makeArtist(String artistType, String groupType, String year, String description) {
-        Map<String, Object> userMap = new HashMap<>();
+    public void makeArtist(final String artistType, final String groupType, final String year, final String description) {
+        final Map<String, Object> userMap = new HashMap<>();
 
-        Map<String, Object> artist = new HashMap<>();
+        final Map<String, Object> artist = new HashMap<>();
         artist.put("user_id", user.getUid());
-        artist.put("genre", artistType);
-        artist.put("year", year);
-        artist.put("followers", 0);
-        artist.put("artist_type", groupType);
-        artist.put("profile_image_url", photoPath);
-        artist.put("gallery", "");
 
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
 
-        userMap.put("is_artist", true);
-        if (description.equals("")) {
-            artist.put("description", "No Description.");
-        } else {
-            artist.put("description", description);
-        }
+                    artist.put("display_name", document.getString("username"));
 
-
-// Add a new document with a generated ID
-        final ProgressBar progress = findViewById(R.id.progressBar);
-        final TextView percentage = findViewById(R.id.perc);
-        db.collection("artists")
-                .add(artist)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("123", "DocumentSnapshot added with ID: " + documentReference.getId());
-                        Toast.makeText(getApplicationContext(), "Artist Account Made!", Toast.LENGTH_LONG).show();
-                        percentage.setVisibility(View.INVISIBLE);
-                        progress.setVisibility(View.INVISIBLE);
-                        finish();
-                        Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
-                        startActivity(myIntent);
+                    artist.put("genre", artistType);
+                    artist.put("year", year);
+                    artist.put("followers", 0);
+                    artist.put("artist_type", groupType);
+                    if (!newImageChosen) {
+                        artist.put("profile_image_url", uknownArtistURL);
+                    } else {
+                        artist.put("profile_image_url", photoPath);
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("123", "Error adding document", e);
-                        Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
-                    }
-                });
+                    artist.put("gallery", "");
 
-        // Update user account to artist
-        db.collection("users").document(user.getUid()).update(userMap);
+
+                    userMap.put("is_artist", true);
+                    if (description.equals("")) {
+                        artist.put("description", "No Description.");
+                    } else {
+                        artist.put("description", description);
+                    }
+
+                    // Add a new document with a generated ID
+                    final ProgressBar progress = findViewById(R.id.progressBar);
+                    final TextView percentage = findViewById(R.id.perc);
+                    db.collection("artists")
+                            .add(artist)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d("123", "DocumentSnapshot added with ID: " + documentReference.getId());
+                                    Toast.makeText(getApplicationContext(), "Artist Account Made!", Toast.LENGTH_LONG).show();
+                                    percentage.setVisibility(View.INVISIBLE);
+                                    progress.setVisibility(View.INVISIBLE);
+                                    finish();
+                                    Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
+                                    startActivity(myIntent);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("123", "Error adding document", e);
+                                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                    // Update user account to artist
+                    db.collection("users").document(user.getUid()).update(userMap);
+
+
+                } else {
+                    Log.d("123", "get failed with ", task.getException());
+                }
+            }
+        });
+
 
     }
 
@@ -229,7 +252,6 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                             percentage.setVisibility(View.INVISIBLE);
                             progress.setVisibility(View.INVISIBLE);
                             Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
-                            uploaded = true;
 
                         }
                     })
@@ -282,6 +304,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             });
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
+        } else {
+            makeArtist(artistType, indiv_or_group, year, description);
         }
     }
 
@@ -316,6 +340,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 ImageView image = findViewById(R.id.image);
                 image.setImageBitmap(bitmap);
+                newImageChosen = true;
             } catch (IOException e) {
 
             }

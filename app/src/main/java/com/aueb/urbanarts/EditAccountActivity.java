@@ -1,14 +1,9 @@
 package com.aueb.urbanarts;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,7 +44,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,6 +61,7 @@ public class EditAccountActivity extends AppCompatActivity {
     FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private final String uknownArtistURL = "https://firebasestorage.googleapis.com/v0/b/aeps-a0e6f.appspot.com/o/profiles%2Fuknown_artist.png?alt=media&token=ea50f1a2-5c68-4b63-b8a4-6125d9727905";
     private Bitmap bitmap;
     private String photoPath;
     private boolean changePhoto = false;
@@ -107,56 +101,9 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 final List<String> artist_type = new ArrayList<>();
 
-                                fStore.collection("artist_type")
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    artist_type.add("Choose a Genre...");
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        artist_type.add(document.getId() + "");
+                                changeGenre(artist_type);
+                                showProfileImage(profileImage, imageProg);
 
-                                                    }
-
-                                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(EditAccountActivity.this, android.R.layout.simple_spinner_item, artist_type);
-                                                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                                    sItems = (Spinner) findViewById(R.id.genre);
-                                                    sItems.setAdapter(adapter);
-                                                } else {
-                                                    Log.d("123", "Error getting documents: ", task.getException());
-                                                }
-                                            }
-                                        });
-
-                                final String[] imageURL = new String[1];
-                                db.collection("artists")
-                                        .whereEqualTo("user_id", user.getUid())
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        imageURL[0] = String.valueOf(document.get("profile_image_url"));
-
-                                                        Picasso.with(getApplicationContext()).load(imageURL[0]).into(profileImage, new com.squareup.picasso.Callback() {
-                                                            @Override
-                                                            public void onSuccess() {
-                                                                imageProg.setVisibility(View.INVISIBLE);
-                                                            }
-
-                                                            @Override
-                                                            public void onError() {
-
-                                                            }
-                                                        });
-
-                                                    }
-
-                                                }
-                                            }
-                                        });
 
                                 findViewById(R.id.artist_image).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
@@ -166,222 +113,13 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 findViewById(R.id.deactivate).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-
-                                        final Map<String, Object> userMap = new HashMap<>();
-                                        userMap.put("is_artist", false);
-                                        final String[] m_Text = {""};
-
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
-                                        builder.setTitle("WARNING!");
-                                        builder.setMessage("\nThis action will actually DEACTIVATE your account! Your Artist Account will be deleted. This is PERMANENT. Are you sure? \n\n\nConfirm with Password: \n");
-                                        final EditText input = new EditText(EditAccountActivity.this);
-                                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                                        builder.setView(input);
-
-                                        builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                m_Text[0] = input.getText().toString();
-
-                                                if (!m_Text[0].isEmpty()) {
-                                                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
-
-                                                    // Prompt the user to re-provide their sign-in credentials
-                                                    user.reauthenticate(credential)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    db.collection("artists")
-                                                                            .get()
-                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        for (final QueryDocumentSnapshot document : task.getResult()) {
-                                                                                            Log.d("123", document.getId() + " => " + document.getData());
-                                                                                            if (document.getString("user_id").equals(user.getUid())) {
-                                                                                                artistDoc[0] = document;
-
-                                                                                                StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
-
-                                                                                                desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                    @Override
-                                                                                                    public void onSuccess(Void aVoid) {
-                                                                                                        db.collection("artists").document(artistDoc[0].getId())
-                                                                                                                .delete()
-                                                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                    @Override
-                                                                                                                    public void onSuccess(Void aVoid) {
-                                                                                                                        db.collection("users").document(user.getUid()).update(userMap);
-                                                                                                                        Log.d("123", "Account Deactivated Successfully!");
-                                                                                                                        Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
-                                                                                                                        leaveNow();
-                                                                                                                    }
-                                                                                                                })
-                                                                                                                .addOnFailureListener(new OnFailureListener() {
-                                                                                                                    @Override
-                                                                                                                    public void onFailure(@NonNull Exception e) {
-                                                                                                                        Log.w("123", "Error!!", e);
-                                                                                                                        Toast.makeText(getApplicationContext(), "Error!!", Toast.LENGTH_LONG).show();
-                                                                                                                        leaveNow();
-                                                                                                                    }
-                                                                                                                });
-                                                                                                    }
-                                                                                                }).addOnFailureListener(new OnFailureListener() {
-                                                                                                    @Override
-                                                                                                    public void onFailure(@NonNull Exception exception) {
-
-                                                                                                    }
-                                                                                                });
-                                                                                            }
-                                                                                        }
-                                                                                    } else {
-                                                                                        Log.w("123", "Error getting documents.", task.getException());
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        });
-                                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                                        builder.show();
-
+                                        deactivateArtistAccount();
                                     }
                                 });
 
                                 findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-
-
-                                        final String[] m_Text = {""};
-
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
-                                        builder.setTitle("WARNING!");
-                                        builder.setMessage("\nThis action will actually TERMINATE your account! This is PERMANENT. Are you sure? \n\n\nConfirm with Password: \n");
-                                        final EditText input = new EditText(EditAccountActivity.this);
-                                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                                        builder.setView(input);
-
-                                        builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                m_Text[0] = input.getText().toString();
-
-                                                if (!m_Text[0].isEmpty()) {
-                                                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
-
-                                                    // Prompt the user to re-provide their sign-in credentials
-                                                    user.reauthenticate(credential)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (userDoc[0].getBoolean("is_artist")) {
-                                                                        db.collection("artists")
-                                                                                .get()
-                                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                                    @Override
-                                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                                        if (task.isSuccessful()) {
-                                                                                            for (final QueryDocumentSnapshot document : task.getResult()) {
-                                                                                                if (document.getString("user_id").equals(user.getUid())) {
-                                                                                                    artistDoc[0] = document;
-
-                                                                                                    StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
-
-                                                                                                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                        @Override
-                                                                                                        public void onSuccess(Void aVoid) {
-                                                                                                            db.collection("artists").document(artistDoc[0].getId())
-                                                                                                                    .delete()
-                                                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                        @Override
-                                                                                                                        public void onSuccess(Void aVoid) {
-                                                                                                                            user.delete()
-                                                                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                                                        @Override
-                                                                                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                                                                                            if (task.isSuccessful()) {
-                                                                                                                                                db.collection("users").document(user.getUid())
-                                                                                                                                                        .delete()
-                                                                                                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                                                                                                                if (task.isSuccessful()) {
-
-                                                                                                                                                                }
-                                                                                                                                                            }
-                                                                                                                                                        });
-
-                                                                                                                                                Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
-                                                                                                                                                leaveNow();
-                                                                                                                                            }
-                                                                                                                                        }
-                                                                                                                                    });
-                                                                                                                        }
-                                                                                                                    })
-                                                                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                                                                        @Override
-                                                                                                                        public void onFailure(@NonNull Exception e) {
-
-                                                                                                                        }
-                                                                                                                    });
-                                                                                                        }
-                                                                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                                                                        @Override
-                                                                                                        public void onFailure(@NonNull Exception exception) {
-
-                                                                                                        }
-                                                                                                    });
-                                                                                                }
-                                                                                            }
-                                                                                        } else {
-                                                                                            Log.w("123", "Error getting documents.", task.getException());
-                                                                                        }
-                                                                                    }
-                                                                                });
-
-                                                                    } else {
-                                                                        user.delete()
-                                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                    @Override
-                                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                                        if (task.isSuccessful()) {
-                                                                                            db.collection("users").document(user.getUid())
-                                                                                                    .delete()
-                                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                        @Override
-                                                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                                                            if (task.isSuccessful()) {
-
-                                                                                                            }
-                                                                                                        }
-                                                                                                    });
-
-                                                                                            Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
-                                                                                            leaveNow();
-                                                                                        }
-                                                                                    }
-                                                                                });
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        });
-                                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                                        builder.show();
+                                        terminateAccount(userDoc);
                                     }
                                 });
 
@@ -469,15 +207,44 @@ public class EditAccountActivity extends AppCompatActivity {
                                                     leaveNow();
                                                 }
 
-
                                             }
                                         }
 
                                     }
                                 });
+
+                                findViewById(R.id.view_artist_profile).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+
+                                        db.collection("artists")
+                                                .get()
+                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                                if (document.getString("user_id").equals(user.getUid())) {
+
+                                                                    Intent intent = new Intent(EditAccountActivity.this, ArtistProfileActivity.class);
+                                                                    intent.putExtra("ARTIST_DOCUMENT_ID", document.getId());
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                }
+
+                                                            }
+                                                        } else {
+                                                            Log.w("123", "Error getting documents.", task.getException());
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                });
+
 // USER
                             } else {
                                 setContentView(R.layout.edit_user_account);
+
 
                                 findViewById(R.id.request_artist).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
@@ -490,65 +257,7 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-
-
-                                        final String[] m_Text = {""};
-
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
-                                        builder.setTitle("WARNING!");
-                                        builder.setMessage("\nThis action will actually TERMINATE your account! This is PERMANENT. Are you sure? \n\n\nConfirm with Password: \n");
-                                        final EditText input = new EditText(EditAccountActivity.this);
-                                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                                        builder.setView(input);
-
-                                        builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                m_Text[0] = input.getText().toString();
-
-                                                if (!m_Text[0].isEmpty()) {
-                                                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
-
-                                                    // Prompt the user to re-provide their sign-in credentials
-                                                    user.reauthenticate(credential)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-
-                                                                    user.delete()
-                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        db.collection("users").document(user.getUid())
-                                                                                                .delete()
-                                                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                    @Override
-                                                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                                                        if (task.isSuccessful()) {
-
-                                                                                                        }
-                                                                                                    }
-                                                                                                });
-
-                                                                                        Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
-                                                                                        leaveNow();
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        });
-                                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                                        builder.show();
-
+                                        terminateAccount(userDoc);
                                     }
                                 });
 
@@ -601,7 +310,6 @@ public class EditAccountActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-
                             }
 
                         } else {
@@ -609,7 +317,282 @@ public class EditAccountActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
 
+    private void terminateAccount(final DocumentSnapshot[] userDoc) {
+
+        final String[] m_Text = {""};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
+        builder.setTitle("WARNING!");
+        builder.setMessage("\nThis action will actually TERMINATE your account! This is PERMANENT. Are you sure? \n\n\nConfirm with Password: \n");
+        final EditText input = new EditText(EditAccountActivity.this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Text[0] = input.getText().toString();
+
+                if (!m_Text[0].isEmpty()) {
+                    final AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
+
+                    // Prompt the user to re-provide their sign-in credentials
+                    user.reauthenticate(credential)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        if (userDoc[0].getBoolean("is_artist")) {
+                                            deactivateArtistAccountFirst(credential);
+                                            deleteUser();
+                                        } else {
+                                            deleteUser();
+                                        }
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+
+    }
+
+    private void deactivateArtistAccountFirst(AuthCredential credential) {
+        final Map<String, Object> userMap = new HashMap<>();
+        userMap.put("is_artist", false);
+
+        db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (final QueryDocumentSnapshot document : task.getResult()) {
+
+                        if (document.getString("user_id").equals(user.getUid())) {
+                            artistDoc[0] = document;
+
+                            if (document.getString("profile_image_url").equals(uknownArtistURL)) {
+                                deleteArtist_NOTImage(userMap);
+                            } else {
+                                deleteArtist_ANDImage(userMap, document);
+                            }
+                        }
+                    }
+                } else {
+                    Log.w("123", "Error getting documents.", task.getException());
+                }
+            }
+        });
+
+    }
+
+    private void deleteUser() {
+
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            db.collection("users").document(user.getUid())
+                                    .delete()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+
+                                            }
+                                        }
+                                    });
+
+                            Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
+                            leaveNow();
+                        }
+                    }
+                });
+    }
+
+    private void deactivateArtistAccount() {
+
+        final Map<String, Object> userMap = new HashMap<>();
+        userMap.put("is_artist", false);
+        final String[] m_Text = {""};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
+        builder.setTitle("WARNING!");
+        builder.setMessage("\nThis action will actually DEACTIVATE your account! Your Artist Account will be deleted. This is PERMANENT. Are you sure? \n\n\nConfirm with Password: \n");
+        final EditText input = new EditText(EditAccountActivity.this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Text[0] = input.getText().toString();
+
+                if (!m_Text[0].isEmpty()) {
+                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
+
+                    // Prompt the user to re-provide their sign-in credentials
+                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (final QueryDocumentSnapshot document : task.getResult()) {
+
+                                                if (document.getString("user_id").equals(user.getUid())) {
+                                                    artistDoc[0] = document;
+
+                                                    if (document.getString("profile_image_url").equals(uknownArtistURL)) {
+                                                        deleteArtist_NOTImage(userMap);
+                                                    } else {
+                                                        deleteArtist_ANDImage(userMap, document);
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            Log.w("123", "Error getting documents.", task.getException());
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
+    private void deleteArtist_ANDImage(final Map<String, Object> userMap, QueryDocumentSnapshot document) {
+        StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
+
+        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                db.collection("artists").document(artistDoc[0].getId())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                db.collection("users").document(user.getUid()).update(userMap);
+                                Log.d("123", "Account Deactivated Successfully!");
+                                Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
+                                leaveNow();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("123", "Error!!", e);
+                                Toast.makeText(getApplicationContext(), "Error!!", Toast.LENGTH_LONG).show();
+                                leaveNow();
+                            }
+                        });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        });
+    }
+
+    private void deleteArtist_NOTImage(final Map<String, Object> userMap) {
+        db.collection("artists").document(artistDoc[0].getId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        db.collection("users").document(user.getUid()).update(userMap);
+                        Log.d("123", "Account Deactivated Successfully!");
+                        Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
+                        leaveNow();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("123", "Error!!", e);
+                        Toast.makeText(getApplicationContext(), "Error!!", Toast.LENGTH_LONG).show();
+                        leaveNow();
+                    }
+                });
+    }
+
+    private void showProfileImage(final CircleImageView profileImage, final ProgressBar imageProg) {
+        final String[] imageURL = new String[1];
+        db.collection("artists")
+                .whereEqualTo("user_id", user.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                imageURL[0] = String.valueOf(document.get("profile_image_url"));
+
+                                Picasso.with(getApplicationContext()).load(imageURL[0]).into(profileImage, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        imageProg.setVisibility(View.INVISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onError() {
+
+                                    }
+                                });
+
+                            }
+
+                        }
+                    }
+                });
+    }
+
+    private void changeGenre(final List<String> artist_type) {
+        fStore.collection("artist_type")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            artist_type.add("Choose a Genre...");
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                artist_type.add(document.getId() + "");
+
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(EditAccountActivity.this, android.R.layout.simple_spinner_item, artist_type);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            sItems = (Spinner) findViewById(R.id.genre);
+                            sItems.setAdapter(adapter);
+                        } else {
+                            Log.d("123", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
     }
 
@@ -752,7 +735,6 @@ public class EditAccountActivity extends AppCompatActivity {
         Intent myIntent = new Intent(EditAccountActivity.this, HomePage.class);
         startActivity(myIntent);
         finish();
-
     }
 
 
