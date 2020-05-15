@@ -17,57 +17,59 @@
         app:rowCount="3"
         app:columnCount="2">
 
-    <androidx.cardview.widget.CardView
-        android:layout_margin="7dp"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="15dp"
-        app:layout_rowWeight="1"
-        app:layout_columnWeight="1">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="9">
-
-            <ImageView
-                android:layout_margin="7dp"
-                android:id="@+id/logIn"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="7"
-                android:src="@drawable/log_in" />
-
-            <TextView
-                android:id="@+id/tv_logIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/log_in"
-                android:textSize="20sp" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
         <androidx.cardview.widget.CardView
-            android:layout_margin="7dp"
+            android:id="@+id/cardView1"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_margin="7dp"
             app:cardCornerRadius="15dp"
-            app:layout_rowWeight="1"
-            app:layout_columnWeight="1">
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
             <LinearLayout
-                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
+                android:weightSum="9">
 
                 <ImageView
+                    android:id="@+id/logIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_margin="7dp"
+                    android:layout_weight="7"
+                    android:src="@drawable/log_in" />
+
+                <TextView
+                    android:id="@+id/tv_logIn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/log_in"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="7dp"
+            app:cardCornerRadius="15dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="9">
+
+                <ImageView
                     android:id="@+id/register"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_margin="7dp"
                     android:layout_weight="7"
                     android:src="@drawable/register" />
 
@@ -82,24 +84,25 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="7dp"
+            android:id="@+id/cardView3"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_margin="7dp"
             app:cardCornerRadius="15dp"
-            app:layout_rowWeight="1"
-            app:layout_columnWeight="1">
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
             <LinearLayout
-                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
+                android:weightSum="9">
 
                 <ImageView
-                    android:layout_margin="7dp"
                     android:id="@+id/filters"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_margin="7dp"
                     android:layout_weight="7"
                     android:src="@drawable/filters" />
 
@@ -114,24 +117,25 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="7dp"
+            android:id="@+id/cardView4"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_margin="7dp"
             app:cardCornerRadius="15dp"
-            app:layout_rowWeight="1"
-            app:layout_columnWeight="1">
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
             <LinearLayout
-                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
+                android:weightSum="9">
 
                 <ImageView
-                    android:layout_margin="7dp"
                     android:id="@+id/liveFeed"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_margin="7dp"
                     android:layout_weight="7"
                     android:src="@drawable/live_feed" />
 
@@ -146,24 +150,25 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="7dp"
+            android:id="@+id/cardView5"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_margin="7dp"
             app:cardCornerRadius="15dp"
-            app:layout_rowWeight="1"
-            app:layout_columnWeight="1">
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
             <LinearLayout
-                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
+                android:weightSum="9">
 
                 <ImageView
-                    android:layout_margin="7dp"
                     android:id="@+id/createPost"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_margin="7dp"
                     android:layout_weight="7"
                     android:src="@drawable/create_post" />
 
@@ -178,24 +183,25 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_margin="7dp"
+            android:id="@+id/cardView6"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_margin="7dp"
             app:cardCornerRadius="15dp"
-            app:layout_rowWeight="1"
-            app:layout_columnWeight="1">
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
             <LinearLayout
-                android:weightSum="9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
+                android:weightSum="9">
 
                 <ImageView
-                    android:layout_margin="7dp"
                     android:id="@+id/favorites"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_margin="7dp"
                     android:layout_weight="7"
                     android:src="@drawable/favorites" />
 

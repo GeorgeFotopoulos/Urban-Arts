@@ -36,9 +36,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         holder.artistName.setText(mData.get(position).getArtistName());
         holder.eventType.setText(mData.get(position).getEventType());
         holder.address.setText(mData.get(position).getAddress());
-        holder.likeCount.setText(mData.get(position).getLikeCount()+"");
-        holder.commentCount.setText(mData.get(position).getCommentCount()+"");
-        holder.shareCount.setText(mData.get(position).getShareCount()+"");
+        holder.likeCount.setText(mData.get(position).getLikeCount() + "");
+        holder.commentCount.setText(mData.get(position).getCommentCount() + "");
+        if (mData.get(position).getLiveEvent()) {
+            holder.liveImage.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -47,21 +49,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
     }
 
     public class myViewHolder extends RecyclerView.ViewHolder {
-        ImageView profilePhoto, likeImage, commentImage, shareImage;
-        TextView artistName, eventType, address, likeCount, commentCount, shareCount;
+        ImageView profilePhoto, likeImage, commentImage, shareImage, liveImage;
+        TextView artistName, eventType, address, likeCount, commentCount;
 
         public myViewHolder(View itemView) {
             super(itemView);
             profilePhoto = itemView.findViewById(R.id.profilePhoto);
             likeImage = itemView.findViewById(R.id.likeImage);
             commentImage = itemView.findViewById(R.id.commentImage);
-            shareImage = itemView.findViewById(R.id.shareImage);
+            shareImage = itemView.findViewById(R.id.liveImage);
             artistName = itemView.findViewById(R.id.artistName);
             eventType = itemView.findViewById(R.id.eventType);
             address = itemView.findViewById(R.id.address);
             likeCount = itemView.findViewById(R.id.likeCount);
             commentCount = itemView.findViewById(R.id.commentCount);
-            shareCount = itemView.findViewById(R.id.shareCount);
+            liveImage = itemView.findViewById(R.id.liveImage);
         }
     }
 }

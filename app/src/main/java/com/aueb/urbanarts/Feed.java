@@ -19,12 +19,12 @@ public class Feed extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         List<item> mList = new ArrayList<>();
         Adapter adapter = new Adapter(this, mList);
-        mList.add(new item(R.drawable.artist_ex, "Ed Sheeran", "Singer", "Artis 23", 5, 5, 2));
-        mList.add(new item(R.drawable.artist_image_1, "Ed Sheeran2", "Singer", "Artis 23", 15, 15, 12));
-        mList.add(new item(R.drawable.artist_image_2, "Ed Sheeran3", "Singer", "Artis 23", 25, 25, 22));
-        mList.add(new item(R.drawable.artist_image_3, "Ed Sheeran4", "Singer", "Artis 23", 35, 35, 32));
-        mList.add(new item(R.drawable.artist_image_3, "Ed Dym", "Singer", "Artis 24", 45, 45, 42));
-        mList.add(new item(R.drawable.artist_image_3, "Pan Ntym", "Singer", "Artis 24", 55, 55, 52));
+        mList.add(new item(R.drawable.artist_ex, "Ed Sheeran", "Singer", "Artis 23", 5, 5, true));
+        mList.add(new item(R.drawable.artist_image_1, "Ed Sheeran2", "Singer", "Artis 23", 15, 15, false));
+        mList.add(new item(R.drawable.artist_image_2, "Ed Sheeran3", "Singer", "Artis 23", 25, 25, true));
+        mList.add(new item(R.drawable.artist_image_3, "Ed Sheeran4", "Singer", "Artis 23", 35, 35, true));
+        mList.add(new item(R.drawable.artist_image_3, "Ed Dym", "Singer", "Artis 24", 45, 45, false));
+        mList.add(new item(R.drawable.artist_image_3, "Pan Ntym", "Singer", "Artis 24", 55, 55, false));
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
