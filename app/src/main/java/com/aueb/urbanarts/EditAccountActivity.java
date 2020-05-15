@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import androidx.annotation.NonNull;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -61,7 +64,7 @@ public class EditAccountActivity extends AppCompatActivity {
     FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    private final String uknownArtistURL = "https://firebasestorage.googleapis.com/v0/b/aeps-a0e6f.appspot.com/o/profiles%2Fuknown_artist.png?alt=media&token=ea50f1a2-5c68-4b63-b8a4-6125d9727905";
+    private final String uknownArtistURL = "https://firebasestorage.googleapis.com/v0/b/aeps-a0e6f.appspot.com/o/profiles%2Fuknown_artist.png?alt=media&token=b03d7b18-c47c-4cdd-b87f-515666dd898c";
     private Bitmap bitmap;
     private String photoPath;
     private boolean changePhoto = false;
@@ -90,10 +93,10 @@ public class EditAccountActivity extends AppCompatActivity {
 // ARTIST
                             if (userDoc[0].getBoolean("is_artist")) {
                                 setContentView(R.layout.edit_artist_account);
-                                final ProgressBar progress = findViewById(R.id.progressBar);
-                                final TextView percentage = findViewById(R.id.perc);
-                                percentage.setVisibility(View.INVISIBLE);
-                                progress.setVisibility(View.INVISIBLE);
+                                final ConstraintLayout dialog = findViewById(R.id.dialog);
+                                final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                                dialog.setVisibility(View.INVISIBLE);
+                                wholeLayout.setBackgroundColor(Color.WHITE);
 
                                 final ProgressBar imageProg = findViewById(R.id.image_progress);
                                 final CircleImageView profileImage = findViewById(R.id.artist_image);
@@ -138,7 +141,7 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                             if (!username.getText().toString().equals("")) {
                                                 userMap.put("username", username.getText().toString());
-                                                artistMap.put("display_name ", username.getText().toString());
+                                                artistMap.put("display_name", username.getText().toString());
                                                 changedSomething[0] = true;
                                             }
                                             if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
@@ -200,11 +203,10 @@ public class EditAccountActivity extends AppCompatActivity {
                                                             }
                                                         });
 
-                                                Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
-
                                                 if (changePhoto) {
                                                     uploadPhoto();
                                                 } else {
+                                                    Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
                                                     leaveNow();
                                                 }
 
@@ -382,7 +384,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         if (document.getString("user_id").equals(user.getUid())) {
                             artistDoc[0] = document;
 
-                            if (document.getString("profile_image_url").equals(uknownArtistURL)) {
+                            if (document.getString("profile_image_url").equals("none")) {
                                 deleteArtist_NOTImage(userMap);
                             } else {
                                 deleteArtist_ANDImage(userMap, document);
@@ -442,8 +444,6 @@ public class EditAccountActivity extends AppCompatActivity {
                 final ProgressBar progress = findViewById(R.id.progressBar);
                 final TextView percentage = findViewById(R.id.perc);
                 percentage.setText("Just a moment...");
-                percentage.setVisibility(View.VISIBLE);
-                progress.setVisibility(View.VISIBLE);
 
                 m_Text[0] = input.getText().toString();
 
@@ -455,6 +455,11 @@ public class EditAccountActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
+                                final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+                                final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                                dialogBox.setVisibility(View.VISIBLE);
+                                wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+
                                 db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -464,7 +469,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                                 if (document.getString("user_id").equals(user.getUid())) {
                                                     artistDoc[0] = document;
 
-                                                    if (document.getString("profile_image_url").equals(uknownArtistURL)) {
+                                                    if (document.getString("profile_image_url").equals("none")) {
                                                         deleteArtist_NOTImage(userMap);
                                                     } else {
                                                         deleteArtist_ANDImage(userMap, document);
@@ -560,19 +565,22 @@ public class EditAccountActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 imageURL[0] = String.valueOf(document.get("profile_image_url"));
+                                if (!imageURL[0].equals("none")) {
+                                    Picasso.with(getApplicationContext()).load(imageURL[0]).into(profileImage, new com.squareup.picasso.Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            imageProg.setVisibility(View.INVISIBLE);
+                                        }
 
-                                Picasso.with(getApplicationContext()).load(imageURL[0]).into(profileImage, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        imageProg.setVisibility(View.INVISIBLE);
-                                    }
+                                        @Override
+                                        public void onError() {
 
-                                    @Override
-                                    public void onError() {
-
-                                    }
-                                });
-
+                                        }
+                                    });
+                                } else {
+                                    profileImage.setImageResource(R.drawable.uknown_artist);
+                                    imageProg.setVisibility(View.INVISIBLE);
+                                }
                             }
 
                         }
@@ -608,10 +616,11 @@ public class EditAccountActivity extends AppCompatActivity {
 
         if (filePath != null) {
             final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-            final ProgressBar progress = findViewById(R.id.progressBar);
             final TextView percentage = findViewById(R.id.perc);
-            percentage.setVisibility(View.VISIBLE);
-            progress.setVisibility(View.VISIBLE);
+            final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+            final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+            dialogBox.setVisibility(View.VISIBLE);
+            wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
             percentage.setText("Uploading...");
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -623,18 +632,18 @@ public class EditAccountActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            percentage.setVisibility(View.INVISIBLE);
-                            progress.setVisibility(View.INVISIBLE);
+                            dialogBox.setVisibility(View.INVISIBLE);
+                            wholeLayout.setBackgroundColor(Color.WHITE);
                             Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
-
+                            Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
                             leaveNow();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            percentage.setVisibility(View.INVISIBLE);
-                            progress.setVisibility(View.INVISIBLE);
+                            dialogBox.setVisibility(View.INVISIBLE);
+                            wholeLayout.setBackgroundColor(Color.WHITE);
                             Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     })
@@ -666,8 +675,8 @@ public class EditAccountActivity extends AppCompatActivity {
                         else {
 
                             percentage.setText("Waiting to finish...");
-                            percentage.setVisibility(View.VISIBLE);
-                            progress.setVisibility(View.VISIBLE);
+                            dialogBox.setVisibility(View.VISIBLE);
+                            wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                             photoPath = String.valueOf(downloadUri);
 
                             db.collection("artists")
@@ -680,21 +689,27 @@ public class EditAccountActivity extends AppCompatActivity {
                                                     Log.d("123", document.getId() + " => " + document.getData());
                                                     if (document.getString("user_id").equals(user.getUid())) {
 
-                                                        StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
+                                                        if (!document.getString("profile_image_url").equals("none")) {
+                                                            StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
+                                                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Map<String, Object> artistMap = new HashMap<>();
+                                                                    artistMap.put("profile_image_url", photoPath);
+                                                                    db.collection("artists").document(document.getId()).update(artistMap);
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception exception) {
+                                                                    // Uh-oh, an error occurred!
+                                                                }
+                                                            });
 
-                                                        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                Map<String, Object> artistMap = new HashMap<>();
-                                                                artistMap.put("profile_image_url", photoPath);
-                                                                db.collection("artists").document(document.getId()).update(artistMap);
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception exception) {
-                                                                // Uh-oh, an error occurred!
-                                                            }
-                                                        });
+                                                        } else {
+                                                            Map<String, Object> artistMap = new HashMap<>();
+                                                            artistMap.put("profile_image_url", photoPath);
+                                                            db.collection("artists").document(document.getId()).update(artistMap);
+                                                        }
                                                     }
                                                 }
                                             } else {
@@ -709,7 +724,9 @@ public class EditAccountActivity extends AppCompatActivity {
             });
 
 
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            getWindow().
+
+                    clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         }
     }

@@ -63,7 +63,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private StorageReference storageReference;
     String indiv_or_group;
-    private final String uknownArtistURL = "https://firebasestorage.googleapis.com/v0/b/aeps-a0e6f.appspot.com/o/profiles%2Fuknown_artist.png?alt=media&token=ea50f1a2-5c68-4b63-b8a4-6125d9727905";
+    private final String uknownArtistURL = "none";
     private boolean newImageChosen = false;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
@@ -175,7 +175,11 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     artist.put("year", year);
                     artist.put("followers", 0);
                     artist.put("artist_type", groupType);
-                    artist.put("profile_image_url", photoPath);
+                    if (photoPath.isEmpty()) {
+                        artist.put("profile_image_url", "none");
+                    } else {
+                        artist.put("profile_image_url", photoPath);
+                    }
                     artist.put("gallery", "");
 
                     userMap.put("is_artist", true);
@@ -251,8 +255,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
 
-                            dialog.setVisibility(View.VISIBLE);
-                            wholeLayout.setBackgroundColor(Color.parseColor("#fff"));
+                            dialog.setVisibility(View.INVISIBLE);
+                            wholeLayout.setBackgroundColor(Color.parseColor("#fffff"));
                             Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     })

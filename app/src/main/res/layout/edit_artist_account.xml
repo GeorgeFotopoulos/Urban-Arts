@@ -16,6 +16,7 @@
         app:layout_constraintVertical_bias="1.0">
 
         <RelativeLayout
+            android:id="@+id/constraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -213,8 +214,12 @@
         android:id="@+id/dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/white_search_box"
         android:orientation="horizontal"
         android:padding="20dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/scrollView4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
