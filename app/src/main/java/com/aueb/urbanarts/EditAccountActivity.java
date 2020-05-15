@@ -138,6 +138,7 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                             if (!username.getText().toString().equals("")) {
                                                 userMap.put("username", username.getText().toString());
+                                                artistMap.put("display_name", username.getText().toString());
                                                 changedSomething[0] = true;
                                             }
                                             if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
@@ -437,6 +438,13 @@ public class EditAccountActivity extends AppCompatActivity {
         builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                final ProgressBar progress = findViewById(R.id.progressBar);
+                final TextView percentage = findViewById(R.id.perc);
+                percentage.setText("Just a moment...");
+                percentage.setVisibility(View.VISIBLE);
+                progress.setVisibility(View.VISIBLE);
+
                 m_Text[0] = input.getText().toString();
 
                 if (!m_Text[0].isEmpty()) {

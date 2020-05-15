@@ -166,10 +166,13 @@ public class ArtistProfileActivity extends AppCompatActivity {
                         int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(whatYear);
                         whatToSay = findAge + " years old.";
                     } else {
-                        if (Integer.parseInt(whatYear) > 1) {
-                            whatToSay = Integer.parseInt(whatYear) + " years together.";
-                        } else {
-                            whatToSay = Integer.parseInt(whatYear) + " year together.";
+                        int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(whatYear);
+                        if (findAge == 0) {
+                            whatToSay = "almost 1 year together.";
+                        } else if (findAge > 1) {
+                            whatToSay = findAge + " years together.";
+                        } else if (findAge == 1){
+                            whatToSay = "1 year together.";
                         }
                     }
 

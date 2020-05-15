@@ -48,6 +48,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,13 +179,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     artist.put("year", year);
                     artist.put("followers", 0);
                     artist.put("artist_type", groupType);
-                    if (!newImageChosen) {
-                        artist.put("profile_image_url", uknownArtistURL);
-                    } else {
-                        artist.put("profile_image_url", photoPath);
-                    }
+                    artist.put("profile_image_url", photoPath);
                     artist.put("gallery", "");
-
 
                     userMap.put("is_artist", true);
                     if (description.equals("")) {
@@ -238,7 +234,6 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             final TextView percentage = findViewById(R.id.perc);
             percentage.setVisibility(View.VISIBLE);
             progress.setVisibility(View.VISIBLE);
-            percentage.setText("Uploading...");
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
@@ -249,10 +244,10 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            percentage.setVisibility(View.INVISIBLE);
-                            progress.setVisibility(View.INVISIBLE);
                             Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
-
+                            percentage.setText("Waiting to finish...");
+                            percentage.setVisibility(View.VISIBLE);
+                            progress.setVisibility(View.VISIBLE);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -290,13 +285,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                         if (downloadUri == null)
                             return;
                         else {
-                            if (!artistType.equals("")) {
-                                percentage.setText("Waiting to finish...");
-                                percentage.setVisibility(View.VISIBLE);
-                                progress.setVisibility(View.VISIBLE);
-                                photoPath = String.valueOf(downloadUri);
-                                makeArtist(artistType, indiv_or_group, year, description);
-                            }
+                            checkToMakeArtist(artistType, indiv_or_group, year, description, downloadUri.toString());
                         }
 
                     }
@@ -305,8 +294,39 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         } else {
-            makeArtist(artistType, indiv_or_group, year, description);
+            checkToMakeArtist(artistType, indiv_or_group, year, description, uknownArtistURL);
         }
+    }
+
+    private void checkToMakeArtist(String artistType, String indiv_or_group, String year, String description, String downloadUri) {
+        final ProgressBar progress = findViewById(R.id.progressBar);
+        final TextView percentage = findViewById(R.id.perc);
+        int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(year);
+        if (!artistType.equals("")) {
+            if (indiv_or_group.equals("individual")) {
+                if (findAge >= 16) {
+                    percentage.setText("Waiting to finish...");
+                    percentage.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.VISIBLE);
+                    photoPath = String.valueOf(downloadUri);
+                    makeArtist(artistType, indiv_or_group, year, description);
+                } else {
+                    Toast.makeText(getApplicationContext(), "You have to be at least 16 years old!", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                if (findAge >= 0) {
+                    percentage.setText("Waiting to finish...");
+                    percentage.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.VISIBLE);
+                    photoPath = String.valueOf(downloadUri);
+                    makeArtist(artistType, indiv_or_group, year, description);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Wrong Year...", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+
     }
 
     protected void requestStoragePermission() {
