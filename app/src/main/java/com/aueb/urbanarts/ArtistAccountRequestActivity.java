@@ -26,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -77,11 +78,6 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         setContentView(R.layout.request_artist_profile);
         requestStoragePermission();
         storageReference = FirebaseStorage.getInstance().getReference();
-
-        final ProgressBar progress = findViewById(R.id.progressBar);
-        final TextView percentage = findViewById(R.id.perc);
-        percentage.setVisibility(View.INVISIBLE);
-        progress.setVisibility(View.INVISIBLE);
 
         final Switch indiv_group = findViewById(R.id.indiv_group);
         final Button upload = findViewById(R.id.upload_image);
@@ -190,8 +186,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     }
 
                     // Add a new document with a generated ID
-                    final ProgressBar progress = findViewById(R.id.progressBar);
-                    final TextView percentage = findViewById(R.id.perc);
+                    final ConstraintLayout dialog = findViewById(R.id.dialog);
+                    final ConstraintLayout wholeLayout = findViewById(R.id.constraint);
                     db.collection("artists")
                             .add(artist)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -199,8 +195,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                                 public void onSuccess(DocumentReference documentReference) {
                                     Log.d("123", "DocumentSnapshot added with ID: " + documentReference.getId());
                                     Toast.makeText(getApplicationContext(), "Artist Account Made!", Toast.LENGTH_LONG).show();
-                                    percentage.setVisibility(View.INVISIBLE);
-                                    progress.setVisibility(View.INVISIBLE);
+                                    dialog.setVisibility(View.VISIBLE);
+                                    wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                                     finish();
                                     Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
                                     startActivity(myIntent);
@@ -230,31 +226,33 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     public void uploadPhoto(final String artistType, String groupType, final String year, final String description) {
 
         if (filePath != null) {
-            final ProgressBar progress = findViewById(R.id.progressBar);
-            final TextView percentage = findViewById(R.id.perc);
-            percentage.setVisibility(View.VISIBLE);
-            progress.setVisibility(View.VISIBLE);
+            final ConstraintLayout dialog = findViewById(R.id.dialog);
+            final ConstraintLayout wholeLayout = findViewById(R.id.constraint);
+            dialog.setVisibility(View.VISIBLE);
+            wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
             final StorageReference riversRef = storageReference.child("profiles/profile" + user.getUid() + ".jpg");
 
-
+            final TextView percentage = findViewById(R.id.perc);
             riversRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
                             percentage.setText("Waiting to finish...");
-                            percentage.setVisibility(View.VISIBLE);
-                            progress.setVisibility(View.VISIBLE);
+                            dialog.setVisibility(View.VISIBLE);
+                            wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            percentage.setVisibility(View.INVISIBLE);
-                            progress.setVisibility(View.INVISIBLE);
+
+                            dialog.setVisibility(View.VISIBLE);
+                            wholeLayout.setBackgroundColor(Color.parseColor("#fff"));
                             Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     })
@@ -306,8 +304,12 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             if (indiv_or_group.equals("individual")) {
                 if (findAge >= 16) {
                     percentage.setText("Waiting to finish...");
-                    percentage.setVisibility(View.VISIBLE);
-                    progress.setVisibility(View.VISIBLE);
+
+                    final ConstraintLayout dialog = findViewById(R.id.dialog);
+                    final ConstraintLayout wholeLayout = findViewById(R.id.constraint);
+                    dialog.setVisibility(View.VISIBLE);
+                    wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+
                     photoPath = String.valueOf(downloadUri);
                     makeArtist(artistType, indiv_or_group, year, description);
                 } else {
@@ -316,8 +318,11 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             } else {
                 if (findAge >= 0) {
                     percentage.setText("Waiting to finish...");
-                    percentage.setVisibility(View.VISIBLE);
-                    progress.setVisibility(View.VISIBLE);
+                    final ConstraintLayout dialog = findViewById(R.id.dialog);
+                    final ConstraintLayout wholeLayout = findViewById(R.id.constraint);
+                    dialog.setVisibility(View.VISIBLE);
+                    wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+
                     photoPath = String.valueOf(downloadUri);
                     makeArtist(artistType, indiv_or_group, year, description);
                 } else {

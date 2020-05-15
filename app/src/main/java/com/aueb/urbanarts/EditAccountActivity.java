@@ -138,7 +138,7 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                             if (!username.getText().toString().equals("")) {
                                                 userMap.put("username", username.getText().toString());
-                                                artistMap.put("display_name", username.getText().toString());
+                                                artistMap.put("display_name ", username.getText().toString());
                                                 changedSomething[0] = true;
                                             }
                                             if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
