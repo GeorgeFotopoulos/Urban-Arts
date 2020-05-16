@@ -20,6 +20,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,16 +41,18 @@ import java.util.Map;
 public class Event extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    ;
+
     String ArtistID, Artist, Location, genre;
     String likes;
     Map<String, Boolean> liked = new HashMap<>();
-    ;
     CarouselView carouselView;
     TextView LocationTV, ArtistTV, GenreTV, upvotes, upvtext;
     ImageView check;
-    List<String> Images = new ArrayList<>();
-
+    List<String> Images=new ArrayList<>();
+    List<String> Comments = new ArrayList<>();
+    List<String>Users = new ArrayList<>();
+    ArrayList<String> UsersAndComments;
+    CommentAdapter CommentAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
@@ -76,8 +80,18 @@ public class Event extends AppCompatActivity {
                         upvtext = findViewById(R.id.upvtext);
                         check = findViewById(R.id.check);
                         Images = (List<String>) document.get("gallery");
+                        UsersAndComments = (ArrayList<String>) document.get("comments");
+                        String[] result = new String[2];
+                        for(int i=0;i<UsersAndComments.size();i++) {
+                            result = UsersAndComments.get(i).split("@token@");
+                            Users.add(result[0]);
+                            Comments.add(result[1]);
+                        }
+                        RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
+                        CommentAdapter = new CommentAdapter(Event.this, Users,Comments);
+                        recyclerView.setAdapter(CommentAdapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(Event.this));
                         if (ArtistID != "") {
-
                             SpannableString content = new SpannableString(Artist);
                             content.setSpan(new UnderlineSpan(), 0, Artist.length(), 0);
                             ArtistTV.setText(content);
