@@ -86,7 +86,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/editText5" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/fileupload"
                 style="@style/Widget.AppCompat.Button.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/switch1" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/proceed"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -113,7 +113,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button" />
+                app:layout_constraintTop_toBottomOf="@+id/fileupload" />
 
             <TextView
                 android:id="@+id/textView10"
@@ -123,10 +123,10 @@
                 android:layout_marginLeft="16dp"
                 android:text="Upload Media"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="@+id/button"
-                app:layout_constraintEnd_toStartOf="@+id/button"
+                app:layout_constraintBottom_toBottomOf="@+id/fileupload"
+                app:layout_constraintEnd_toStartOf="@+id/fileupload"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/button" />
+                app:layout_constraintTop_toTopOf="@+id/fileupload" />
 
             <Spinner
                 android:id="@+id/genreSpinner"
