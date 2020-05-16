@@ -50,8 +50,6 @@
             app:layout_constraintTop_toTopOf="@+id/account" />
 
 
-        >
-
         <TextView
             android:id="@+id/username_display"
             android:layout_width="0dp"

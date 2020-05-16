@@ -33,34 +33,29 @@ public class ArtistProfileActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CarouselView carouselView;
     int[] artistImages = {R.drawable.artist_image_1, R.drawable.artist_image_2, R.drawable.artist_image_3};
+    //    I know Fotaki
+    String artistName;
+    String artistType;
+    String artistGenre;
+    String artistYear;
+    String followersNum;
+    String artistDescription;
+    String artistImage;
     int[] artistGallery = {};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_profile);
 
+        ProgressBar imageProg = findViewById(R.id.progress_bar);
+        imageProg.setVisibility(View.VISIBLE);
+
         Intent intent = getIntent();
         String artist_id = intent.getStringExtra("ARTIST_DOCUMENT_ID");
 
-        DocumentReference artistDoc = db.collection("artists").document(artist_id);
-        ProgressBar imageProg = findViewById(R.id.progress_bar);
-        imageProg.setVisibility(View.VISIBLE);
-        CircleImageView profileImage = findViewById(R.id.artist_profile_photo);
-        TextView artistName = findViewById(R.id.artist_name);
-        TextView genre_type = findViewById(R.id.artist_genre);
-        TextView year = findViewById(R.id.artist_age);
-        TextView description = findViewById(R.id.artist_description);
-        TextView followers = findViewById(R.id.num_follows);
-
-        showProfileImage(artistDoc, imageProg, profileImage);
-        showArtistName(artistDoc, artistName);
-        showGenre(artistDoc, genre_type);
-        showYear(artistDoc, year);
-        showDescription(artistDoc, description);
-        showFollowers(artistDoc, followers);
-
-        artistGallery = getGallery(artist_id);
+        getArtistInformation(artist_id);
 
         findViewById(R.id.report).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -111,152 +106,111 @@ public class ArtistProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void showFollowers(DocumentReference artistDoc, final TextView followers) {
-        artistDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    private void getArtistInformation(String artist_id) {
+        final CircleImageView profileImage = findViewById(R.id.artist_profile_photo);
+        final TextView artistNameDisplay = findViewById(R.id.artist_name);
+        final TextView genreDisplay = findViewById(R.id.artist_genre);
+        final TextView yearDisplay = findViewById(R.id.artist_age);
+        final TextView descriptionDisplay = findViewById(R.id.artist_description);
+        final TextView followersNumDisplay = findViewById(R.id.num_follows);
+
+        DocumentReference docArtist = db.collection("artists").document(artist_id);
+        docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
 
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    String foll = String.valueOf(document.get("followers"));
 
-                    followers.setText(foll);
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+                        artistName = document.getString("display_name");
+                        artistType = document.getString("artist_type");
+                        artistGenre = document.getString("genre");
+                        artistYear = document.getString("year");
+                        artistDescription = document.getString("description");
+                        artistName = document.getString("display_name");
+                        artistImage = document.getString("profile_image_url");
+                        followersNum = document.getString("followers");
 
-                }
-            }
-        });
-    }
+                        showProfileImage(profileImage, artistImage);
+                        showArtistName(artistNameDisplay, artistName);
+                        showGenre(genreDisplay, artistGenre);
+                        showYear(yearDisplay, artistYear);
+                        showDescription(descriptionDisplay, artistDescription);
+                        showFollowers(followersNumDisplay, followersNum);
+//                        showGallery(followersNumDisplay, followersNum);
 
-    private void showDescription(DocumentReference artistDoc, final TextView description) {
-
-        artistDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    String desc = String.valueOf(document.get("description"));
-
-                    description.setText(desc);
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-
-                }
-            }
-        });
-    }
-
-    private void showYear(DocumentReference artistDoc, final TextView year) {
-        artistDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    String whatYear = String.valueOf(document.get("year"));
-                    String type = String.valueOf(document.get("artist_type"));
-                    String whatToSay = "";
-
-                    if (type.equals("individual")) {
-                        int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(whatYear);
-                        whatToSay = findAge + " years old.";
                     } else {
-                        int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(whatYear);
-                        if (findAge == 0) {
-                            whatToSay = "almost 1 year together.";
-                        } else if (findAge > 1) {
-                            whatToSay = findAge + " years together.";
-                        } else if (findAge == 1){
-                            whatToSay = "1 year together.";
-                        }
+                        Log.d(TAG, "No such document");
                     }
-
-                    year.setText(whatToSay);
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
-
                 }
             }
         });
     }
 
-    private void showGenre(DocumentReference artistDoc, final TextView genre_type) {
-
-        artistDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    String genre = String.valueOf(document.get("genre"));
-
-                    genre_type.setText(genre);
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-
-                }
-            }
-        });
+    private void showFollowers(final TextView followersNumDisplay, final String followers) {
+        followersNumDisplay.setText(followers);
     }
 
-    private void showArtistName(DocumentReference artistDoc, final TextView artistName) {
-
-        artistDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    String artist_name = String.valueOf(document.get("display_name"));
-
-                    artistName.setText(artist_name);
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-
-                }
-            }
-        });
+    private void showDescription(TextView descriptionDisplay, final String description) {
+        descriptionDisplay.setText(description);
     }
 
-    private void showProfileImage(DocumentReference artistDoc, final ProgressBar imageProg, final CircleImageView profileImage) {
+    private void showYear(final TextView yearDisplay, final String year) {
 
-        artistDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
+        String whatYear = String.valueOf(year);
+        String type = String.valueOf(artistType);
+        String whatToSay = "";
 
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    String imageURL = String.valueOf(document.get("profile_image_url"));
-
-                    Picasso.with(getApplicationContext()).load(imageURL).into(profileImage, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                            imageProg.setVisibility(View.INVISIBLE);
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
-
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-
-                }
+        if (type.equals("individual")) {
+            int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(whatYear);
+            whatToSay = findAge + " years old.";
+        } else {
+            int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(whatYear);
+            if (findAge == 0) {
+                whatToSay = "almost 1 year together.";
+            } else if (findAge > 1) {
+                whatToSay = findAge + " years together.";
+            } else if (findAge == 1) {
+                whatToSay = "1 year together.";
             }
-        });
+        }
+
+        yearDisplay.setText(whatToSay);
+
     }
 
-    private int[] getGallery(String artist_id) {
+    private void showGenre(TextView genreDisplay, final String genre) {
+        genreDisplay.setText(genre);
+    }
+
+    private void showArtistName(TextView nameDisplay, final String name) {
+        nameDisplay.setText(name);
+    }
+
+    private void showProfileImage(final CircleImageView profileImage, final String imageURL) {
+        final ProgressBar imageProg = findViewById(R.id.progress_bar);
+        if (imageURL.equals("none")) {
+            profileImage.setImageResource(R.drawable.uknown_artist);
+        } else {
+            Picasso.with(getApplicationContext()).load(imageURL).into(profileImage, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    imageProg.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        }
+    }
+
+    private int[] showGallery(String artist_id) {
         int[] gallery = {};
 
         return gallery;

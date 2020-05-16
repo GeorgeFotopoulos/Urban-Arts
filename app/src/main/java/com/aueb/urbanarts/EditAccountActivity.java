@@ -58,6 +58,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditAccountActivity extends AppCompatActivity {
 
+    final String TAG = "123";
     private final int PICK_IMAGE_REQUEST = 22;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
@@ -71,6 +72,10 @@ public class EditAccountActivity extends AppCompatActivity {
     Spinner sItems;
     private Uri filePath;
     final QueryDocumentSnapshot[] artistDoc = new QueryDocumentSnapshot[1];
+    String artistName;
+    String artistGenre;
+    String artistDescription;
+    final List<String> artist_type = new ArrayList<>();
 
 
     @Override
@@ -102,8 +107,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                 final CircleImageView profileImage = findViewById(R.id.artist_image);
                                 imageProg.setVisibility(View.VISIBLE);
 
-                                final List<String> artist_type = new ArrayList<>();
-
+                                getArtistInformation(user.getUid());
                                 changeGenre(artist_type);
                                 showProfileImage(profileImage, imageProg);
 
@@ -172,10 +176,10 @@ public class EditAccountActivity extends AppCompatActivity {
                                                             }
                                                         });
                                             }
-                                            if (!artistType.equals("Choose a Genre...")) {
-                                                artistMap.put("genre", artistType);
-                                                changedSomething[0] = true;
-                                            }
+
+                                            artistMap.put("genre", artistType);
+                                            changedSomething[0] = true;
+
                                             if (!description.getText().toString().equals("")) {
                                                 artistMap.put("description", description.getText().toString());
                                                 changedSomething[0] = true;
@@ -230,7 +234,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                                                 if (document.getString("user_id").equals(user.getUid())) {
 
                                                                     Intent intent = new Intent(EditAccountActivity.this, ArtistProfileActivity.class);
-                                                                    intent.putExtra("ARTIST_DOCUMENT_ID", document.getId());
+                                                                    intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
                                                                     startActivity(intent);
                                                                     finish();
                                                                 }
@@ -320,6 +324,36 @@ public class EditAccountActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void getArtistInformation(String artist_id) {
+        final EditText artistNameDisplay = findViewById(R.id.username);
+        final EditText descriptionDisplay = findViewById(R.id.description);
+
+        DocumentReference docArtist = db.collection("artists").document(artist_id);
+        docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+
+                        artistName = document.getString("display_name");
+                        artistGenre = document.getString("genre");
+                        artistDescription = document.getString("description");
+
+                        artistNameDisplay.setHint(artistName);
+                        descriptionDisplay.setHint(artistDescription);
+                        artist_type.add(artistGenre);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     private void terminateAccount(final DocumentSnapshot[] userDoc) {
@@ -595,10 +629,10 @@ public class EditAccountActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            artist_type.add("Choose a Genre...");
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                artist_type.add(document.getId() + "");
 
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (!document.getId().equals(artistGenre))
+                                    artist_type.add(document.getId());
                             }
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(EditAccountActivity.this, android.R.layout.simple_spinner_item, artist_type);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -622,6 +656,7 @@ public class EditAccountActivity extends AppCompatActivity {
             dialogBox.setVisibility(View.VISIBLE);
             wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
             percentage.setText("Uploading...");
+
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
@@ -632,11 +667,9 @@ public class EditAccountActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            dialogBox.setVisibility(View.INVISIBLE);
-                            wholeLayout.setBackgroundColor(Color.WHITE);
-                            Toast.makeText(getApplicationContext(), "File Uploaded", Toast.LENGTH_LONG).show();
-                            Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
-                            leaveNow();
+
+                            Toast.makeText(getApplicationContext(), "New Image Uploaded!", Toast.LENGTH_LONG).show();
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -674,7 +707,7 @@ public class EditAccountActivity extends AppCompatActivity {
                             return;
                         else {
 
-                            percentage.setText("Waiting to finish...");
+                            percentage.setText("Just a moment...");
                             dialogBox.setVisibility(View.VISIBLE);
                             wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                             photoPath = String.valueOf(downloadUri);
@@ -686,7 +719,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()) {
                                                 for (final QueryDocumentSnapshot document : task.getResult()) {
-                                                    Log.d("123", document.getId() + " => " + document.getData());
+
                                                     if (document.getString("user_id").equals(user.getUid())) {
 
                                                         if (!document.getString("profile_image_url").equals("none")) {
@@ -697,6 +730,9 @@ public class EditAccountActivity extends AppCompatActivity {
                                                                     Map<String, Object> artistMap = new HashMap<>();
                                                                     artistMap.put("profile_image_url", photoPath);
                                                                     db.collection("artists").document(document.getId()).update(artistMap);
+                                                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                                    Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
+                                                                    leaveNow();
                                                                 }
                                                             }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override
@@ -718,16 +754,9 @@ public class EditAccountActivity extends AppCompatActivity {
                                         }
                                     });
                         }
-
                     }
                 }
             });
-
-
-            getWindow().
-
-                    clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
         }
     }
 

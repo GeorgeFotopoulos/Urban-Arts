@@ -57,7 +57,7 @@
                 android:layout_height="200dp"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/uknown_artist"
+                android:src="@drawable/white_image"
                 app:civ_border_color="#FF000000"
                 app:civ_border_width="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
