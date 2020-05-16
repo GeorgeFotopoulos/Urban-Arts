@@ -73,30 +73,38 @@
                 app:layout_constraintStart_toStartOf="@+id/checkBox"
                 app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
-            <TextView
-                android:id="@+id/textQuestion"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/already_have_an_account"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/checkBox"
-                app:layout_constraintTop_toBottomOf="@+id/createAccount" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/createAccount">
 
-            <TextView
-                android:id="@+id/logIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:text="@string/log_in"
-                android:textColor="#B71E42"
-                android:textColorLink="#B71E42"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textQuestion"
-                app:layout_constraintStart_toEndOf="@+id/textQuestion"
-                app:layout_constraintTop_toTopOf="@+id/textQuestion" />
+                <TextView
+                    android:id="@+id/textQuestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/already_have_an_account"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/logIn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/log_in"
+                    android:textColor="#B71E42"
+                    android:textColorLink="#B71E42"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textQuestion"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/usernameLayout"

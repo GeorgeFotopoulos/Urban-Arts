@@ -32,7 +32,7 @@
                 app:endIconMode="clear_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                app:layout_constraintTop_toBottomOf="@+id/tv_message"
                 app:startIconDrawable="@drawable/ic_email_small">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -94,7 +94,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/tv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/keep_in_touch_with_anything_happening_around_you"
@@ -102,26 +102,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/logo" />
 
-            <TextView
-                android:id="@+id/noAccount"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Don't have an account yet?"
-                app:layout_constraintEnd_toEndOf="@+id/signIn"
-                app:layout_constraintTop_toBottomOf="@+id/signIn" />
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signIn">
 
-            <TextView
-                android:id="@+id/signUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:text="@string/sign_up"
-                android:textColor="#B71E42"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/noAccount"
-                app:layout_constraintStart_toEndOf="@+id/noAccount" />
+                <TextView
+                    android:id="@+id/noAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:text="Don't have an account yet?"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/signUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/sign_up"
+                    android:textColor="#B71E42"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/noAccount"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/guest"
@@ -135,7 +146,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/noAccount" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
