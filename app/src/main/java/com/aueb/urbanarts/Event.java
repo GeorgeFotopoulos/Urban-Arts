@@ -169,7 +169,7 @@ public class Event extends AppCompatActivity {
                                                         }
                                                     } else {
 
-                                                        check.setColorFilter(Color.parseColor("#7C7C7C"));
+                                                        check.setColorFilter(Color.parseColor("#b71e42"));
                                                         upvtext.setText("Upvoted");
                                                         DocumentReference docRef3 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
                                                         docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
