@@ -168,6 +168,8 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+                    List<String> galleryList = new ArrayList<String>() {
+                    };
 
                     artistMap.put("display_name", document.getString("username"));
                     artistMap.put("genre", artistType);
@@ -175,7 +177,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     artistMap.put("followers", "0");
                     artistMap.put("artist_type", groupType);
                     artistMap.put("profile_image_url", imageURL);
-                    artistMap.put("gallery", "");
+                    artistMap.put("gallery", galleryList);
 
                     if (description.equals("")) {
                         artistMap.put("description", "No Description.");
@@ -212,19 +214,6 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void goHomePage() {
-        Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
-        startActivity(myIntent);
-        finish();
-    }
-
-    private void goEditAccount() {
-        Intent intent = new Intent(this, EditAccountActivity.class);
-        startActivity(intent);
-        Animatoo.animateFade(this);
-        finish();
-     }
 
     public void uploadImage(final String artistType, final String indiv_or_group, final String year, final String description) {
         final ConstraintLayout dialog = findViewById(R.id.dialog);
@@ -396,5 +385,17 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         finish();
     }
 
+    private void goHomePage() {
+        Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
+        startActivity(myIntent);
+        finish();
+    }
+
+    private void goEditAccount() {
+        Intent intent = new Intent(this, EditAccountActivity.class);
+        startActivity(intent);
+        Animatoo.animateFade(this);
+        finish();
+    }
 
 }

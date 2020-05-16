@@ -125,6 +125,51 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginRight="0dp" />
 
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/upload_constraint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/genre"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="32dp">
+
+                <Button
+                    android:id="@+id/upload_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/pink_button"
+                    android:padding="10dp"
+                    android:text="Upload Image"
+                    android:textColor="#fff"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/file_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Upload a file..."
+                    app:layout_constraintStart_toStartOf="@+id/upload_gallery"
+                    app:layout_constraintTop_toBottomOf="@+id/upload_gallery" />
+
+                <ImageView
+                    android:id="@+id/image_selected"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/customborder"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/upload_gallery"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <EditText
                 android:id="@+id/description"
                 android:layout_width="match_parent"
@@ -146,7 +191,7 @@
                 android:id="@+id/tv_upload_media"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/genre"
+                android:layout_below="@+id/upload_constraint"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="32dp"

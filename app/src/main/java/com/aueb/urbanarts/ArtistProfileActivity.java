@@ -15,6 +15,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -128,6 +129,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
         final TextView descriptionDisplay = findViewById(R.id.artist_description);
         final TextView followersNumDisplay = findViewById(R.id.num_follows);
         final ProgressBar loadGallery = findViewById(R.id.load_carousel);
+        final CarouselView gallery = findViewById(R.id.gallery);
 
         DocumentReference docArtist = db.collection("artists").document(artist_id);
         docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -159,9 +161,16 @@ public class ArtistProfileActivity extends AppCompatActivity {
                         if (!artistGallery.isEmpty()) {
                             noGallery.setText("");
                             showGallery(artistGallery);
+
+                            final float scale = getResources().getDisplayMetrics().density;
+                            int pixels = (int) (300 * scale);
+                            gallery.requestLayout();
+                            gallery.getLayoutParams().height = pixels;
+
                         } else {
                             noGallery.setText("No Images :(");
                             loadGallery.setVisibility(View.INVISIBLE);
+                            loadGallery.setVisibility(View.GONE);
                         }
                     } else {
                         Log.d(TAG, "No such document");

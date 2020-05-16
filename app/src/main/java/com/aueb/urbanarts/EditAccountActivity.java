@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -69,8 +70,10 @@ public class EditAccountActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private String photoPath;
     private boolean changePhoto = false;
+    private boolean uploadGallery = false;
     Spinner sItems;
-    private Uri filePath;
+    private Uri filePathProfile;
+    private Uri filePathGallery;
     String artistName;
     String artistGenre;
     String artistDescription;
@@ -80,164 +83,179 @@ public class EditAccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        DocumentReference docArtist = db.collection("users").document(user.getUid());
-        docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    final DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
+        try {
+            DocumentReference docArtist = db.collection("users").document(user.getUid());
+            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        final DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
 // ARTIST
-                        if (document.getBoolean("is_artist")) {
-                            setContentView(R.layout.edit_artist_account);
-                            final ConstraintLayout dialog = findViewById(R.id.dialog);
-                            final RelativeLayout wholeLayout = findViewById(R.id.constraint);
-                            dialog.setVisibility(View.INVISIBLE);
-                            wholeLayout.setBackgroundColor(Color.WHITE);
+                            if (document.getBoolean("is_artist")) {
+                                setContentView(R.layout.edit_artist_account);
+                                final ConstraintLayout dialog = findViewById(R.id.dialog);
+                                final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                                dialog.setVisibility(View.INVISIBLE);
+                                wholeLayout.setBackgroundColor(Color.WHITE);
 
-                            final ProgressBar imageProg = findViewById(R.id.image_progress);
-                            final CircleImageView profileImage = findViewById(R.id.artist_image);
-                            imageProg.setVisibility(View.VISIBLE);
+                                final ProgressBar imageProg = findViewById(R.id.image_progress);
+                                final CircleImageView profileImage = findViewById(R.id.artist_image);
+                                imageProg.setVisibility(View.VISIBLE);
 
-                            getArtistInformation(user.getUid());
-                            changeGenre(artist_type);
-                            showProfileImage(profileImage, imageProg);
+                                getArtistInformation(user.getUid());
+                                changeGenre(artist_type);
+                                showProfileImage(profileImage, imageProg);
 
 
-                            findViewById(R.id.artist_image).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    showFileChooser();
-                                }
-                            });
+                                findViewById(R.id.artist_image).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        uploadGallery = false;
+                                        showFileChooser();
+                                    }
+                                });
 
-                            findViewById(R.id.deactivate).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    deactivateArtistAccount();
-                                }
-                            });
+                                findViewById(R.id.deactivate).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        deactivateArtistAccount();
+                                    }
+                                });
 
-                            findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    terminateAccount(document);
-                                }
-                            });
+                                findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        terminateAccount(document);
+                                    }
+                                });
 
-                            findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    if (sItems != null) {
-                                        EditText oldPassword = findViewById(R.id.old_password);
-                                        final EditText newPassword = findViewById(R.id.new_password);
+                                findViewById(R.id.upload_gallery).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        uploadGallery = true;
+                                        showFileChooser();
+                                    }
+                                });
 
-                                        if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
-                                            updateEverything(oldPassword, newPassword);
-                                        } else {
-                                            updateInfo();
+                                findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        if (sItems != null) {
+                                            EditText oldPassword = findViewById(R.id.old_password);
+                                            final EditText newPassword = findViewById(R.id.new_password);
+
+                                            if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
+                                                updateEverything(oldPassword, newPassword);
+                                            } else {
+                                                updateInfo();
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
 
-                            findViewById(R.id.view_artist_profile).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
+                                findViewById(R.id.view_artist_profile).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
 
-                                    db.collection("artists")
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                        db.collection("artists")
+                                                .get()
+                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                                            if (document.getString("user_id").equals(user.getUid())) {
+                                                                if (document.getString("user_id").equals(user.getUid())) {
 
-                                                                goArtistProfile();
+                                                                    goArtistProfile();
+
+                                                                }
 
                                                             }
-
-                                                        }
-                                                    } else {
-                                                        Log.w("123", "Error getting documents.", task.getException());
-                                                    }
-                                                }
-                                            });
-                                }
-                            });
-
-// USER
-                        } else {
-                            setContentView(R.layout.edit_user_account);
-
-                            findViewById(R.id.request_artist).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    goArtistAccountRequest();
-                                }
-                            });
-
-                            findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    terminateAccount(document);
-                                }
-                            });
-
-                            findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-
-                                    Map<String, Object> userMap = new HashMap<>();
-                                    EditText username = findViewById(R.id.username);
-                                    EditText oldPassword = findViewById(R.id.old_password);
-                                    final EditText newPassword = findViewById(R.id.new_password);
-                                    final boolean[] changedSomething = {false};
-
-                                    if (!username.getText().toString().equals("")) {
-                                        userMap.put("username", username.getText().toString());
-                                        changedSomething[0] = true;
-                                    }
-                                    if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
-
-                                        AuthCredential credential = EmailAuthProvider
-                                                .getCredential(user.getEmail(), oldPassword.getText().toString());
-
-                                        user.reauthenticate(credential)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            user.updatePassword(newPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        Log.d("123", "Password updated");
-                                                                        changedSomething[0] = true;
-                                                                    } else {
-                                                                        Log.d("123", "Error password not updated");
-                                                                    }
-                                                                }
-                                                            });
                                                         } else {
-                                                            Log.d("123", "Error auth failed");
-                                                            Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
+                                                            Log.w("123", "Error getting documents.", task.getException());
                                                         }
                                                     }
                                                 });
                                     }
+                                });
 
-                                    if (changedSomething[0]) {
-                                        db.collection("users").document(user.getUid()).update(userMap);
-                                        Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
-                                        goHomePage();
+// USER
+                            } else {
+                                setContentView(R.layout.edit_user_account);
+
+                                findViewById(R.id.request_artist).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        goArtistAccountRequest();
                                     }
-                                }
-                            });
+                                });
+
+                                findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        terminateAccount(document);
+                                    }
+                                });
+
+                                findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+
+                                        Map<String, Object> userMap = new HashMap<>();
+                                        EditText username = findViewById(R.id.username);
+                                        EditText oldPassword = findViewById(R.id.old_password);
+                                        final EditText newPassword = findViewById(R.id.new_password);
+                                        final boolean[] changedSomething = {false};
+
+                                        if (!username.getText().toString().equals("")) {
+                                            userMap.put("username", username.getText().toString());
+                                            changedSomething[0] = true;
+                                        }
+                                        if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
+
+                                            AuthCredential credential = EmailAuthProvider
+                                                    .getCredential(user.getEmail(), oldPassword.getText().toString());
+
+                                            user.reauthenticate(credential)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                user.updatePassword(newPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            Log.d("123", "Password updated");
+                                                                            changedSomething[0] = true;
+                                                                        } else {
+                                                                            Log.d("123", "Error password not updated");
+                                                                        }
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                Log.d("123", "Error auth failed");
+                                                                Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+
+                                        if (changedSomething[0]) {
+                                            db.collection("users").document(user.getUid()).update(userMap);
+                                            Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
+                                            goHomePage();
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            Log.d(TAG, "No such document");
                         }
                     } else {
-                        Log.d(TAG, "No such document");
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            }
-        });
+            });
+        } catch (SecurityException e) {
+            Toast.makeText(getApplicationContext(), "Please, try later!", Toast.LENGTH_LONG).show();
+            goHomePage();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Please, try later!", Toast.LENGTH_LONG).show();
+            goHomePage();
+        }
     }
 
     private void updateEverything(EditText oldPassword, final EditText newPassword) {
@@ -308,7 +326,7 @@ public class EditAccountActivity extends AppCompatActivity {
             changedSomething[0] = true;
         }
 
-        if (changedSomething[0] || changePhoto) {
+        if (changedSomething[0] || changePhoto || uploadGallery) {
             db.collection("users").document(user.getUid()).update(userMap);
 
             DocumentReference docArtist = db.collection("artists").document(user.getUid());
@@ -326,7 +344,7 @@ public class EditAccountActivity extends AppCompatActivity {
                 }
             });
 
-            if (changePhoto) {
+            if (changePhoto || uploadGallery) {
                 uploadPhoto();
             } else {
                 Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
@@ -335,6 +353,7 @@ public class EditAccountActivity extends AppCompatActivity {
 
         }
     }
+
 
     private void getArtistInformation(String artist_id) {
         final EditText artistNameDisplay = findViewById(R.id.username);
@@ -689,8 +708,131 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     public void uploadPhoto() {
+        if (filePathProfile == null && filePathGallery != null) {
+            uploadGallery();
+        } else {
+            if (filePathProfile != null) {
 
-        if (filePath != null) {
+                final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                final TextView percentage = findViewById(R.id.perc);
+                final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+                final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                dialogBox.setVisibility(View.VISIBLE);
+                wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+                percentage.setText("Uploading...");
+
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                final StorageReference riversRef = storageReference.child("profiles/profile" + user.getUid() + new Date().getTime() + ".jpg");
+
+
+                riversRef.putFile(filePathProfile)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                riversRef.putFile(filePathProfile).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                    @Override
+                                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                        if (!task.isSuccessful()) {
+
+                                            throw task.getException();
+                                        }
+                                        // Continue with the task to get the download URL
+                                        return riversRef.getDownloadUrl();
+                                    }
+                                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Uri downloadUri = task.getResult();
+                                            if (downloadUri == null)
+                                                return;
+                                            else {
+
+                                                percentage.setText("Just a moment...");
+                                                dialogBox.setVisibility(View.VISIBLE);
+                                                wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+                                                photoPath = String.valueOf(downloadUri);
+
+                                                DocumentReference docArtist = db.collection("artists").document(user.getUid());
+                                                docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            final DocumentSnapshot document = task.getResult();
+                                                            if (document.exists()) {
+
+                                                                if (!document.getString("profile_image_url").equals("none")) {
+                                                                    StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
+                                                                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            Map<String, Object> artistMap = new HashMap<>();
+                                                                            artistMap.put("profile_image_url", photoPath);
+                                                                            db.collection("artists").document(document.getId()).update(artistMap);
+
+                                                                            if (uploadGallery) {
+                                                                                uploadGallery();
+                                                                            } else {
+                                                                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                                                Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
+                                                                                goHomePage();
+                                                                            }
+                                                                        }
+                                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception exception) {
+                                                                            dialogBox.setVisibility(View.INVISIBLE);
+                                                                            wholeLayout.setBackgroundColor(Color.WHITE);
+                                                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                                        }
+                                                                    });
+
+                                                                } else {
+                                                                    Map<String, Object> artistMap = new HashMap<>();
+                                                                    artistMap.put("profile_image_url", photoPath);
+                                                                    db.collection("artists").document(document.getId()).update(artistMap);
+                                                                }
+                                                            } else {
+                                                                Log.d(TAG, "No such document");
+                                                            }
+                                                        } else {
+                                                            Log.d(TAG, "get failed with ", task.getException());
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        filePathProfile = null;
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                dialogBox.setVisibility(View.INVISIBLE);
+                                wholeLayout.setBackgroundColor(Color.WHITE);
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                                double prog = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                percentage.setText("Uploading... " + ((int) prog) + "%");
+                            }
+                        });
+            }
+        }
+    }
+
+    private void uploadGallery() {
+        if (filePathGallery != null) {
+
             final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
             final TextView percentage = findViewById(R.id.perc);
             final ConstraintLayout dialogBox = findViewById(R.id.dialog);
@@ -702,16 +844,66 @@ public class EditAccountActivity extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-            final StorageReference riversRef = storageReference.child("profiles/profile" + user.getUid() + new Date().getTime() + ".jpg");
+            final StorageReference riversRef = storageReference.child("galleries/gallery_image" + user.getUid() + new Date().getTime() + ".jpg");
 
 
-            riversRef.putFile(filePath)
+            riversRef.putFile(filePathGallery)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            Toast.makeText(getApplicationContext(), "New Image Uploaded!", Toast.LENGTH_LONG).show();
+                            riversRef.putFile(filePathGallery).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
 
+                                        throw task.getException();
+                                    }
+                                    // Continue with the task to get the download URL
+                                    return riversRef.getDownloadUrl();
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri downloadUri = task.getResult();
+                                        if (downloadUri == null)
+                                            return;
+                                        else {
+                                            percentage.setText("Just a moment...");
+                                            dialogBox.setVisibility(View.VISIBLE);
+                                            wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+                                            photoPath = String.valueOf(downloadUri);
+
+                                            DocumentReference docArtist = db.collection("artists").document(user.getUid());
+                                            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        final DocumentSnapshot document = task.getResult();
+                                                        if (document.exists()) {
+
+                                                            List<String> gallery = (List<String>) document.get("gallery");
+                                                            gallery.add(photoPath);
+                                                            Map<String, Object> artistMap = new HashMap<>();
+                                                            artistMap.put("gallery", gallery);
+                                                            db.collection("artists").document(document.getId()).update(artistMap);
+                                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                            Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
+                                                            goHomePage();
+                                                        } else {
+                                                            Log.d(TAG, "No such document");
+                                                        }
+                                                    } else {
+                                                        Log.d(TAG, "get failed with ", task.getException());
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                }
+                            });
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -730,77 +922,6 @@ public class EditAccountActivity extends AppCompatActivity {
                             percentage.setText("Uploading... " + ((int) prog) + "%");
                         }
                     });
-
-            riversRef.putFile(filePath).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-
-                        throw task.getException();
-                    }
-                    // Continue with the task to get the download URL
-                    return riversRef.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        if (downloadUri == null)
-                            return;
-                        else {
-
-                            percentage.setText("Just a moment...");
-                            dialogBox.setVisibility(View.VISIBLE);
-                            wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
-                            photoPath = String.valueOf(downloadUri);
-
-                            DocumentReference docArtist = db.collection("artists").document(user.getUid());
-                            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        final DocumentSnapshot document = task.getResult();
-                                        if (document.exists()) {
-
-                                            if (!document.getString("profile_image_url").equals("none")) {
-                                                StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
-                                                desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Map<String, Object> artistMap = new HashMap<>();
-                                                        artistMap.put("profile_image_url", photoPath);
-                                                        db.collection("artists").document(document.getId()).update(artistMap);
-                                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                                        Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
-                                                        goHomePage();
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception exception) {
-                                                        dialogBox.setVisibility(View.INVISIBLE);
-                                                        wholeLayout.setBackgroundColor(Color.WHITE);
-                                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                                    }
-                                                });
-
-                                            } else {
-                                                Map<String, Object> artistMap = new HashMap<>();
-                                                artistMap.put("profile_image_url", photoPath);
-                                                db.collection("artists").document(document.getId()).update(artistMap);
-                                            }
-                                        } else {
-                                            Log.d(TAG, "No such document");
-                                        }
-                                    } else {
-                                        Log.d(TAG, "get failed with ", task.getException());
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-            });
         }
     }
 
@@ -809,13 +930,24 @@ public class EditAccountActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
-
+            if (!uploadGallery) {
+                filePathProfile = data.getData();
+            } else {
+                filePathGallery = data.getData();
+            }
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                CircleImageView image = findViewById(R.id.artist_image);
-                image.setImageBitmap(bitmap);
-                changePhoto = true;
+
+                if (!uploadGallery) {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePathProfile);
+                    changePhoto = true;
+                    CircleImageView image = findViewById(R.id.artist_image);
+                    image.setImageBitmap(bitmap);
+                } else {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePathGallery);
+                    ImageView image = findViewById(R.id.image_selected);
+                    image.setImageBitmap(bitmap);
+                }
+
             } catch (IOException e) {
 
             }
