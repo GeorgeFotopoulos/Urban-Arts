@@ -48,12 +48,18 @@ public class Feed extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         List<item> mList = new ArrayList<>();
 
-        mList.add(new item(R.drawable.artist_ex, "Ed Sheeran", "Dancing", "Piraeus", 5, 5, true));
-        mList.add(new item(R.drawable.artist_image_1, "Ed Sheeran2", "Magic Show", "Piraeus", 15, 15, false));
-        mList.add(new item(R.drawable.artist_image_2, "Ed Sheeran3", "Music", "Piraeus", 25, 25, true));
-        mList.add(new item(R.drawable.artist_image_3, "Ed Sheeran4", "Painting", "Athens", 35, 35, true));
-        mList.add(new item(R.drawable.artist_image_3, "Ed Dym", "Music", "Athens", 45, 45, false));
-        mList.add(new item(R.drawable.artist_image_3, "Pan Ntym", "Stand-Up Comedy", "Athens", 55, 55, false));
+        mList.add(new item(R.drawable.artist_ex, "Panos", "Dancing", "Piraeus", 5, 5, true));
+        mList.add(new item(R.drawable.artist_image_1, "Panos", "Magic Show", "Piraeus", 15, 15, false));
+        mList.add(new item(R.drawable.artist_image_2, "Panos", "Music", "piraeus", 25, 25, true));
+        mList.add(new item(R.drawable.artist_image_3, "Panos", "Painting", "Athens", 35, 35, true));
+        mList.add(new item(R.drawable.artist_ex, "panos", "Music", "Athens", 45, 45, false));
+        mList.add(new item(R.drawable.artist_image_1, "panos", "Stand-Up Comedy", "Athens", 55, 55, false));
+        mList.add(new item(R.drawable.artist_image_2, "panos", "Graffiti", "Athens", 55, 55, false));
+        mList.add(new item(R.drawable.artist_image_3, "panos", "Graffiti", "Athens", 55, 55, true));
+        mList.add(new item(R.drawable.artist_ex, "panos", "Magic Show", "Athens", 45, 45, false));
+        mList.add(new item(R.drawable.artist_image_1, "panos", "Stand-Up Comedy", "piraeus", 55, 55, false));
+        mList.add(new item(R.drawable.artist_image_2, "panos", "Dancing", "Athens", 55, 55, false));
+        mList.add(new item(R.drawable.artist_image_3, "panos", "Stand-Up Comedy", "Piraeus", 55, 55, true));
 
         if (locationExists || nameExists || typeOfArtExists) {
             List<item> filterList = new ArrayList<>();
