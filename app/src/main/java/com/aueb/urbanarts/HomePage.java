@@ -42,6 +42,7 @@ public class HomePage extends AppCompatActivity {
     String tempStr = "";
     TextView temp;
     final String TAG = "123";
+    final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +50,17 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
 
         mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            final ProgressBar loadingImage = findViewById(R.id.loading_image);
+            loadingImage.setVisibility(View.VISIBLE);
+            showUserInfo(loadingImage);
+            final CircleImageView accountImage = findViewById(R.id.account);
+
+        }
 
         ImageView loginImg = findViewById(R.id.logIn);
         CardView login = findViewById(R.id.cardView1);
         if (mAuth.getCurrentUser() != null) {
-            final ProgressBar loadingIimage = findViewById(R.id.loading_image);
-            loadingIimage.setVisibility(View.VISIBLE);
-            showUserInfo(loadingIimage);
             loginImg.setImageResource(R.drawable.log_out);
             tempStr = "Log Out";
             temp = findViewById(R.id.tv_logIn);
@@ -103,6 +108,33 @@ public class HomePage extends AppCompatActivity {
             });
         }
 
+        findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAuth.getCurrentUser() != null) {
+                    DocumentReference docUser = db.collection("users").document(mAuth.getUid());
+                    docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    if (document.getBoolean("is_artist")) {
+                                        Intent myIntent = new Intent(HomePage.this, ArtistProfileActivity.class);
+                                        myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
+                                        HomePage.this.startActivity(myIntent);
+                                        finish();
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
         CardView filters = findViewById(R.id.cardView3);
         filters.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,8 +181,6 @@ public class HomePage extends AppCompatActivity {
     }
 
     private void showUserInfo(final ProgressBar loadingIimage) {
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         DocumentReference docUser = db.collection("users").document(mAuth.getUid());
         docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -190,7 +220,7 @@ public class HomePage extends AppCompatActivity {
                                                     }
                                                 });
                                             } else {
-                                                accountImage.setImageResource(R.drawable.uknown_artist);
+                                                accountImage.setImageResource(R.drawable.profile);
                                                 loadingIimage.setVisibility(View.INVISIBLE);
                                             }
 
@@ -203,7 +233,7 @@ public class HomePage extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            accountImage.setImageResource(R.drawable.uknown_artist);
+                            accountImage.setImageResource(R.drawable.profile);
                             loadingIimage.setVisibility(View.INVISIBLE);
                         }
                     } else {

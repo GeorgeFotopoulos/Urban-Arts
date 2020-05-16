@@ -408,6 +408,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         if (document.getBoolean("is_artist")) {
                                             deactivateArtistAccountFirst(credential);
+                                            deleteUser();
                                         } else {
                                             deleteUser();
                                         }
@@ -502,8 +503,6 @@ public class EditAccountActivity extends AppCompatActivity {
         final Map<String, Object> userMap = new HashMap<>();
         userMap.put("is_artist", false);
         final String[] m_Text = {""};
-        final ConstraintLayout dialogBox = findViewById(R.id.dialog);
-        final RelativeLayout wholeLayout = findViewById(R.id.constraint);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
         builder.setTitle("WARNING!");
@@ -594,7 +593,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                 db.collection("users").document(user.getUid()).update(userMap);
                                 Log.d("123", "Account Deactivated Successfully!");
                                 Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
-                                deleteUser();
+                                leaveNow();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {

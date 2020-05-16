@@ -1,6 +1,7 @@
 package com.aueb.urbanarts;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -69,6 +70,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
         carouselView.setPageCount(artistGallery.size());
         carouselView.setImageListener(imageListener);
 
+
         findViewById(R.id.action).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (artist_id.equals(user.getUid())) {
@@ -114,11 +116,13 @@ public class ArtistProfileActivity extends AppCompatActivity {
     }
 
     private void whoIsIt(String artist_id) {
-        ImageButton action = findViewById(R.id.action);
-        if (artist_id.equals(user.getUid())) {
-//            action.setImageDrawable(R.drawable.edit);
-        } else {
-
+        if (user != null) {
+            ImageButton action = findViewById(R.id.action);
+            if (artist_id.equals(user.getUid())) {
+                action.setImageResource(R.drawable.edit);
+            } else {
+                action.setImageResource(R.drawable.report);
+            }
         }
     }
 
@@ -129,6 +133,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
         final TextView yearDisplay = findViewById(R.id.artist_age);
         final TextView descriptionDisplay = findViewById(R.id.artist_description);
         final TextView followersNumDisplay = findViewById(R.id.num_follows);
+        final ProgressBar loadGallery = findViewById(R.id.load_carousel);
 
         DocumentReference docArtist = db.collection("artists").document(artist_id);
         docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -146,7 +151,8 @@ public class ArtistProfileActivity extends AppCompatActivity {
                         artistName = document.getString("display_name");
                         artistImage = document.getString("profile_image_url");
                         followersNum = document.getString("followers");
-                        artistGallery = (List<String>) document.get("gallery");
+                        if (!document.get("gallery").equals(""))
+                            artistGallery = (List<String>) document.get("gallery");
 
                         showProfileImage(profileImage, artistImage);
                         showArtistName(artistNameDisplay, artistName);
@@ -161,6 +167,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
                             showGallery(artistGallery);
                         } else {
                             noGallery.setText("No Images :(");
+                            loadGallery.setVisibility(View.INVISIBLE);
                         }
                     } else {
                         Log.d(TAG, "No such document");

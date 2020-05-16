@@ -27,11 +27,12 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:adjustViewBounds="true"
-                android:background="#fff"
+                android:background="@null"
                 android:maxWidth="40dp"
                 android:maxHeight="40dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/white_image"
+                android:src="@null"
+                android:tint="#b71e42"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,6 +49,7 @@
                 android:maxHeight="40dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/home"
+                android:tint="#b71e42"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
