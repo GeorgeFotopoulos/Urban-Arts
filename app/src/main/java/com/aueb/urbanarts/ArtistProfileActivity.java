@@ -16,6 +16,7 @@ import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,23 +75,16 @@ public class ArtistProfileActivity extends AppCompatActivity {
         findViewById(R.id.action).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (artist_id.equals(user.getUid())) {
-                    Intent intent = new Intent(ArtistProfileActivity.this, EditAccountActivity.class);
-                    startActivity(intent);
-                    finish();
+                    goEditAccount();
                 } else {
-                    Intent intent = new Intent(ArtistProfileActivity.this, ReportUser.class);
-                    startActivity(intent);
-                    finish();
+                    goReportUser();
                 }
-
             }
         });
 
         findViewById(R.id.home_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(ArtistProfileActivity.this, HomePage.class);
-                startActivity(intent);
-                finish();
+                goHomePage();
             }
         });
 
@@ -265,6 +259,24 @@ public class ArtistProfileActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        goHomePage();
+    }
 
+    public void goHomePage() {
+        startActivity(new Intent(this, HomePage.class));
+        Animatoo.animateZoom(this);
+        finish();
+    }
+
+    private void goEditAccount() {
+        startActivity(new Intent(this, EditAccountActivity.class));
+        Animatoo.animateFade(this);
+        finish();
+    }
+
+    private void goReportUser() {
+        startActivity(new Intent(this, ReportUser.class));
+        Animatoo.animateInAndOut(this);
+        finish();
     }
 }

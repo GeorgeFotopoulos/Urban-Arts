@@ -35,6 +35,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -217,6 +218,13 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         startActivity(myIntent);
         finish();
     }
+
+    private void goEditAccount() {
+        Intent intent = new Intent(this, EditAccountActivity.class);
+        startActivity(intent);
+        Animatoo.animateFade(this);
+        finish();
+     }
 
     public void uploadImage(final String artistType, final String indiv_or_group, final String year, final String description) {
         final ConstraintLayout dialog = findViewById(R.id.dialog);

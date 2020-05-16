@@ -37,15 +37,13 @@
             android:clickable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.533" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/loading_image"
             style="?android:attr/progressBarStyle"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/account"
             app:layout_constraintEnd_toEndOf="@+id/account"
             app:layout_constraintStart_toStartOf="@+id/account"
@@ -278,5 +276,59 @@
         </androidx.cardview.widget.CardView>
 
     </androidx.gridlayout.widget.GridLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/marker_new" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/edit_account" />
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@null"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/live_feed" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

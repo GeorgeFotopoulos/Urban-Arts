@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -150,10 +151,8 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                                             if (document.getString("user_id").equals(user.getUid())) {
 
-                                                                Intent intent = new Intent(EditAccountActivity.this, ArtistProfileActivity.class);
-                                                                intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
-                                                                startActivity(intent);
-                                                                finish();
+                                                                goArtistProfile();
+
                                                             }
 
                                                         }
@@ -169,13 +168,9 @@ public class EditAccountActivity extends AppCompatActivity {
                         } else {
                             setContentView(R.layout.edit_user_account);
 
-
                             findViewById(R.id.request_artist).setOnClickListener(new View.OnClickListener() {
                                 public void onClick(View v) {
-
-                                    Intent myIntent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.class);
-                                    startActivity(myIntent);
-                                    finish();
+                                    goArtistAccountRequest();
                                 }
                             });
 
@@ -230,7 +225,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                     if (changedSomething[0]) {
                                         db.collection("users").document(user.getUid()).update(userMap);
                                         Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
-                                        leaveNow();
+                                        goHomePage();
                                     }
                                 }
                             });
@@ -335,7 +330,7 @@ public class EditAccountActivity extends AppCompatActivity {
                 uploadPhoto();
             } else {
                 Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
-                leaveNow();
+                goHomePage();
             }
 
         }
@@ -482,7 +477,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
-                                                leaveNow();
+                                                goHomePage();
                                             } else {
                                                 Toast.makeText(getApplicationContext(), "Couldn't Delete Document", Toast.LENGTH_LONG).show();
                                             }
@@ -593,7 +588,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                 db.collection("users").document(user.getUid()).update(userMap);
                                 Log.d("123", "Account Deactivated Successfully!");
                                 Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
-                                leaveNow();
+                                goHomePage();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -601,7 +596,7 @@ public class EditAccountActivity extends AppCompatActivity {
                             public void onFailure(@NonNull Exception e) {
                                 Log.w("123", "Error!!", e);
                                 Toast.makeText(getApplicationContext(), "Error!!", Toast.LENGTH_LONG).show();
-                                leaveNow();
+                                goHomePage();
                             }
                         });
             }
@@ -622,7 +617,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         db.collection("users").document(user.getUid()).update(userMap);
                         Log.d("123", "Account Deactivated Successfully!");
                         Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
-                        leaveNow();
+                        goHomePage();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -630,7 +625,7 @@ public class EditAccountActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Log.w("123", "Error!!", e);
                         Toast.makeText(getApplicationContext(), "Error!!", Toast.LENGTH_LONG).show();
-                        leaveNow();
+                        goHomePage();
                     }
                 });
     }
@@ -760,47 +755,48 @@ public class EditAccountActivity extends AppCompatActivity {
                             wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                             photoPath = String.valueOf(downloadUri);
 
-                            db.collection("artists")
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (final QueryDocumentSnapshot document : task.getResult()) {
+                            DocumentReference docArtist = db.collection("artists").document(user.getUid());
+                            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        final DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
 
-                                                    if (document.getString("user_id").equals(user.getUid())) {
-
-                                                        if (!document.getString("profile_image_url").equals("none")) {
-                                                            StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
-                                                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    Map<String, Object> artistMap = new HashMap<>();
-                                                                    artistMap.put("profile_image_url", photoPath);
-                                                                    db.collection("artists").document(document.getId()).update(artistMap);
-                                                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                                                    Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
-                                                                    leaveNow();
-                                                                }
-                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception exception) {
-                                                                    // Uh-oh, an error occurred!
-                                                                }
-                                                            });
-
-                                                        } else {
-                                                            Map<String, Object> artistMap = new HashMap<>();
-                                                            artistMap.put("profile_image_url", photoPath);
-                                                            db.collection("artists").document(document.getId()).update(artistMap);
-                                                        }
+                                            if (!document.getString("profile_image_url").equals("none")) {
+                                                StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
+                                                desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Map<String, Object> artistMap = new HashMap<>();
+                                                        artistMap.put("profile_image_url", photoPath);
+                                                        db.collection("artists").document(document.getId()).update(artistMap);
+                                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                        Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
+                                                        goHomePage();
                                                     }
-                                                }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception exception) {
+                                                        dialogBox.setVisibility(View.INVISIBLE);
+                                                        wholeLayout.setBackgroundColor(Color.WHITE);
+                                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                    }
+                                                });
+
                                             } else {
-                                                Log.w("123", "Error getting documents.", task.getException());
+                                                Map<String, Object> artistMap = new HashMap<>();
+                                                artistMap.put("profile_image_url", photoPath);
+                                                db.collection("artists").document(document.getId()).update(artistMap);
                                             }
+                                        } else {
+                                            Log.d(TAG, "No such document");
                                         }
-                                    });
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                }
+                            });
                         }
                     }
                 }
@@ -833,11 +829,31 @@ public class EditAccountActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
 
-    public void leaveNow() {
+    public void goHomePage() {
         Intent myIntent = new Intent(EditAccountActivity.this, HomePage.class);
         startActivity(myIntent);
+        Animatoo.animateZoom(this);
         finish();
     }
 
+    private void goArtistProfile() {
+        Intent intent = new Intent(EditAccountActivity.this, ArtistProfileActivity.class);
+        intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
+        startActivity(intent);
+        Animatoo.animateFade(this);
+        finish();
+    }
 
+    private void goArtistAccountRequest() {
+        Intent intent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.class);
+        startActivity(intent);
+        Animatoo.animateCard(this);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        goHomePage();
+    }
 }

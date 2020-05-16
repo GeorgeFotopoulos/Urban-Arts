@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -93,9 +94,7 @@ public class HomePage extends AppCompatActivity {
             register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
-                    startActivity(myIntent);
-                    finish();
+                    goEditAccount();
                 }
             });
         } else {
@@ -123,6 +122,7 @@ public class HomePage extends AppCompatActivity {
                                         Intent myIntent = new Intent(HomePage.this, ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         HomePage.this.startActivity(myIntent);
+                                        Animatoo.animateInAndOut(HomePage.this);
                                         finish();
                                     }
                                 } else {
@@ -285,5 +285,12 @@ public class HomePage extends AppCompatActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.getWindow().setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
         dialog.show();
+    }
+
+    private void goEditAccount() {
+        Intent intent = new Intent(this, EditAccountActivity.class);
+        startActivity(intent);
+        Animatoo.animateInAndOut(this);
+        finish();
     }
 }
