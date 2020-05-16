@@ -4,21 +4,15 @@ import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,8 +26,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -70,7 +62,7 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mAuth.signOut();
-                    Intent myIntent = new Intent(HomePage.this, HomePage.class);
+                    Intent myIntent = new Intent(HomePage.this, LogIn.class);
                     HomePage.this.startActivity(myIntent);
                 }
             });
@@ -170,12 +162,12 @@ public class HomePage extends AppCompatActivity {
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAuth.getCurrentUser() != null) {
-                    Intent myIntent = new Intent(HomePage.this, ArtistAccountRequestActivity.class);
+               // if (mAuth.getCurrentUser() != null) {
+                    Intent myIntent = new Intent(HomePage.this, Event.class);
                     HomePage.this.startActivity(myIntent);
-                } else {
-                    openDialog();
-                }
+               // } else {
+                 //   openDialog();
+               // }
             }
         });
     }
