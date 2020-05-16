@@ -222,7 +222,8 @@ public class ArtistProfileActivity extends AppCompatActivity {
     private void showProfileImage(final CircleImageView profileImage, final String imageURL) {
         final ProgressBar imageProg = findViewById(R.id.progress_bar);
         if (imageURL.equals("none")) {
-            profileImage.setImageResource(R.drawable.uknown_artist);
+            profileImage.setImageResource(R.drawable.profile);
+            imageProg.setVisibility(View.INVISIBLE);
         } else {
             Picasso.with(getApplicationContext()).load(imageURL).into(profileImage, new com.squareup.picasso.Callback() {
                 @Override
@@ -246,7 +247,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
     ImageListener imageListener = new ImageListener() {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
-//            imageView.setImageResource(artistGallery[position]);
+
             final ProgressBar loadGallery = findViewById(R.id.load_carousel);
             Picasso.with(getApplicationContext()).load(artistGallery.get(position)).into(imageView, new com.squareup.picasso.Callback() {
                 @Override
@@ -261,5 +262,9 @@ public class ArtistProfileActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+    }
 }

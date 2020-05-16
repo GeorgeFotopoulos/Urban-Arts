@@ -622,7 +622,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         db.collection("users").document(user.getUid()).update(userMap);
                         Log.d("123", "Account Deactivated Successfully!");
                         Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
-                        deleteUser();
+                        leaveNow();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -659,7 +659,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                         }
                                     });
                                 } else {
-                                    profileImage.setImageResource(R.drawable.uknown_artist);
+                                    profileImage.setImageResource(R.drawable.profile);
                                     imageProg.setVisibility(View.INVISIBLE);
                                 }
                             }
@@ -670,7 +670,7 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void changeGenre(final List<String> artist_type) {
-        fStore.collection("artist_type")
+        fStore.collection("genre")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

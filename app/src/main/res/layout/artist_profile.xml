@@ -255,6 +255,19 @@
                 app:layout_constraintTop_toTopOf="@+id/follow_button"
                 app:srcCompat="@drawable/pink_button" />
 
+            <Button
+                android:id="@+id/button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/pink_button"
+                android:text="$/€"
+                android:textColor="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/follow_button"
+                app:layout_constraintEnd_toStartOf="@+id/follow_button"
+                app:layout_constraintTop_toTopOf="@+id/follow_button" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

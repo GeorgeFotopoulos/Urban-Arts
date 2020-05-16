@@ -134,7 +134,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     }
 
     private void getArtistTypes() {
-        db.collection("artist_type")
+        db.collection("genre")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
