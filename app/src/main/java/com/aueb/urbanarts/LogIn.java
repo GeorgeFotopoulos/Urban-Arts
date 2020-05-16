@@ -93,7 +93,6 @@ public class LogIn extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             userID = fAuth.getCurrentUser().getUid();
-                            fStore.collection("users").document(userID).update("password", password);
                             Toast.makeText(LogIn.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
                             finish();

@@ -14,14 +14,13 @@
         android:text="Name of event"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.synnapps.carouselview.CarouselView
         android:id="@+id/gallery"
-        android:layout_width="405dp"
-        android:layout_height="392dp"
+        android:layout_width="401dp"
+        android:layout_height="290dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
         app:animateOnBoundary="true"
@@ -40,8 +39,8 @@
     <ScrollView
         android:id="@+id/scrollView3"
         style="@android:style/Widget.ScrollView"
-        android:layout_width="409dp"
-        android:layout_height="191dp"
+        android:layout_width="403dp"
+        android:layout_height="289dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="8dp"
