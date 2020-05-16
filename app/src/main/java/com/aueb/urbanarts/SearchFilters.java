@@ -86,6 +86,10 @@ public class SearchFilters extends AppCompatActivity {
                 aSwitch = findViewById(R.id.aSwitch);
                 if (aSwitch.isChecked()) {
                     live = true;
+                    yesFilter = true;
+                } else if(!aSwitch.isChecked()) {
+                    live = false;
+                    yesFilter = true;
                 }
 
                 if (yesFilter) {
@@ -95,7 +99,6 @@ public class SearchFilters extends AppCompatActivity {
                     if (!typeOfArt.equals("Choose...")) intent.putExtra("typeOfArt", typeOfArt);
                     intent.putExtra("live", live);
                     startActivity(intent);
-                    finish();
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "No filters were selected.", Toast.LENGTH_LONG);
                     toast.show();
