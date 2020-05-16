@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,16 +26,20 @@ import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+@SuppressWarnings("deprecation")
 public class ArtistProfileActivity extends AppCompatActivity {
 
     final String TAG = "123";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CarouselView carouselView;
-    int[] artistImages = {R.drawable.artist_image_1, R.drawable.artist_image_2, R.drawable.artist_image_3};
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
     //    I know Fotaki
     String artistName;
     String artistType;
@@ -41,7 +48,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
     String followersNum;
     String artistDescription;
     String artistImage;
-    int[] artistGallery = {};
+    List<String> artistGallery = new ArrayList<>();
 
 
     @Override
@@ -53,15 +60,27 @@ public class ArtistProfileActivity extends AppCompatActivity {
         imageProg.setVisibility(View.VISIBLE);
 
         Intent intent = getIntent();
-        String artist_id = intent.getStringExtra("ARTIST_DOCUMENT_ID");
+        final String artist_id = intent.getStringExtra("ARTIST_DOCUMENT_ID");
+        whoIsIt(artist_id);
 
         getArtistInformation(artist_id);
 
-        findViewById(R.id.report).setOnClickListener(new View.OnClickListener() {
+        carouselView = findViewById(R.id.gallery);
+        carouselView.setPageCount(artistGallery.size());
+        carouselView.setImageListener(imageListener);
+
+        findViewById(R.id.action).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(ArtistProfileActivity.this, ReportUser.class);
-                startActivity(intent);
-                finish();
+                if (artist_id.equals(user.getUid())) {
+                    Intent intent = new Intent(ArtistProfileActivity.this, EditAccountActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Intent intent = new Intent(ArtistProfileActivity.this, ReportUser.class);
+                    startActivity(intent);
+                    finish();
+                }
+
             }
         });
 
@@ -92,18 +111,15 @@ public class ArtistProfileActivity extends AppCompatActivity {
             }
         });
 
-        carouselView = findViewById(R.id.gallery);
-        carouselView.setPageCount(artistGallery.length);
-        carouselView.setImageListener(imageListener);
+    }
 
-        ImageView report = (ImageView) findViewById(R.id.report);
-        report.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(ArtistProfileActivity.this, ReportUser.class);
-                ArtistProfileActivity.this.startActivity(myIntent);
-            }
-        });
+    private void whoIsIt(String artist_id) {
+        ImageButton action = findViewById(R.id.action);
+        if (artist_id.equals(user.getUid())) {
+//            action.setImageDrawable(R.drawable.edit);
+        } else {
+
+        }
     }
 
     private void getArtistInformation(String artist_id) {
@@ -121,8 +137,6 @@ public class ArtistProfileActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-
 
                         artistName = document.getString("display_name");
                         artistType = document.getString("artist_type");
@@ -132,6 +146,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
                         artistName = document.getString("display_name");
                         artistImage = document.getString("profile_image_url");
                         followersNum = document.getString("followers");
+                        artistGallery = (List<String>) document.get("gallery");
 
                         showProfileImage(profileImage, artistImage);
                         showArtistName(artistNameDisplay, artistName);
@@ -139,8 +154,14 @@ public class ArtistProfileActivity extends AppCompatActivity {
                         showYear(yearDisplay, artistYear);
                         showDescription(descriptionDisplay, artistDescription);
                         showFollowers(followersNumDisplay, followersNum);
-//                        showGallery(followersNumDisplay, followersNum);
 
+                        TextView noGallery = findViewById(R.id.error_gallery);
+                        if (!artistGallery.isEmpty()) {
+                            noGallery.setText("");
+                            showGallery(artistGallery);
+                        } else {
+                            noGallery.setText("No Images :(");
+                        }
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -210,16 +231,28 @@ public class ArtistProfileActivity extends AppCompatActivity {
         }
     }
 
-    private int[] showGallery(String artist_id) {
-        int[] gallery = {};
-
-        return gallery;
+    private void showGallery(List<String> artistGallery) {
+        carouselView.setPageCount(artistGallery.size());
+        carouselView.setImageListener(imageListener);
     }
 
     ImageListener imageListener = new ImageListener() {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
-            imageView.setImageResource(artistGallery[position]);
+//            imageView.setImageResource(artistGallery[position]);
+            final ProgressBar loadGallery = findViewById(R.id.load_carousel);
+            Picasso.with(getApplicationContext()).load(artistGallery.get(position)).into(imageView, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    loadGallery.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onError() {
+                }
+            });
         }
     };
+
+
 }

@@ -65,13 +65,11 @@ public class EditAccountActivity extends AppCompatActivity {
     FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    private final String uknownArtistURL = "https://firebasestorage.googleapis.com/v0/b/aeps-a0e6f.appspot.com/o/profiles%2Fuknown_artist.png?alt=media&token=b03d7b18-c47c-4cdd-b87f-515666dd898c";
     private Bitmap bitmap;
     private String photoPath;
     private boolean changePhoto = false;
     Spinner sItems;
     private Uri filePath;
-    final QueryDocumentSnapshot[] artistDoc = new QueryDocumentSnapshot[1];
     String artistName;
     String artistGenre;
     String artistDescription;
@@ -82,173 +80,169 @@ public class EditAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final DocumentSnapshot[] userDoc = new DocumentSnapshot[1];
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("123", document.getId() + " => " + document.getData());
-                                if (document.getId().equals(user.getUid())) {
-                                    userDoc[0] = document;
-                                }
-                            }
+        DocumentReference docArtist = db.collection("users").document(user.getUid());
+        docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    final DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
 // ARTIST
-                            if (userDoc[0].getBoolean("is_artist")) {
-                                setContentView(R.layout.edit_artist_account);
-                                final ConstraintLayout dialog = findViewById(R.id.dialog);
-                                final RelativeLayout wholeLayout = findViewById(R.id.constraint);
-                                dialog.setVisibility(View.INVISIBLE);
-                                wholeLayout.setBackgroundColor(Color.WHITE);
+                        if (document.getBoolean("is_artist")) {
+                            setContentView(R.layout.edit_artist_account);
+                            final ConstraintLayout dialog = findViewById(R.id.dialog);
+                            final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                            dialog.setVisibility(View.INVISIBLE);
+                            wholeLayout.setBackgroundColor(Color.WHITE);
 
-                                final ProgressBar imageProg = findViewById(R.id.image_progress);
-                                final CircleImageView profileImage = findViewById(R.id.artist_image);
-                                imageProg.setVisibility(View.VISIBLE);
+                            final ProgressBar imageProg = findViewById(R.id.image_progress);
+                            final CircleImageView profileImage = findViewById(R.id.artist_image);
+                            imageProg.setVisibility(View.VISIBLE);
 
-                                getArtistInformation(user.getUid());
-                                changeGenre(artist_type);
-                                showProfileImage(profileImage, imageProg);
+                            getArtistInformation(user.getUid());
+                            changeGenre(artist_type);
+                            showProfileImage(profileImage, imageProg);
 
 
-                                findViewById(R.id.artist_image).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-                                        showFileChooser();
-                                    }
-                                });
+                            findViewById(R.id.artist_image).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    showFileChooser();
+                                }
+                            });
 
-                                findViewById(R.id.deactivate).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-                                        deactivateArtistAccount();
-                                    }
-                                });
+                            findViewById(R.id.deactivate).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    deactivateArtistAccount();
+                                }
+                            });
 
-                                findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-                                        terminateAccount(userDoc);
-                                    }
-                                });
+                            findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    terminateAccount(document);
+                                }
+                            });
 
-                                findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-                                        if (sItems != null) {
-                                            EditText oldPassword = findViewById(R.id.old_password);
-                                            final EditText newPassword = findViewById(R.id.new_password);
+                            findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    if (sItems != null) {
+                                        EditText oldPassword = findViewById(R.id.old_password);
+                                        final EditText newPassword = findViewById(R.id.new_password);
 
-                                            if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
-                                                updateEverything(oldPassword, newPassword);
-                                            } else {
-                                                updateInfo();
-                                            }
+                                        if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
+                                            updateEverything(oldPassword, newPassword);
+                                        } else {
+                                            updateInfo();
                                         }
                                     }
-                                });
+                                }
+                            });
 
-                                findViewById(R.id.view_artist_profile).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
+                            findViewById(R.id.view_artist_profile).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
 
-                                        db.collection("artists")
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                    db.collection("artists")
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                                                if (document.getString("user_id").equals(user.getUid())) {
+                                                            if (document.getString("user_id").equals(user.getUid())) {
 
-                                                                    Intent intent = new Intent(EditAccountActivity.this, ArtistProfileActivity.class);
-                                                                    intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
-                                                                    startActivity(intent);
-                                                                    finish();
-                                                                }
-
+                                                                Intent intent = new Intent(EditAccountActivity.this, ArtistProfileActivity.class);
+                                                                intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
+                                                                startActivity(intent);
+                                                                finish();
                                                             }
+
+                                                        }
+                                                    } else {
+                                                        Log.w("123", "Error getting documents.", task.getException());
+                                                    }
+                                                }
+                                            });
+                                }
+                            });
+
+// USER
+                        } else {
+                            setContentView(R.layout.edit_user_account);
+
+
+                            findViewById(R.id.request_artist).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+
+                                    Intent myIntent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.class);
+                                    startActivity(myIntent);
+                                    finish();
+                                }
+                            });
+
+                            findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    terminateAccount(document);
+                                }
+                            });
+
+                            findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+
+                                    Map<String, Object> userMap = new HashMap<>();
+                                    EditText username = findViewById(R.id.username);
+                                    EditText oldPassword = findViewById(R.id.old_password);
+                                    final EditText newPassword = findViewById(R.id.new_password);
+                                    final boolean[] changedSomething = {false};
+
+                                    if (!username.getText().toString().equals("")) {
+                                        userMap.put("username", username.getText().toString());
+                                        changedSomething[0] = true;
+                                    }
+                                    if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
+
+                                        AuthCredential credential = EmailAuthProvider
+                                                .getCredential(user.getEmail(), oldPassword.getText().toString());
+
+                                        user.reauthenticate(credential)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            user.updatePassword(newPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        Log.d("123", "Password updated");
+                                                                        changedSomething[0] = true;
+                                                                    } else {
+                                                                        Log.d("123", "Error password not updated");
+                                                                    }
+                                                                }
+                                                            });
                                                         } else {
-                                                            Log.w("123", "Error getting documents.", task.getException());
+                                                            Log.d("123", "Error auth failed");
+                                                            Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
                                                         }
                                                     }
                                                 });
                                     }
-                                });
 
-// USER
-                            } else {
-                                setContentView(R.layout.edit_user_account);
-
-
-                                findViewById(R.id.request_artist).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-
-                                        Intent myIntent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.class);
-                                        startActivity(myIntent);
-                                        finish();
+                                    if (changedSomething[0]) {
+                                        db.collection("users").document(user.getUid()).update(userMap);
+                                        Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
+                                        leaveNow();
                                     }
-                                });
-
-                                findViewById(R.id.terminate).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-                                        terminateAccount(userDoc);
-                                    }
-                                });
-
-                                findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-
-                                        Map<String, Object> userMap = new HashMap<>();
-                                        EditText username = findViewById(R.id.username);
-                                        EditText oldPassword = findViewById(R.id.old_password);
-                                        final EditText newPassword = findViewById(R.id.new_password);
-                                        final boolean[] changedSomething = {false};
-
-                                        if (!username.getText().toString().equals("")) {
-                                            userMap.put("username", username.getText().toString());
-                                            changedSomething[0] = true;
-                                        }
-                                        if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
-
-                                            AuthCredential credential = EmailAuthProvider
-                                                    .getCredential(user.getEmail(), oldPassword.getText().toString());
-
-                                            user.reauthenticate(credential)
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                user.updatePassword(newPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if (task.isSuccessful()) {
-                                                                            Log.d("123", "Password updated");
-                                                                            changedSomething[0] = true;
-                                                                        } else {
-                                                                            Log.d("123", "Error password not updated");
-                                                                        }
-                                                                    }
-                                                                });
-                                                            } else {
-                                                                Log.d("123", "Error auth failed");
-                                                                Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
-                                                            }
-                                                        }
-                                                    });
-                                        }
-
-                                        if (changedSomething[0]) {
-                                            db.collection("users").document(user.getUid()).update(userMap);
-                                            Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
-                                            leaveNow();
-                                        }
-                                    }
-                                });
-                            }
-
-                        } else {
-                            Log.w("123", "Error getting documents.", task.getException());
+                                }
+                            });
                         }
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
-                });
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     private void updateEverything(EditText oldPassword, final EditText newPassword) {
@@ -377,7 +371,7 @@ public class EditAccountActivity extends AppCompatActivity {
         });
     }
 
-    private void terminateAccount(final DocumentSnapshot[] userDoc) {
+    private void terminateAccount(final DocumentSnapshot document) {
 
         final String[] m_Text = {""};
 
@@ -412,18 +406,18 @@ public class EditAccountActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        if (userDoc[0].getBoolean("is_artist")) {
+                                        if (document.getBoolean("is_artist")) {
                                             deactivateArtistAccountFirst(credential);
-                                            deleteUser();
                                         } else {
                                             deleteUser();
                                         }
                                     } else {
+                                        dialogBox.setVisibility(View.INVISIBLE);
+                                        wholeLayout.setBackgroundColor(Color.WHITE);
+                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                                         Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
                                     }
-                                    dialogBox.setVisibility(View.INVISIBLE);
-                                    wholeLayout.setBackgroundColor(Color.WHITE);
-                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
                             });
                 }
@@ -486,9 +480,6 @@ public class EditAccountActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                dialogBox.setVisibility(View.INVISIBLE);
-                                                wholeLayout.setBackgroundColor(Color.WHITE);
-                                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                                 Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
                                                 leaveNow();
                                             } else {
@@ -499,6 +490,9 @@ public class EditAccountActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(getApplicationContext(), "Couldn't Delete User", Toast.LENGTH_LONG).show();
                         }
+                        dialogBox.setVisibility(View.INVISIBLE);
+                        wholeLayout.setBackgroundColor(Color.WHITE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
                 });
     }
@@ -526,6 +520,14 @@ public class EditAccountActivity extends AppCompatActivity {
 
                 if (!m_Text[0].isEmpty()) {
                     final TextView percentage = findViewById(R.id.perc);
+                    final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+                    final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                    percentage.setText("Just a moment...");
+                    dialogBox.setVisibility(View.VISIBLE);
+                    wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
                     AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
 
@@ -534,14 +536,6 @@ public class EditAccountActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                final ConstraintLayout dialogBox = findViewById(R.id.dialog);
-                                final RelativeLayout wholeLayout = findViewById(R.id.constraint);
-                                percentage.setText("Just a moment...");
-                                dialogBox.setVisibility(View.VISIBLE);
-                                wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
-
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
                                 DocumentReference docArtist = db.collection("artists").document(user.getUid());
                                 docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -600,7 +594,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                 db.collection("users").document(user.getUid()).update(userMap);
                                 Log.d("123", "Account Deactivated Successfully!");
                                 Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
-                                leaveNow();
+                                deleteUser();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -629,7 +623,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         db.collection("users").document(user.getUid()).update(userMap);
                         Log.d("123", "Account Deactivated Successfully!");
                         Toast.makeText(getApplicationContext(), "Account Deactivated Successfully!", Toast.LENGTH_LONG).show();
-                        leaveNow();
+                        deleteUser();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

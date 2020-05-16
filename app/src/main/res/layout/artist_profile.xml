@@ -20,18 +20,18 @@
 
 
             <ImageButton
-                android:id="@+id/report"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/action"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:background="#fff"
                 android:adjustViewBounds="true"
+                android:background="#fff"
                 android:maxWidth="40dp"
                 android:maxHeight="40dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/report"
+                android:src="@drawable/white_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,8 +42,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:background="@null"
                 android:adjustViewBounds="true"
+                android:background="@null"
                 android:maxWidth="40dp"
                 android:maxHeight="40dp"
                 android:scaleType="fitXY"
@@ -200,7 +200,32 @@
                     app:radius="6dp"
                     app:slideInterval="6000"
                     app:strokeColor="#FF777777"
-                    app:strokeWidth="1dp" />
+                    app:strokeWidth="1dp">
+
+                </com.synnapps.carouselview.CarouselView>
+
+                <ProgressBar
+                    android:id="@+id/load_carousel"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/error_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/load_carousel"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="37dp"
+                    android:text="loading..."
+                    app:layout_constraintTop_toTopOf="parent" />
             </RelativeLayout>
 
             <ProgressBar
