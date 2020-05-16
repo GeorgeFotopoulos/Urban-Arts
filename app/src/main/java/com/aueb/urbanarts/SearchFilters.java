@@ -39,7 +39,6 @@ public class SearchFilters extends AppCompatActivity {
         setContentView(R.layout.search_with_filters);
 
         final List<String> genres = new ArrayList<>();
-
         fStore.collection("genre")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
