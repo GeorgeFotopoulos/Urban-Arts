@@ -133,90 +133,15 @@ public class EditAccountActivity extends AppCompatActivity {
                                 findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
                                         if (sItems != null) {
-
-                                            Map<String, Object> userMap = new HashMap<>();
-                                            final Map<String, Object> artistMap = new HashMap<>();
-                                            EditText username = findViewById(R.id.username);
                                             EditText oldPassword = findViewById(R.id.old_password);
                                             final EditText newPassword = findViewById(R.id.new_password);
-                                            EditText description = findViewById(R.id.description);
-                                            String artistType = sItems.getSelectedItem().toString();
-                                            final boolean[] changedSomething = {false};
 
-                                            if (!username.getText().toString().equals("")) {
-                                                userMap.put("username", username.getText().toString());
-                                                artistMap.put("display_name", username.getText().toString());
-                                                changedSomething[0] = true;
-                                            }
                                             if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
-
-                                                AuthCredential credential = EmailAuthProvider
-                                                        .getCredential(user.getEmail(), oldPassword.getText().toString());
-
-                                                user.reauthenticate(credential)
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    user.updatePassword(newPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (task.isSuccessful()) {
-                                                                                Log.d("123", "Password updated");
-                                                                                changedSomething[0] = true;
-                                                                            } else {
-                                                                                Log.d("123", "Error password not updated");
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    Log.d("123", "Error auth failed");
-                                                                    Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
-                                                                }
-                                                            }
-                                                        });
-                                            }
-
-                                            artistMap.put("genre", artistType);
-                                            changedSomething[0] = true;
-
-                                            if (!description.getText().toString().equals("")) {
-                                                artistMap.put("description", description.getText().toString());
-                                                changedSomething[0] = true;
-                                            }
-
-                                            if (changedSomething[0] || changePhoto) {
-                                                db.collection("users").document(user.getUid()).update(userMap);
-
-                                                db.collection("artists")
-                                                        .get()
-                                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                        Log.d("123", document.getId() + " => " + document.getData());
-                                                                        if (document.getString("user_id").equals(user.getUid())) {
-                                                                            db.collection("artists").document(document.getId()).update(artistMap);
-                                                                        }
-
-                                                                    }
-                                                                } else {
-                                                                    Log.w("123", "Error getting documents.", task.getException());
-                                                                }
-                                                            }
-                                                        });
-
-                                                if (changePhoto) {
-                                                    uploadPhoto();
-                                                } else {
-                                                    Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
-                                                    leaveNow();
-                                                }
-
+                                                updateEverything(oldPassword, newPassword);
+                                            } else {
+                                                updateInfo();
                                             }
                                         }
-
                                     }
                                 });
 
@@ -326,6 +251,102 @@ public class EditAccountActivity extends AppCompatActivity {
                 });
     }
 
+    private void updateEverything(EditText oldPassword, final EditText newPassword) {
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(user.getEmail(), oldPassword.getText().toString());
+
+        final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+        final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+        final TextView percentage = findViewById(R.id.perc);
+        dialogBox.setVisibility(View.VISIBLE);
+        wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+        percentage.setText("Uploading...");
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+        user.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            user.updatePassword(newPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("123", "Password updated");
+
+                                        updateInfo();
+
+                                    } else {
+                                        Log.d("123", "Error password not updated");
+                                    }
+
+                                    dialogBox.setVisibility(View.INVISIBLE);
+                                    wholeLayout.setBackgroundColor(Color.WHITE);
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                }
+                            });
+                        } else {
+                            dialogBox.setVisibility(View.INVISIBLE);
+                            wholeLayout.setBackgroundColor(Color.WHITE);
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    private void updateInfo() {
+        Map<String, Object> userMap = new HashMap<>();
+        final Map<String, Object> artistMap = new HashMap<>();
+        EditText username = findViewById(R.id.username);
+        EditText description = findViewById(R.id.description);
+        String artistType = sItems.getSelectedItem().toString();
+        final boolean[] changedSomething = {false};
+
+        if (!username.getText().toString().equals("")) {
+            userMap.put("username", username.getText().toString());
+            artistMap.put("display_name", username.getText().toString());
+            changedSomething[0] = true;
+        }
+
+        artistMap.put("genre", artistType);
+        changedSomething[0] = true;
+
+        if (!description.getText().toString().equals("")) {
+            artistMap.put("description", description.getText().toString());
+            changedSomething[0] = true;
+        }
+
+        if (changedSomething[0] || changePhoto) {
+            db.collection("users").document(user.getUid()).update(userMap);
+
+            DocumentReference docArtist = db.collection("artists").document(user.getUid());
+            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            db.collection("artists").document(document.getId()).update(artistMap);
+                        }
+                    } else {
+                        Log.w("123", "Error getting documents.", task.getException());
+                    }
+                }
+            });
+
+            if (changePhoto) {
+                uploadPhoto();
+            } else {
+                Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
+                leaveNow();
+            }
+
+        }
+    }
+
     private void getArtistInformation(String artist_id) {
         final EditText artistNameDisplay = findViewById(R.id.username);
         final EditText descriptionDisplay = findViewById(R.id.description);
@@ -374,6 +395,16 @@ public class EditAccountActivity extends AppCompatActivity {
 
                 if (!m_Text[0].isEmpty()) {
                     final AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
+                    final TextView percentage = findViewById(R.id.perc);
+
+                    final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+                    final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                    percentage.setText("Just a moment...");
+                    dialogBox.setVisibility(View.VISIBLE);
+                    wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
                     // Prompt the user to re-provide their sign-in credentials
                     user.reauthenticate(credential)
@@ -390,6 +421,9 @@ public class EditAccountActivity extends AppCompatActivity {
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
                                     }
+                                    dialogBox.setVisibility(View.INVISIBLE);
+                                    wholeLayout.setBackgroundColor(Color.WHITE);
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
                             });
                 }
@@ -409,24 +443,23 @@ public class EditAccountActivity extends AppCompatActivity {
         final Map<String, Object> userMap = new HashMap<>();
         userMap.put("is_artist", false);
 
-        db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        DocumentReference docArtist = db.collection("artists").document(user.getUid());
+        docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (final QueryDocumentSnapshot document : task.getResult()) {
-
-                        if (document.getString("user_id").equals(user.getUid())) {
-                            artistDoc[0] = document;
-
-                            if (document.getString("profile_image_url").equals("none")) {
-                                deleteArtist_NOTImage(userMap);
-                            } else {
-                                deleteArtist_ANDImage(userMap, document);
-                            }
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.getString("profile_image_url").equals("none")) {
+                            deleteArtist_NOTImage(userMap);
+                        } else {
+                            deleteArtist_ANDImage(userMap, document);
                         }
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
                 } else {
-                    Log.w("123", "Error getting documents.", task.getException());
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
@@ -434,6 +467,13 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void deleteUser() {
+        final TextView percentage = findViewById(R.id.perc);
+
+        final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+        final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+        percentage.setText("Just a moment...");
+        dialogBox.setVisibility(View.VISIBLE);
+        wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
 
         user.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -446,13 +486,18 @@ public class EditAccountActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-
+                                                dialogBox.setVisibility(View.INVISIBLE);
+                                                wholeLayout.setBackgroundColor(Color.WHITE);
+                                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
+                                                leaveNow();
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "Couldn't Delete Document", Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     });
-
-                            Toast.makeText(getApplicationContext(), "Account Deleted!", Toast.LENGTH_LONG).show();
-                            leaveNow();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Couldn't Delete User", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -463,6 +508,8 @@ public class EditAccountActivity extends AppCompatActivity {
         final Map<String, Object> userMap = new HashMap<>();
         userMap.put("is_artist", false);
         final String[] m_Text = {""};
+        final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+        final RelativeLayout wholeLayout = findViewById(R.id.constraint);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
         builder.setTitle("WARNING!");
@@ -475,13 +522,11 @@ public class EditAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                final ProgressBar progress = findViewById(R.id.progressBar);
-                final TextView percentage = findViewById(R.id.perc);
-                percentage.setText("Just a moment...");
-
                 m_Text[0] = input.getText().toString();
 
                 if (!m_Text[0].isEmpty()) {
+                    final TextView percentage = findViewById(R.id.perc);
+
                     AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), m_Text[0]);
 
                     // Prompt the user to re-provide their sign-in credentials
@@ -491,31 +536,40 @@ public class EditAccountActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 final ConstraintLayout dialogBox = findViewById(R.id.dialog);
                                 final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+                                percentage.setText("Just a moment...");
                                 dialogBox.setVisibility(View.VISIBLE);
                                 wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
 
-                                db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                                DocumentReference docArtist = db.collection("artists").document(user.getUid());
+                                docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                         if (task.isSuccessful()) {
-                                            for (final QueryDocumentSnapshot document : task.getResult()) {
-
-                                                if (document.getString("user_id").equals(user.getUid())) {
-                                                    artistDoc[0] = document;
-
-                                                    if (document.getString("profile_image_url").equals("none")) {
-                                                        deleteArtist_NOTImage(userMap);
-                                                    } else {
-                                                        deleteArtist_ANDImage(userMap, document);
-                                                    }
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                if (document.getString("profile_image_url").equals("none")) {
+                                                    deleteArtist_NOTImage(userMap);
+                                                } else {
+                                                    deleteArtist_ANDImage(userMap, document);
                                                 }
+                                            } else {
+                                                Log.d(TAG, "No such document");
                                             }
                                         } else {
-                                            Log.w("123", "Error getting documents.", task.getException());
+                                            dialogBox.setVisibility(View.INVISIBLE);
+                                            wholeLayout.setBackgroundColor(Color.WHITE);
+                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Log.d(TAG, "get failed with ", task.getException());
                                         }
                                     }
                                 });
                             } else {
+                                dialogBox.setVisibility(View.INVISIBLE);
+                                wholeLayout.setBackgroundColor(Color.WHITE);
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_LONG).show();
                             }
                         }
@@ -532,13 +586,13 @@ public class EditAccountActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void deleteArtist_ANDImage(final Map<String, Object> userMap, QueryDocumentSnapshot document) {
+    private void deleteArtist_ANDImage(final Map<String, Object> userMap, DocumentSnapshot document) {
         StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
 
         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                db.collection("artists").document(artistDoc[0].getId())
+                db.collection("artists").document(user.getUid())
                         .delete()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -567,7 +621,7 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void deleteArtist_NOTImage(final Map<String, Object> userMap) {
-        db.collection("artists").document(artistDoc[0].getId())
+        db.collection("artists").document(user.getUid())
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -677,6 +731,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Exception exception) {
                             dialogBox.setVisibility(View.INVISIBLE);
                             wholeLayout.setBackgroundColor(Color.WHITE);
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     })

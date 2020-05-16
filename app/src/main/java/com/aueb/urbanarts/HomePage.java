@@ -50,13 +50,12 @@ public class HomePage extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        final ProgressBar loadingIimage = findViewById(R.id.loading_image);
-
-        showUserInfo(loadingIimage);
-
         ImageView loginImg = findViewById(R.id.logIn);
         CardView login = findViewById(R.id.cardView1);
         if (mAuth.getCurrentUser() != null) {
+            final ProgressBar loadingIimage = findViewById(R.id.loading_image);
+            loadingIimage.setVisibility(View.VISIBLE);
+            showUserInfo(loadingIimage);
             loginImg.setImageResource(R.drawable.log_out);
             tempStr = "Log Out";
             temp = findViewById(R.id.tv_logIn);
@@ -91,6 +90,7 @@ public class HomePage extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
                     startActivity(myIntent);
+                    finish();
                 }
             });
         } else {
@@ -202,6 +202,9 @@ public class HomePage extends AppCompatActivity {
                                     }
                                 }
                             });
+                        } else {
+                            accountImage.setImageResource(R.drawable.uknown_artist);
+                            loadingIimage.setVisibility(View.INVISIBLE);
                         }
                     } else {
                         Log.d(TAG, "No such document");

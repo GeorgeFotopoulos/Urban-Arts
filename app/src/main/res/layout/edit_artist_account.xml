@@ -136,7 +136,7 @@
                 android:layout_marginRight="64dp"
                 android:background="@drawable/customborder"
                 android:gravity="top|left"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textMultiLine"
                 android:padding="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
