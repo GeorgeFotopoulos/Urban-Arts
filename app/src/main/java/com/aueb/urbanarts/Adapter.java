@@ -34,8 +34,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
     public void onBindViewHolder(myViewHolder holder, int position) {
         holder.profilePhoto.setImageResource(mData.get(position).getProfilePhoto());
         holder.artistName.setText(mData.get(position).getArtistName());
-        holder.eventType.setText(mData.get(position).getEventType());
-        holder.address.setText(mData.get(position).getAddress());
+        holder.eventType.setText(mData.get(position).getTypeOfArt());
+        holder.address.setText(mData.get(position).getLocation());
         holder.likeCount.setText(String.valueOf(mData.get(position).getLikeCount()));
         holder.commentCount.setText(String.valueOf(mData.get(position).getCommentCount()));
         if (mData.get(position).getLiveEvent()) {

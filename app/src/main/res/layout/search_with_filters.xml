@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/search_dentist_with_filters"
+                android:id="@+id/search"
                 style="@android:style/Widget.DeviceDefault.Button"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
@@ -38,10 +38,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/switch2" />
+                app:layout_constraintTop_toBottomOf="@+id/aSwitch" />
 
             <EditText
-                android:id="@+id/lastname"
+                android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -54,19 +54,19 @@
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_location" />
 
             <EditText
-                android:id="@+id/firstname"
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ems="10"
                 android:hint="e.g. Giannis Giannakis"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="@+id/lastname"
-                app:layout_constraintStart_toStartOf="@+id/lastname"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintEnd_toEndOf="@+id/location"
+                app:layout_constraintStart_toStartOf="@+id/location"
+                app:layout_constraintTop_toBottomOf="@+id/tv_artist_name" />
 
             <Spinner
                 android:id="@+id/genreSpinner"
@@ -76,45 +76,46 @@
                 android:layout_marginTop="4dp"
                 android:gravity="center"
                 android:scrollbarStyle="outsideInset"
-                app:layout_constraintEnd_toEndOf="@+id/firstname"
-                app:layout_constraintStart_toStartOf="@+id/firstname"
-                app:layout_constraintTop_toBottomOf="@+id/textView14" />
+                app:layout_constraintEnd_toEndOf="@+id/name"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/tv_art_genre" />
 
             <TextView
-                android:id="@+id/textView14"
+                android:id="@+id/tv_art_genre"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginTop="24dp"
-                android:text="Type of Art"
+                android:text="Art Genre"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="@+id/firstname"
-                app:layout_constraintStart_toStartOf="@+id/firstname"
-                app:layout_constraintTop_toBottomOf="@+id/firstname" />
+                app:layout_constraintEnd_toEndOf="@+id/name"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name" />
+
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/tv_location"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginTop="32dp"
                 android:text="Location (Region)"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="@+id/lastname"
-                app:layout_constraintStart_toStartOf="@+id/lastname"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintEnd_toEndOf="@+id/location"
+                app:layout_constraintStart_toStartOf="@+id/location"
+                app:layout_constraintTop_toBottomOf="@+id/tv_search_with_filters" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/tv_artist_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Artist Name"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="@+id/firstname"
-                app:layout_constraintStart_toStartOf="@+id/firstname"
-                app:layout_constraintTop_toBottomOf="@+id/lastname" />
+                app:layout_constraintEnd_toEndOf="@+id/name"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/location" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/tv_search_with_filters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -127,7 +128,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Switch
-                android:id="@+id/switch2"
+                android:id="@+id/aSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginTop="24dp"

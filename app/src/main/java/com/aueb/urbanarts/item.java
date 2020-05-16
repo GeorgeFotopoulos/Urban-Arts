@@ -1,69 +1,65 @@
 package com.aueb.urbanarts;
 
 public class item {
-    int profilePhoto, likeCount, commentCount;
-    String artistName, eventType, address;
-    boolean liveEvent;
-
-    public item() {
-
-    }
+    private int profilePhoto, likeCount, commentCount;
+    private String artistName, typeOfArt, location;
+    private boolean liveEvent;
 
     public item(item item) {
         this.profilePhoto = item.profilePhoto;
         this.artistName = item.artistName;
-        this.eventType = item.eventType;
-        this.address = item.address;
+        this.typeOfArt = item.typeOfArt;
+        this.location = item.location;
         this.likeCount = item.likeCount;
         this.commentCount = item.commentCount;
         this.liveEvent = item.liveEvent;
     }
 
-    public item(int profilePhoto, String artistName, String eventType, String address) {
+    public item(int profilePhoto, String artistName, String typeOfArt, String location) {
         this.profilePhoto = profilePhoto;
         this.artistName = artistName;
-        this.eventType = eventType;
-        this.address = address;
+        this.typeOfArt = typeOfArt;
+        this.location = location;
         this.likeCount = 0;
         this.commentCount = 0;
         this.liveEvent = true;
     }
 
-    public item(int profilePhoto, String artistName, String eventType, String address, int likeCount, int commentCount, boolean liveEvent) {
+    item(int profilePhoto, String artistName, String typeOfArt, String location, int likeCount, int commentCount, boolean liveEvent) {
         this.profilePhoto = profilePhoto;
         this.artistName = artistName;
-        this.eventType = eventType;
-        this.address = address;
+        this.typeOfArt = typeOfArt;
+        this.location = location;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.liveEvent = liveEvent;
     }
 
-    public int getProfilePhoto() {
+    int getProfilePhoto() {
         return profilePhoto;
     }
 
-    public String getArtistName() {
+    String getArtistName() {
         return this.artistName;
     }
 
-    public String getEventType() {
-        return this.eventType;
+    String getTypeOfArt() {
+        return this.typeOfArt;
     }
 
-    public String getAddress() {
-        return this.address;
+    String getLocation() {
+        return this.location;
     }
 
-    public int getLikeCount() {
+    int getLikeCount() {
         return this.likeCount;
     }
 
-    public int getCommentCount() {
+    int getCommentCount() {
         return this.commentCount;
     }
 
-    public boolean getLiveEvent() {
+    boolean getLiveEvent() {
         return this.liveEvent;
     }
 
@@ -87,11 +83,11 @@ public class item {
         this.artistName = artistName;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public void setTypeOfArt(String genre) {
+        this.typeOfArt = genre;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
