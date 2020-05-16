@@ -41,6 +41,7 @@ public class HomePage extends AppCompatActivity {
     private FirebaseAuth mAuth;
     String tempStr = "";
     TextView temp;
+    final String TAG = "123";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +50,12 @@ public class HomePage extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        final ProgressBar loadingIimage = findViewById(R.id.loading_image);
-        loadingIimage.setVisibility(View.INVISIBLE);
-
-        showUserInfo(loadingIimage);
-
         ImageView loginImg = findViewById(R.id.logIn);
         CardView login = findViewById(R.id.cardView1);
         if (mAuth.getCurrentUser() != null) {
+            final ProgressBar loadingIimage = findViewById(R.id.loading_image);
+            loadingIimage.setVisibility(View.VISIBLE);
+            showUserInfo(loadingIimage);
             loginImg.setImageResource(R.drawable.log_out);
             tempStr = "Log Out";
             temp = findViewById(R.id.tv_logIn);
@@ -91,6 +90,7 @@ public class HomePage extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent myIntent = new Intent(HomePage.this, EditAccountActivity.class);
                     startActivity(myIntent);
+                    finish();
                 }
             });
         } else {
@@ -151,74 +151,70 @@ public class HomePage extends AppCompatActivity {
     private void showUserInfo(final ProgressBar loadingIimage) {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            QueryDocumentSnapshot[] user = new QueryDocumentSnapshot[1];
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("123", document.getId() + " => " + document.getData());
-                                if (document.getId().equals(mAuth.getUid())) {
-                                    user[0] = document;
+        DocumentReference docUser = db.collection("users").document(mAuth.getUid());
+        docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
 
-                                    String userName = document.getString("username");
-                                    TextView displayName = findViewById(R.id.username_display);
+                        String userName = document.getString("username");
+                        TextView displayName = findViewById(R.id.username_display);
+                        final CircleImageView accountImage = findViewById(R.id.account);
 
-                                    displayName.setSelected(true);
+                        displayName.setSelected(true);
+                        displayName.setText(userName);
 
-                                    displayName.setText(userName);
+                        if (document.getBoolean("is_artist")) {
+                            loadingIimage.setVisibility(View.VISIBLE);
 
-                                }
-                            }
+                            DocumentReference docArtist = db.collection("artists").document(mAuth.getUid());
+                            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
 
-                            final CircleImageView accountImage = findViewById(R.id.account);
-
-                            if (user[0].getBoolean("is_artist")) {
-
-                                loadingIimage.setVisibility(View.VISIBLE);
-                                db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                if (document.getString("user_id").equals(mAuth.getUid())) {
-
-
-                                                    if (!document.getString("profile_image_url").equals("none")) {
-                                                        Picasso.with(getApplicationContext()).load(document.getString("profile_image_url")).into(accountImage, new com.squareup.picasso.Callback() {
-                                                            @Override
-                                                            public void onSuccess() {
-                                                                loadingIimage.setVisibility(View.INVISIBLE);
-                                                            }
-
-                                                            @Override
-                                                            public void onError() {
-
-                                                            }
-                                                        });
-                                                    } else {
-                                                        accountImage.setImageResource(R.drawable.uknown_artist);
+                                            if (!document.getString("profile_image_url").equals("none")) {
+                                                Picasso.with(getApplicationContext()).load(document.getString("profile_image_url")).into(accountImage, new com.squareup.picasso.Callback() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        loadingIimage.setVisibility(View.INVISIBLE);
                                                     }
 
-                                                } else {
-                                                    Log.d("123", "Not the same user!: ", task.getException());
-                                                }
+                                                    @Override
+                                                    public void onError() {
+
+                                                    }
+                                                });
+                                            } else {
+                                                accountImage.setImageResource(R.drawable.uknown_artist);
+                                                loadingIimage.setVisibility(View.INVISIBLE);
                                             }
+
                                         } else {
-                                            Log.d("123", "Error getting documents: ", task.getException());
+                                            Log.d(TAG, "No such document");
                                         }
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
                                     }
-                                });
-                            } else {
-                                accountImage.setImageResource(R.drawable.uknown_artist);
-                            }
+                                }
+                            });
                         } else {
-                            Log.d("123", "Error getting documents: ", task.getException());
+                            accountImage.setImageResource(R.drawable.uknown_artist);
+                            loadingIimage.setVisibility(View.INVISIBLE);
                         }
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
-                });
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
     }
 
     protected void openDialog() {

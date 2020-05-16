@@ -1,295 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/hide"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-
-    <ScrollView
-        android:id="@+id/scrollView2"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
+        android:layout_height="wrap_content">
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Artist Account Request"
+                    android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/genre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:text="Artist's Type:"
+                    android:textColor="#000000"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+                <TextView
+                    android:id="@+id/years"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:text="Date of Birth:"
+                    android:textColor="#000000"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/indiv_group" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Description:"
+                    android:textColor="#000000"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/calendar" />
+
+                <EditText
+                    android:id="@+id/description"
+                    android:layout_width="0dp"
+                    android:layout_height="145dp"
+                    android:layout_marginStart="64dp"
+                    android:layout_marginLeft="64dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="64dp"
+                    android:layout_marginRight="64dp"
+                    android:background="@drawable/customborder"
+                    android:gravity="top"
+                    android:inputType="text|textMultiLine"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+
+                <Button
+                    android:id="@+id/request"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/pink_button"
+                    android:text="REQUEST"
+                    android:textColor="#fff"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+                <Button
+                    android:id="@+id/upload_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/pink_button"
+                    android:padding="10dp"
+                    android:text="Upload Image"
+                    android:textColor="#fff"
+                    app:layout_constraintStart_toStartOf="@+id/description"
+                    app:layout_constraintTop_toBottomOf="@+id/description" />
+
+                <TextView
+                    android:id="@+id/file_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Upload a file..."
+                    app:layout_constraintStart_toStartOf="@+id/upload_image"
+                    app:layout_constraintTop_toBottomOf="@+id/upload_image" />
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Warning: Please keep in mind that false artist requests will be reviewed and the Urban Arts Team will take the appropriate actions!"
+                    app:layout_constraintEnd_toEndOf="@+id/description"
+                    app:layout_constraintStart_toStartOf="@+id/description"
+                    app:layout_constraintTop_toBottomOf="@+id/image" />
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="24dp"
+                    android:src="@drawable/artist"
+                    app:layout_constraintEnd_toEndOf="@+id/description"
+                    app:layout_constraintStart_toEndOf="@+id/upload_image"
+                    app:layout_constraintTop_toBottomOf="@+id/description" />
+
+                <TextView
+                    android:id="@+id/require1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="*"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/years"
+                    app:layout_constraintTop_toTopOf="@+id/years" />
+
+                <TextView
+                    android:id="@+id/require2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="*"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView9"
+                    app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+                <TextView
+                    android:id="@+id/require"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="*"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/group"
+                    app:layout_constraintTop_toTopOf="@+id/group" />
+
+                <TextView
+                    android:id="@+id/require3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="*"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/group"
+                    app:layout_constraintStart_toStartOf="@+id/textView17"
+                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+                <DatePicker
+                    android:id="@+id/calendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:calendarViewShown="false"
+                    android:datePickerMode="spinner"
+                    app:layout_constraintEnd_toEndOf="@+id/years"
+                    app:layout_constraintStart_toStartOf="@+id/years"
+                    app:layout_constraintTop_toBottomOf="@+id/years" />
+
+                <Switch
+                    android:id="@+id/indiv_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/genre" />
+
+                <TextView
+                    android:id="@+id/individual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Individual"
+                    app:layout_constraintBottom_toBottomOf="@+id/indiv_group"
+                    app:layout_constraintEnd_toStartOf="@+id/indiv_group"
+                    app:layout_constraintTop_toTopOf="@+id/indiv_group" />
+
+                <TextView
+                    android:id="@+id/group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="Group"
+                    app:layout_constraintBottom_toBottomOf="@+id/indiv_group"
+                    app:layout_constraintStart_toEndOf="@+id/indiv_group"
+                    app:layout_constraintTop_toTopOf="@+id/indiv_group" />
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:text="required fields"
+                    app:layout_constraintStart_toEndOf="@+id/require3"
+                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <View
+            android:id="@+id/clickable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:visibility="invisible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint"
+            android:id="@+id/dialog"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/white_search_box"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/scrollView2">
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Artist Account Request"
-                android:textSize="30sp"
+                android:layout_weight="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/genre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:text="Artist's Type:"
-                android:textColor="#000000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-            <TextView
-                android:id="@+id/years"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:text="Date of Birth:"
-                android:textColor="#000000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/indiv_group" />
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Description:"
-                android:textColor="#000000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/calendar" />
-
-            <EditText
-                android:id="@+id/description"
+                android:id="@+id/perc"
                 android:layout_width="0dp"
-                android:layout_height="145dp"
-                android:layout_marginStart="64dp"
-                android:layout_marginLeft="64dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="64dp"
-                android:layout_marginRight="64dp"
-                android:background="@drawable/customborder"
-                android:gravity="top"
-                android:inputType="text|textMultiLine"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="Please wait! This may take a moment."
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView13" />
-
-
-            <Button
-                android:id="@+id/request"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/pink_button"
-                android:text="REQUEST"
-                android:textColor="#fff"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView22" />
-
-            <Button
-                android:id="@+id/upload_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/pink_button"
-                android:padding="10dp"
-                android:text="Upload Image"
-                android:textColor="#fff"
-                app:layout_constraintStart_toStartOf="@+id/description"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
-
-            <TextView
-                android:id="@+id/file_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Upload a file..."
-                app:layout_constraintStart_toStartOf="@+id/upload_image"
-                app:layout_constraintTop_toBottomOf="@+id/upload_image" />
-
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Warning: Please keep in mind that false artist requests will be reviewed and the Urban Arts Team will take the appropriate actions!"
-                app:layout_constraintEnd_toEndOf="@+id/description"
-                app:layout_constraintStart_toStartOf="@+id/description"
-                app:layout_constraintTop_toBottomOf="@+id/image" />
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="24dp"
-                android:src="@drawable/artist"
-                app:layout_constraintEnd_toEndOf="@+id/description"
-                app:layout_constraintStart_toEndOf="@+id/upload_image"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
-
-            <TextView
-                android:id="@+id/require1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:text="*"
-                android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/years"
-                app:layout_constraintTop_toTopOf="@+id/years" />
-
-            <TextView
-                android:id="@+id/require2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:text="*"
-                android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/textView9"
-                app:layout_constraintTop_toTopOf="@+id/textView9" />
-
-            <TextView
-                android:id="@+id/require"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:text="*"
-                android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/group"
-                app:layout_constraintTop_toTopOf="@+id/group" />
-
-            <TextView
-                android:id="@+id/require3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="*"
-                android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/group"
-                app:layout_constraintStart_toStartOf="@+id/textView17"
-                app:layout_constraintTop_toBottomOf="@+id/textView17" />
-
-            <DatePicker
-                android:id="@+id/calendar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"
-                app:layout_constraintEnd_toEndOf="@+id/years"
-                app:layout_constraintStart_toStartOf="@+id/years"
-                app:layout_constraintTop_toBottomOf="@+id/years" />
-
-            <Switch
-                android:id="@+id/indiv_group"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginTop="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/genre" />
-
-            <TextView
-                android:id="@+id/individual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="Individual"
-                app:layout_constraintBottom_toBottomOf="@+id/indiv_group"
-                app:layout_constraintEnd_toStartOf="@+id/indiv_group"
-                app:layout_constraintTop_toTopOf="@+id/indiv_group" />
-
-            <TextView
-                android:id="@+id/group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:text="Group"
-                app:layout_constraintBottom_toBottomOf="@+id/indiv_group"
-                app:layout_constraintStart_toEndOf="@+id/indiv_group"
-                app:layout_constraintTop_toTopOf="@+id/indiv_group" />
-
-            <TextView
-                android:id="@+id/textView22"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginTop="8dp"
-                android:text="required fields"
-                app:layout_constraintStart_toEndOf="@+id/require3"
-                app:layout_constraintTop_toBottomOf="@+id/textView17" />
-
-
+                app:layout_constraintTop_toBottomOf="@+id/progressBar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dialog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/white_search_box"
-        android:orientation="horizontal"
-        android:padding="20dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scrollView2">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/perc"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:text="Please wait! This may take a moment."
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

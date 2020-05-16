@@ -44,13 +44,12 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/account"
             app:layout_constraintEnd_toEndOf="@+id/account"
             app:layout_constraintStart_toStartOf="@+id/account"
             app:layout_constraintTop_toTopOf="@+id/account" />
 
-
-        >
 
         <TextView
             android:id="@+id/username_display"
