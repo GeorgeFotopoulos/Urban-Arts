@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFilters extends AppCompatActivity {
-    String TAG, location = "", name = "", typeOfArt = "";
-    boolean yesFilter = false, live = false;
+    String TAG, location = "", name = "", typeOfArt = "", live = "";
+    boolean yesFilter = false;
     EditText tv_location, tv_name;
     Switch aSwitch;
     Spinner sItems;
@@ -85,10 +85,10 @@ public class SearchFilters extends AppCompatActivity {
 
                 aSwitch = findViewById(R.id.aSwitch);
                 if (aSwitch.isChecked()) {
-                    live = true;
+                    live = "true";
                     yesFilter = true;
-                } else if(!aSwitch.isChecked()) {
-                    live = false;
+                } else if (!aSwitch.isChecked()) {
+                    live = "false";
                     yesFilter = true;
                 }
 
@@ -97,7 +97,9 @@ public class SearchFilters extends AppCompatActivity {
                     if (!location.equals("")) intent.putExtra("location", location);
                     if (!name.equals("")) intent.putExtra("name", name);
                     if (!typeOfArt.equals("Choose...")) intent.putExtra("typeOfArt", typeOfArt);
-                    intent.putExtra("live", live);
+                    if (!live.equals("")) {
+                        intent.putExtra("live", live);
+                    }
                     startActivity(intent);
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "No filters were selected.", Toast.LENGTH_LONG);

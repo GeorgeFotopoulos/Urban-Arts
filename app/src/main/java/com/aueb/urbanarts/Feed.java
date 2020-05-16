@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Feed extends AppCompatActivity {
-    String location = "", name = "", typeOfArt = "";
+    String location = "", name = "", typeOfArt = "", liveStr = "";
     boolean locationExists = false, nameExists = false, typeOfArtExists = false;
-    Boolean live = null;
+    Boolean live;
     int size;
     Adapter adapter;
 
@@ -32,7 +32,15 @@ public class Feed extends AppCompatActivity {
             typeOfArt = intent.getStringExtra("typeOfArt");
             typeOfArtExists = true;
         }
-        live = intent.getBooleanExtra("live", false);
+
+        if (intent.getStringExtra("live") != null) {
+            liveStr = intent.getStringExtra("live");
+            if (liveStr.equals("true")) {
+                live = true;
+            } else if (liveStr.equals("false")) {
+                live = false;
+            }
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
@@ -55,21 +63,21 @@ public class Feed extends AppCompatActivity {
                 if (locationExists) {
                     if (nameExists) {
                         if (typeOfArtExists) {
-                            if (mList.get(i).getLocation().equals(location) && mList.get(i).getArtistName().equals(name) && mList.get(i).getTypeOfArt().equals(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         } else {
-                            if (mList.get(i).getLocation().equals(location) && mList.get(i).getArtistName().equals(name) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         }
                     } else {
                         if (typeOfArtExists) {
-                            if (mList.get(i).getLocation().equals(location) && mList.get(i).getTypeOfArt().equals(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         } else {
-                            if (mList.get(i).getLocation().equals(location) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         }
@@ -77,16 +85,16 @@ public class Feed extends AppCompatActivity {
                 } else {
                     if (nameExists) {
                         if (typeOfArtExists) {
-                            if (mList.get(i).getArtistName().equals(name) && mList.get(i).getTypeOfArt().equals(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         } else {
-                            if (mList.get(i).getArtistName().equals(name) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         }
                     } else {
-                        if (mList.get(i).getTypeOfArt().equals(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                        if (mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
                             filterList.add(mList.get(i));
                         }
                     }
