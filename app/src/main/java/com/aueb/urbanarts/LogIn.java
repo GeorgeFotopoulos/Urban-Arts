@@ -83,7 +83,7 @@ public class LogIn extends AppCompatActivity {
                     return;
                 }
 
-                if(correctInput = true) {
+                if (correctInput = true) {
                     mLoginBtn.setEnabled(false);
                 }
 
@@ -151,7 +151,6 @@ public class LogIn extends AppCompatActivity {
                 passwordResetDialog.create().show();
             }
         });
-
 
     }
 }
