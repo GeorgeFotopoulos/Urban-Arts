@@ -112,7 +112,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                 imageProg.setVisibility(View.VISIBLE);
 
                                 getArtistInformation(user.getUid());
-                                changeGenre(artist_type);
+
                                 showProfileImage(profileImage, imageProg);
 
 
@@ -482,6 +482,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         artistNameDisplay.setHint(artistName);
                         descriptionDisplay.setHint(artistDescription);
                         artist_type.add(artistGenre);
+                        changeGenre(artist_type);
                     } else {
                         Log.d(TAG, "No such document");
                     }
