@@ -38,8 +38,10 @@ public class Feed extends AppCompatActivity {
     Adapter adapter;
     Boolean live;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        adapter = new Adapter(Feed.this, mList);
         Intent intent = getIntent();
         if (intent.getStringExtra("location") != null) {
             location = intent.getStringExtra("location");
@@ -74,7 +76,7 @@ public class Feed extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (final QueryDocumentSnapshot document : task.getResult()) {
                         docArtist = document.getString("Artist");
                         docGenre = document.getString("genre");
                         docLocation = document.getString("location");
@@ -102,23 +104,75 @@ public class Feed extends AppCompatActivity {
                                         docArtistProfilePicture = documentSnapshot.getString("profile_image_url");
                                     }
                                     mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments));
-                                    eventID.add(eventsCollection.document().getId());
-                                    adapter = new Adapter(Feed.this, mList);
+                                    eventsList.add(document.getId());
+                                    Log.d("",eventsList.get(eventsList.size()-1));
                                     recyclerView.setAdapter(adapter);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+                                    adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(int position) {
+                                            final String eventID = eventsList.get(position);
+
+                                            DocumentReference docRef = database.collection("events").document(eventID);
+                                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        if (document.exists()) {
+                                                            Intent intent = new Intent(Feed.this, Event.class);
+                                                            intent.putExtra("eventID", eventID);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        } else {
+                                                            Log.d(TAG, "No such document");
+                                                        }
+                                                    } else {
+                                                        Log.d(TAG, "get failed with ", task.getException());
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                             });
                         } else {
                             docArtistProfilePicture = "none";
                             docArtist = "none";
                             mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments));
-                            eventID.add(eventsCollection.document().getId());
-                            adapter = new Adapter(Feed.this, mList);
+                            eventsList.add(document.getId());
+                            Log.d("",eventsList.get(eventsList.size()-1));
                             recyclerView.setAdapter(adapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+                            adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(int position) {
+                                    final String eventID = eventsList.get(position);
+
+                                    DocumentReference docRef = database.collection("events").document(eventID);
+                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    Intent intent = new Intent(Feed.this, Event.class);
+                                                    intent.putExtra("eventID", eventID);
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    Log.d(TAG, "No such document");
+                                                }
+                                            } else {
+                                                Log.d(TAG, "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
+                                }
+                            });
                         }
                     }
-                    Log.d(TAG, eventsList.toString());
+
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
@@ -170,7 +224,6 @@ public class Feed extends AppCompatActivity {
                 }
             }
         } else if (live != null) {
-            adapter = new Adapter(this, filterList);
             size = mList.size();
             for (int i = 0; i < size; i++) {
                 if (mList.get(i).isLiveEvent() == live) {
@@ -182,34 +235,7 @@ public class Feed extends AppCompatActivity {
             // Ίσως δημιουργήσει πρόβλημα
         }
 
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                final String eventID = eventsList.get(position);
 
-                DocumentReference docRef = database.collection("events").document(eventID);
-                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Intent intent = new Intent(Feed.this, Event.class);
-                                intent.putExtra("eventID", eventID);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Log.d(TAG, "No such document");
-                            }
-                        } else {
-                            Log.d(TAG, "get failed with ", task.getException());
-                        }
-                    }
-                });
-            }
-        });
     }
 
 }
