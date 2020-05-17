@@ -94,10 +94,15 @@ public class Event extends AppCompatActivity {
                         Images = (List<String>) document.get("gallery");
                         UsersAndComments = (ArrayList<String>) document.get("comments");
                         String[] result = new String[2];
-                        for (int i = 0; i < UsersAndComments.size(); i++) {
-                            result = UsersAndComments.get(i).split("@token@");
-                            Users.add(result[0]);
-                            Comments.add(result[1]);
+                        try {
+                            for (int i = 0; i < UsersAndComments.size(); i++) {
+                                result = UsersAndComments.get(i).split("@token@");
+                                Users.add(result[0]);
+                                Comments.add(result[1]);
+                            }
+                        }
+                        catch(Exception e){
+
                         }
                         final RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
                         if(Users.size()==0){
@@ -199,11 +204,20 @@ public class Event extends AppCompatActivity {
                                                 }
                                             });
                                             liked = (Map<String, Boolean>) document2.get("UserLiked");
-                                            if (liked.containsKey("pz56iXB5RWdPygrRaoBT")) {
-                                                if (liked.get("pz56iXB5RWdPygrRaoBT") == true) {
-                                                    check.setColorFilter(Color.parseColor("#b71e42"));
-                                                    upvtext.setText("Upvoted");
+                                            if(liked==null){
+                                                liked=new HashMap<>();
+                                                db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
+                                            }
+                                            try {
+                                                if (liked.containsKey("pz56iXB5RWdPygrRaoBT")) {
+                                                    if (liked.get("pz56iXB5RWdPygrRaoBT") == true) {
+                                                        check.setColorFilter(Color.parseColor("#b71e42"));
+                                                        upvtext.setText("Upvoted");
+                                                    }
                                                 }
+                                            }
+                                            catch(Exception e){
+
                                             }
                                             CL.setOnClickListener(new View.OnClickListener() {
                                                 @Override

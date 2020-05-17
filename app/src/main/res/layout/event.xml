@@ -147,7 +147,7 @@
 
     <TextView
         android:id="@+id/upvotes"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
@@ -192,11 +192,11 @@
 
     <ImageView
         android:id="@+id/live"
-        android:layout_width="49dp"
-        android:layout_height="20dp"
+        android:layout_width="54dp"
+        android:layout_height="22dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/scrollView3"
-        app:layout_constraintEnd_toEndOf="@+id/upvotes"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gallery"
         app:srcCompat="@drawable/live_event_yes" />
