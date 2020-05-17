@@ -190,4 +190,15 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ImageView
+        android:id="@+id/live"
+        android:layout_width="49dp"
+        android:layout_height="20dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
+        app:layout_constraintEnd_toEndOf="@+id/upvotes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gallery"
+        app:srcCompat="@drawable/live_event_yes" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -75,6 +75,11 @@ public class Event extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     final DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        ImageView LiveImg=findViewById(R.id.live);
+                        Boolean liveEvent=document.getBoolean("Live");
+                        if(liveEvent){
+                            LiveImg.setVisibility(View.VISIBLE);
+                        }
                         ArtistID = document.getString("ArtistID");
                         Artist = document.getString("Artist");
                         Location = document.getString("location");
