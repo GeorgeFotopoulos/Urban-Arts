@@ -69,7 +69,7 @@ public class Event extends AppCompatActivity {
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(Images.size());
         carouselView.setImageListener(imageListener);
-        DocumentReference docRef = db.collection("events").document("document_id");
+        DocumentReference docRef = db.collection("events").document(document_id);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
