@@ -191,19 +191,19 @@
                 android:weightSum="9">
 
                 <ImageView
-                    android:id="@+id/liveFeed"
+                    android:id="@+id/feed"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_margin="7dp"
                     android:layout_weight="7"
-                    android:src="@drawable/live_feed" />
+                    android:src="@drawable/feed" />
 
                 <TextView
-                    android:id="@+id/tv_liveFeed"
+                    android:id="@+id/tv_feed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/live_feed"
+                    android:text="Feed"
                     android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>

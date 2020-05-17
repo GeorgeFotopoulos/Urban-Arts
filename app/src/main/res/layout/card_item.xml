@@ -78,8 +78,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:srcCompat="@drawable/profile" />
+                card_view:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/commentImage"
@@ -121,7 +120,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:text="15"
                 app:layout_constraintBottom_toBottomOf="@+id/upvoteImage"
                 app:layout_constraintStart_toEndOf="@+id/upvoteImage"
                 app:layout_constraintTop_toTopOf="@+id/upvoteImage" />
@@ -132,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:text="3"
+                android:text="0"
                 app:layout_constraintBottom_toBottomOf="@+id/likeCount"
                 app:layout_constraintStart_toEndOf="@+id/commentImage"
                 app:layout_constraintTop_toTopOf="@+id/likeCount" />

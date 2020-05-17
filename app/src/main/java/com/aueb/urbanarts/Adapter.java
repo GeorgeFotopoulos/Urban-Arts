@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,13 +43,22 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
 
     @Override
     public void onBindViewHolder(myViewHolder holder, int position) {
-        holder.profilePhoto.setImageResource(mData.get(position).getProfilePhoto());
+        if (!(mData.get(position).getProfilePhoto()).equals("none")) {
+            Picasso.with(mContext.getApplicationContext()).load(mData.get(position).getProfilePhoto()).into(holder.profilePhoto);
+        } else {
+            holder.profilePhoto.setImageResource(R.drawable.profile);
+        }
+        if (!(mData.get(position).getEventPhoto()).equals("none")) {
+            Picasso.with(mContext.getApplicationContext()).load(mData.get(position).getEventPhoto()).into(holder.postImage);
+        } else {
+            holder.postImage.setImageResource(R.drawable.no_image_found);
+        }
         holder.artistName.setText(mData.get(position).getArtistName());
         holder.eventType.setText(mData.get(position).getTypeOfArt());
         holder.address.setText(mData.get(position).getLocation());
         holder.likeCount.setText(String.valueOf(mData.get(position).getLikeCount()));
         holder.commentCount.setText(String.valueOf(mData.get(position).getCommentCount()));
-        if (mData.get(position).getLiveEvent()) {
+        if (mData.get(position).isLiveEvent()) {
             holder.liveImage.setVisibility(View.VISIBLE);
         }
     }
@@ -58,7 +69,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
     }
 
     static class myViewHolder extends RecyclerView.ViewHolder {
-        ImageView profilePhoto, likeImage, commentImage, liveImage;
+        ImageView profilePhoto, likeImage, commentImage, liveImage, postImage;
         TextView artistName, eventType, address, likeCount, commentCount;
 
         myViewHolder(View itemView, final OnItemClickListener mListener) {
@@ -72,6 +83,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
             likeCount = itemView.findViewById(R.id.likeCount);
             commentCount = itemView.findViewById(R.id.commentCount);
             liveImage = itemView.findViewById(R.id.liveImage);
+            postImage = itemView.findViewById(R.id.postImage);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

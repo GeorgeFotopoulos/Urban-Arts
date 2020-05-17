@@ -80,7 +80,7 @@ public class HomePage extends AppCompatActivity {
         CardView register = findViewById(R.id.cardView2);
         if (mAuth.getCurrentUser() != null) {
             registerImg.setImageResource(R.drawable.edit_account);
-            tempStr = "My Account";
+            tempStr = "Edit Account";
             temp = findViewById(R.id.tv_register);
             temp.setText(tempStr);
             register.setOnClickListener(new View.OnClickListener() {

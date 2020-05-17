@@ -3,30 +3,39 @@ package com.aueb.urbanarts;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Feed extends AppCompatActivity {
-    String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "";
-    String docArtist, docGenre, docLocation, docArtistID;
-    boolean locationExists = false, nameExists = false, typeOfArtExists = false;
-    Boolean live;
-    int size;
-    Adapter adapter;
+    String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "", docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
+    boolean locationExists = false, nameExists = false, typeOfArtExists = false, docLive;
     FirebaseFirestore database = FirebaseFirestore.getInstance();
+    List<String> eventsList = new ArrayList<>();
+    List<String> docGallery = new ArrayList<>();
+    List<String> docCommentCount = new ArrayList<>();
+    List<item> filterList = new ArrayList<>();
+    int size, docLikes = 0, docComments = 0;
+    List<item> mList = new ArrayList<>();
+    Adapter adapter;
+    Boolean live;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,44 +67,71 @@ public class Feed extends AppCompatActivity {
         setContentView(R.layout.activity_feed);
 
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        final List<item> mList = new ArrayList<>();
 
-        mList.add(new item(R.drawable.artist_ex, "Panos", "Dancing", "Piraeus", true));
-        mList.add(new item(R.drawable.artist_image_1, "Panos", "Magic Show", "Piraeus", false));
-        mList.add(new item(R.drawable.artist_image_2, "Panos", "Music", "Piraeus", true));
-        mList.add(new item(R.drawable.artist_image_3, "Panos", "Painting", "Athens", true));
-        mList.add(new item(R.drawable.artist_ex, "Panos", "Music", "Athens", false));
-        mList.add(new item(R.drawable.artist_image_1, "Panos", "Stand-Up Comedy", "Athens", false));
-        mList.add(new item(R.drawable.artist_image_2, "Panos", "Graffiti", "Athens", false));
-        mList.add(new item(R.drawable.artist_image_3, "Panos", "Graffiti", "Athens", true));
-        mList.add(new item(R.drawable.artist_ex, "Panos", "Magic Show", "Athens", false));
-        mList.add(new item(R.drawable.artist_image_1, "Panos", "Stand-Up Comedy", "Piraeus", false));
-        mList.add(new item(R.drawable.artist_image_2, "Panos", "Dancing", "Athens", false));
-        mList.add(new item(R.drawable.artist_image_3, "Professor Gooby", "Music", "Lesvou 8, Dafni, 17237, Athens, Greece", true));
+        final CollectionReference eventsCollection = database.collection("events");
+        final CollectionReference artistsCollection = database.collection("artists");
+        eventsCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        docArtist = document.getString("Artist");
+                        docGenre = document.getString("genre");
+                        docLocation = document.getString("location");
+                        docGallery = (List<String>) document.get("gallery");
+                        docGalleryImage = docGallery.get(0);
+                        docLive = document.getBoolean("Live");
+                        docCommentCount = (List<String>) document.get("comments");
+                        docComments = docCommentCount.size();
+                        docLikes = Integer.parseInt(document.getString("likes"));
+                        docArtistID = document.getString("ArtistID");
+                        DocumentReference docRef = database.collection("artists").document(docArtistID);
+                        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                if (e != null) {
+                                    Log.w(TAG, "Listen failed.", e);
+                                    return;
+                                }
+                                if (documentSnapshot != null && documentSnapshot.exists()) {
+                                    docArtistProfilePicture = documentSnapshot.getString("profile_image_url");
+                                }
+                                mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments));
+                                adapter = new Adapter(Feed.this, mList);
+                                recyclerView.setAdapter(adapter);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+                            }
+                        });
+                    }
+                    Log.d(TAG, eventsList.toString());
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
 
         if (locationExists || nameExists || typeOfArtExists) {
-            List<item> filterList = new ArrayList<>();
             adapter = new Adapter(this, filterList);
             size = mList.size();
             for (int i = 0; i < size; i++) {
                 if (locationExists) {
                     if (nameExists) {
                         if (typeOfArtExists) {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         } else {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         }
                     } else {
                         if (typeOfArtExists) {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         } else {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).isLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         }
@@ -103,32 +139,32 @@ public class Feed extends AppCompatActivity {
                 } else {
                     if (nameExists) {
                         if (typeOfArtExists) {
-                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         } else {
-                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getLiveEvent() == live) {
+                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
                                 filterList.add(mList.get(i));
                             }
                         }
                     } else {
-                        if (mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).getLiveEvent() == live) {
+                        if (mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
                             filterList.add(mList.get(i));
                         }
                     }
                 }
             }
         } else if (live != null) {
-            List<item> filterList = new ArrayList<>();
             adapter = new Adapter(this, filterList);
             size = mList.size();
             for (int i = 0; i < size; i++) {
-                if (mList.get(i).getLiveEvent() == live) {
+                if (mList.get(i).isLiveEvent() == live) {
                     filterList.add(mList.get(i));
                 }
             }
         } else {
             adapter = new Adapter(this, mList);
+            // Ίσως δημιουργήσει πρόβλημα
         }
 
         recyclerView.setAdapter(adapter);
@@ -150,7 +186,7 @@ public class Feed extends AppCompatActivity {
                                 docArtist = document.getString("Artist");
                                 docGenre = document.getString("genre");
                                 docLocation = document.getString("location");
-                                if(artistName.equalsIgnoreCase(docArtist) && typeOfArt.equalsIgnoreCase(docGenre) && eventLocation.equalsIgnoreCase(docLocation)) {
+                                if (artistName.equalsIgnoreCase(docArtist) && typeOfArt.equalsIgnoreCase(docGenre) && eventLocation.equalsIgnoreCase(docLocation)) {
                                     docArtistID = document.getString("ArtistID");
                                 }
                                 Intent intent = new Intent(Feed.this, ArtistProfileActivity.class);

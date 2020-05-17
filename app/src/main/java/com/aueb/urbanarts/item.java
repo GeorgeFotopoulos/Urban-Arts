@@ -1,92 +1,82 @@
 package com.aueb.urbanarts;
 
 public class item {
-    private int profilePhoto, likeCount, commentCount;
-    private String artistName, typeOfArt, location;
+    private int likeCount, commentCount;
+    private String artistName, typeOfArt, location, eventPhoto="none", profilePhoto="none";
     private boolean liveEvent;
 
-    public item(item item) {
-        this.profilePhoto = item.profilePhoto;
-        this.artistName = item.artistName;
-        this.typeOfArt = item.typeOfArt;
-        this.location = item.location;
-        this.likeCount = item.likeCount;
-        this.commentCount = item.commentCount;
-        this.liveEvent = item.liveEvent;
-    }
-
-    public item(int profilePhoto, String typeOfArt, String location, boolean liveEvent) {
+    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount) {
         this.profilePhoto = profilePhoto;
-        this.typeOfArt = typeOfArt;
-        this.location = location;
-        this.likeCount = 0;
-        this.commentCount = 0;
-        this.liveEvent = liveEvent;
-    }
-
-    public item(int profilePhoto, String artistName, String typeOfArt, String location, boolean liveEvent) {
-        this.profilePhoto = profilePhoto;
+        this.eventPhoto = eventPhoto;
         this.artistName = artistName;
         this.typeOfArt = typeOfArt;
         this.location = location;
-        this.likeCount = 0;
-        this.commentCount = 0;
         this.liveEvent = liveEvent;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
     }
 
-    int getProfilePhoto() {
+    public String getProfilePhoto() {
         return profilePhoto;
     }
 
-    String getArtistName() {
-        return this.artistName;
-    }
-
-    String getTypeOfArt() {
-        return this.typeOfArt;
-    }
-
-    String getLocation() {
-        return this.location;
-    }
-
-    int getLikeCount() {
-        return this.likeCount;
-    }
-
-    int getCommentCount() {
-        return this.commentCount;
-    }
-
-    boolean getLiveEvent() {
-        return this.liveEvent;
-    }
-
-    public void setProfilePhoto(int profilePhoto) {
+    public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
     }
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
 
+    public int getCommentCount() {
+        return commentCount;
+    }
+
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
 
-    public void setLiveEvent(boolean liveEvent) {
-        this.liveEvent = liveEvent;
+    public String getArtistName() {
+        return artistName;
     }
 
     public void setArtistName(String artistName) {
         this.artistName = artistName;
     }
 
-    public void setTypeOfArt(String genre) {
-        this.typeOfArt = genre;
+    public String getTypeOfArt() {
+        return typeOfArt;
+    }
+
+    public void setTypeOfArt(String typeOfArt) {
+        this.typeOfArt = typeOfArt;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getEventPhoto() {
+        return eventPhoto;
+    }
+
+    public void setEventPhoto(String eventPhoto) {
+        this.eventPhoto = eventPhoto;
+    }
+
+    public boolean isLiveEvent() {
+        return liveEvent;
+    }
+
+    public void setLiveEvent(boolean liveEvent) {
+        this.liveEvent = liveEvent;
     }
 }
