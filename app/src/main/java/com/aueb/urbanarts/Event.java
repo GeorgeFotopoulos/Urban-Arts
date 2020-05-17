@@ -2,20 +2,25 @@ package com.aueb.urbanarts;
 
 import android.app.ActionBar;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -77,6 +82,7 @@ public class Event extends AppCompatActivity {
                         ArtistTV = findViewById(R.id.ArtistName);
                         GenreTV = findViewById(R.id.genre);
                         final ConstraintLayout CL = findViewById(R.id.upvotebtn);
+                        final Button CommentBtn = findViewById(R.id.commentbtn);
                         upvtext = findViewById(R.id.upvtext);
                         check = findViewById(R.id.check);
                         Images = (List<String>) document.get("gallery");
@@ -87,7 +93,7 @@ public class Event extends AppCompatActivity {
                             Users.add(result[0]);
                             Comments.add(result[1]);
                         }
-                        RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
+                        final RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
                         CommentAdapter = new CommentAdapter(Event.this, Users,Comments);
                         recyclerView.setAdapter(CommentAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(Event.this));
@@ -130,6 +136,50 @@ public class Event extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         final DocumentSnapshot document2 = task.getResult();
                                         if (document2.exists()) {
+                                            final EditText comment = findViewById(R.id.commenttext);
+
+                                                CommentBtn.setOnClickListener(new View.OnClickListener() {
+
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        if(!TextUtils.isEmpty(comment.getText())) {
+                                                        Users.add(document2.get("username") + "");
+
+                                                        Comments.add(comment.getText().toString());
+                                                        CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
+                                                        DocumentReference docRef4 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
+                                                        docRef4.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    final DocumentSnapshot document4 = task.getResult();
+                                                                    if (document4.exists()) {
+                                                                        UsersAndComments = (ArrayList<String>) document4.get("comments");
+                                                                        UsersAndComments.add(document2.get("username") + "@token@" + Comments.get(Comments.size() - 1));
+                                                                        db.collection("events").document("pz56iXB5RWdPygrRaoBT").update("comments", UsersAndComments);
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+                                                        recyclerView.setAdapter(CommentAdapter);
+                                                        recyclerView.setLayoutManager(new LinearLayoutManager(Event.this));
+
+                                                        Toast.makeText(Event.this, "Comment Made", Toast.LENGTH_SHORT).show();
+                                                        try {
+                                                            InputMethodManager inputManager = (InputMethodManager) Event.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                            inputManager.hideSoftInputFromWindow(Event.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                                                        } catch (Exception e) {
+
+                                                        }
+                                                        comment.setText("");
+                                                    }
+                                                        else{
+                                                            Toast.makeText(Event.this, "Please add a text to comment first", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+
+
                                             liked = (Map<String, Boolean>) document2.get("UserLiked");
                                             if (liked.containsKey("pz56iXB5RWdPygrRaoBT")) {
                                                 if (liked.get("pz56iXB5RWdPygrRaoBT") == true) {
@@ -215,6 +265,13 @@ public class Event extends AppCompatActivity {
                                     openDialog();
                                 }
                             });
+                            CommentBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    openDialog();
+                                }
+                            });
+
                         }
                     } else {
                         Log.d("", "No such document");
