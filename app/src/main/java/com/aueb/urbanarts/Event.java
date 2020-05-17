@@ -53,11 +53,12 @@ public class Event extends AppCompatActivity {
     CarouselView carouselView;
     TextView LocationTV, ArtistTV, GenreTV, upvotes, upvtext;
     ImageView check;
-    List<String> Images=new ArrayList<>();
+    List<String> Images = new ArrayList<>();
     List<String> Comments = new ArrayList<>();
-    List<String>Users = new ArrayList<>();
+    List<String> Users = new ArrayList<>();
     ArrayList<String> UsersAndComments;
     CommentAdapter CommentAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
@@ -88,13 +89,13 @@ public class Event extends AppCompatActivity {
                         Images = (List<String>) document.get("gallery");
                         UsersAndComments = (ArrayList<String>) document.get("comments");
                         String[] result = new String[2];
-                        for(int i=0;i<UsersAndComments.size();i++) {
+                        for (int i = 0; i < UsersAndComments.size(); i++) {
                             result = UsersAndComments.get(i).split("@token@");
                             Users.add(result[0]);
                             Comments.add(result[1]);
                         }
                         final RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
-                        CommentAdapter = new CommentAdapter(Event.this, Users,Comments);
+                        CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
                         recyclerView.setAdapter(CommentAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(Event.this));
                         if (ArtistID != "") {
@@ -138,11 +139,11 @@ public class Event extends AppCompatActivity {
                                         if (document2.exists()) {
                                             final EditText comment = findViewById(R.id.textComment);
 
-                                                CommentBtn.setOnClickListener(new View.OnClickListener() {
+                                            CommentBtn.setOnClickListener(new View.OnClickListener() {
 
-                                                    @Override
-                                                    public void onClick(View v) {
-                                                        if(!TextUtils.isEmpty(comment.getText())) {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    if (!TextUtils.isEmpty(comment.getText())) {
                                                         Users.add(document2.get("username") + "");
 
                                                         Comments.add(comment.getText().toString());
@@ -172,14 +173,11 @@ public class Event extends AppCompatActivity {
 
                                                         }
                                                         comment.setText("");
+                                                    } else {
+                                                        Toast.makeText(Event.this, "Please add a text to comment first", Toast.LENGTH_SHORT).show();
                                                     }
-                                                        else{
-                                                            Toast.makeText(Event.this, "Please add a text to comment first", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                });
-
-
+                                                }
+                                            });
                                             liked = (Map<String, Boolean>) document2.get("UserLiked");
                                             if (liked.containsKey("pz56iXB5RWdPygrRaoBT")) {
                                                 if (liked.get("pz56iXB5RWdPygrRaoBT") == true) {
@@ -211,7 +209,6 @@ public class Event extends AppCompatActivity {
                                                                 }
                                                             });
                                                         } else {
-
                                                             check.setColorFilter(Color.parseColor("#b71e42"));
                                                             upvtext.setText("Upvoted");
                                                             DocumentReference docRef3 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
