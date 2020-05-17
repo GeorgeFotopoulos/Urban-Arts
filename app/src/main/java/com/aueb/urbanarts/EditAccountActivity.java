@@ -12,8 +12,10 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -77,6 +79,7 @@ public class EditAccountActivity extends AppCompatActivity {
     String artistName;
     String artistGenre;
     String artistDescription;
+    List<String> artistGallery;
     final List<String> artist_type = new ArrayList<>();
 
 
@@ -84,6 +87,7 @@ public class EditAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
+
             DocumentReference docArtist = db.collection("users").document(user.getUid());
             docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -132,6 +136,15 @@ public class EditAccountActivity extends AppCompatActivity {
                                         uploadGallery = true;
                                         showFileChooser();
                                     }
+                                });
+
+                                GridView galleryToDelete = (GridView) findViewById(R.id.delete_gallery);
+                                galleryToDelete.setOnItemClickListener(new GridView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        deleteImageFromGallery(position);
+                                    }
+
                                 });
 
                                 findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
@@ -258,6 +271,82 @@ public class EditAccountActivity extends AppCompatActivity {
         }
     }
 
+    private void deleteImageFromGallery(final int position) {
+        final TextView percentage = findViewById(R.id.perc);
+        final ConstraintLayout dialogBox = findViewById(R.id.dialog);
+        final RelativeLayout wholeLayout = findViewById(R.id.constraint);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
+        builder.setTitle("WARNING!");
+        builder.setMessage("\nThis image will actually get deleted! This is PERMANENT. Are you sure?");
+
+        builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                percentage.setText("Deleting...");
+                dialogBox.setVisibility(View.VISIBLE);
+                wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
+
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                String imageUrl = artistGallery.get(position);
+                StorageReference fstore = mFirebaseStorage.getReferenceFromUrl(imageUrl);
+                fstore.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Map<String, Object> artistMap = new HashMap<>();
+                        artistGallery.remove(position);
+                        artistMap.put("gallery", artistGallery);
+
+                        percentage.setText("Just one moment...");
+
+                        db.collection("artists").document(user.getUid())
+                                .update(artistMap)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        dialogBox.setVisibility(View.INVISIBLE);
+                                        wholeLayout.setBackgroundColor(Color.WHITE);
+                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        showGallery();
+                                        Toast.makeText(getApplicationContext(), "Image Deleted!", Toast.LENGTH_LONG).show();
+                                        Log.d(TAG, "Image Deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        dialogBox.setVisibility(View.INVISIBLE);
+                                        wholeLayout.setBackgroundColor(Color.WHITE);
+                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        Log.w(TAG, "Error writing document", e);
+                                        Toast.makeText(getApplicationContext(), "Error in Delete!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        dialogBox.setVisibility(View.INVISIBLE);
+                        wholeLayout.setBackgroundColor(Color.WHITE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        Toast.makeText(getApplicationContext(), "Error in Delete!", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "Error deleting file...");
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
     private void updateEverything(EditText oldPassword, final EditText newPassword) {
         AuthCredential credential = EmailAuthProvider
                 .getCredential(user.getEmail(), oldPassword.getText().toString());
@@ -354,6 +443,19 @@ public class EditAccountActivity extends AppCompatActivity {
         }
     }
 
+    private void showGallery() {
+        TextView noGallery = findViewById(R.id.no_gallery);
+        if (artistGallery.isEmpty()) {
+            noGallery.setText("What are you waiting for?\nUpload something!!!");
+        } else {
+            GridViewAdapter gridViewAdapter = new GridViewAdapter(this, artistGallery);
+            GridView gridViewXML = (GridView) findViewById(R.id.delete_gallery);
+            gridViewXML.setAdapter(gridViewAdapter);
+            GridViewAdapter.setDynamicHeight(gridViewXML);
+            noGallery.setText("");
+        }
+
+    }
 
     private void getArtistInformation(String artist_id) {
         final EditText artistNameDisplay = findViewById(R.id.username);
@@ -371,7 +473,8 @@ public class EditAccountActivity extends AppCompatActivity {
                         artistName = document.getString("display_name");
                         artistGenre = document.getString("genre");
                         artistDescription = document.getString("description");
-
+                        artistGallery = (List<String>) document.get("gallery");
+                        showGallery();
                         artistNameDisplay.setHint(artistName);
                         descriptionDisplay.setHint(artistDescription);
                         artist_type.add(artistGenre);
