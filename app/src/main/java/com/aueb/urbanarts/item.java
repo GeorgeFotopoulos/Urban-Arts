@@ -16,6 +16,15 @@ public class item {
         this.commentCount = commentCount;
     }
 
+    public item(String eventPhoto, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount) {
+        this.eventPhoto = eventPhoto;
+        this.typeOfArt = typeOfArt;
+        this.location = location;
+        this.liveEvent = liveEvent;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+    }
+
     public String getProfilePhoto() {
         return profilePhoto;
     }
