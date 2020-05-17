@@ -29,12 +29,25 @@
         app:layout_constraintStart_toStartOf="@+id/gallery"
         app:layout_constraintTop_toBottomOf="@+id/location" />
 
+    <ImageView
+        android:id="@+id/no_image_view"
+        android:layout_width="0dp"
+        android:layout_height="215dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location"
+        app:srcCompat="@drawable/no_image_found" />
+
     <com.synnapps.carouselview.CarouselView
         android:id="@+id/gallery"
         android:layout_width="0dp"
         android:layout_height="215dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
+        android:visibility="invisible"
         app:animateOnBoundary="true"
         app:autoPlay="true"
         app:fillColor="#b71e42"

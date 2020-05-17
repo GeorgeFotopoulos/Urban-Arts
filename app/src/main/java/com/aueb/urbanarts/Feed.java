@@ -1,8 +1,10 @@
 package com.aueb.urbanarts;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,6 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Feed extends AppCompatActivity {
     String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "", docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
@@ -35,9 +39,10 @@ public class Feed extends AppCompatActivity {
     List<String> eventID = new ArrayList<>();
     int size, docLikes = 0, docComments = 0;
     List<item> mList = new ArrayList<>();
+    Map<String, Boolean> likedEvents;
+    private FirebaseAuth mAuth;
     Adapter adapter;
     Boolean live;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,21 @@ public class Feed extends AppCompatActivity {
         setContentView(R.layout.activity_feed);
 
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        final ImageView upvoteImage = findViewById(R.id.upvoteImage);
+        mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
+            final DocumentReference docRef = database.collection("users").document(mAuth.getCurrentUser().getUid());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        final DocumentSnapshot document = task.getResult();
+                        likedEvents = (Map<String, Boolean>) document.get("UserLiked");
+                    }
+                }
+            });
+        }
 
         final CollectionReference eventsCollection = database.collection("events");
         eventsCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -105,14 +125,22 @@ public class Feed extends AppCompatActivity {
                                     }
                                     mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments));
                                     eventsList.add(document.getId());
-                                    Log.d("",eventsList.get(eventsList.size()-1));
+
                                     recyclerView.setAdapter(adapter);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+                                    try {
+                                        if(likedEvents.get(eventsList.get(eventsList.size()-1))){
+                                            recyclerView.getAdapter().getItemId(1);
+                                            upvoteImage.setColorFilter(Color.parseColor("#b71e42"));
+                                        }
+                                    } catch (Exception exception) {
+                                        Log.d(TAG, "Mphke");
+                                    }
+                                    System.out.println("TEST");
                                     adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(int position) {
                                             final String eventID = eventsList.get(position);
-
                                             DocumentReference docRef = database.collection("events").document(eventID);
                                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
@@ -141,7 +169,8 @@ public class Feed extends AppCompatActivity {
                             docArtist = "none";
                             mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments));
                             eventsList.add(document.getId());
-                            Log.d("",eventsList.get(eventsList.size()-1));
+
+                            Log.d("", eventsList.get(eventsList.size() - 1));
                             recyclerView.setAdapter(adapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
                             adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
@@ -172,70 +201,66 @@ public class Feed extends AppCompatActivity {
                             });
                         }
                     }
-
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
         });
 
-        if (locationExists || nameExists || typeOfArtExists) {
-            adapter = new Adapter(this, filterList);
-            size = mList.size();
-            for (int i = 0; i < size; i++) {
-                if (locationExists) {
-                    if (nameExists) {
-                        if (typeOfArtExists) {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-                                filterList.add(mList.get(i));
-                            }
-                        } else {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
-                                filterList.add(mList.get(i));
-                            }
-                        }
-                    } else {
-                        if (typeOfArtExists) {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-                                filterList.add(mList.get(i));
-                            }
-                        } else {
-                            if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).isLiveEvent() == live) {
-                                filterList.add(mList.get(i));
-                            }
-                        }
-                    }
-                } else {
-                    if (nameExists) {
-                        if (typeOfArtExists) {
-                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-                                filterList.add(mList.get(i));
-                            }
-                        } else {
-                            if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
-                                filterList.add(mList.get(i));
-                            }
-                        }
-                    } else {
-                        if (mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-                            filterList.add(mList.get(i));
-                        }
-                    }
-                }
-            }
-        } else if (live != null) {
-            size = mList.size();
-            for (int i = 0; i < size; i++) {
-                if (mList.get(i).isLiveEvent() == live) {
-                    filterList.add(mList.get(i));
-                }
-            }
-        } else {
-            adapter = new Adapter(this, mList);
-            // Ίσως δημιουργήσει πρόβλημα
-        }
-
-
+        //if (locationExists || nameExists || typeOfArtExists) {
+        //    adapter = new Adapter(this, filterList);
+        //    size = mList.size();
+        //    for (int i = 0; i < size; i++) {
+        //        if (locationExists) {
+        //            if (nameExists) {
+        //                if (typeOfArtExists) {
+        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
+        //                        filterList.add(mList.get(i));
+        //                    }
+        //                } else {
+        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
+        //                        filterList.add(mList.get(i));
+        //                    }
+        //                }
+        //            } else {
+        //                if (typeOfArtExists) {
+        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
+        //                        filterList.add(mList.get(i));
+        //                    }
+        //                } else {
+        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).isLiveEvent() == live) {
+        //                        filterList.add(mList.get(i));
+        //                    }
+        //                }
+        //            }
+        //        } else {
+        //            if (nameExists) {
+        //                if (typeOfArtExists) {
+        //                    if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
+        //                        filterList.add(mList.get(i));
+        //                    }
+        //                } else {
+        //                    if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
+        //                        filterList.add(mList.get(i));
+        //                    }
+        //                }
+        //            } else {
+        //                if (mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
+        //                    filterList.add(mList.get(i));
+        //                }
+        //            }
+        //        }
+        //    }
+        //} else if (live != null) {
+        //    size = mList.size();
+        //    for (int i = 0; i < size; i++) {
+        //        if (mList.get(i).isLiveEvent() == live) {
+        //            filterList.add(mList.get(i));
+        //        }
+        //    }
+        //} else {
+        //    adapter = new Adapter(this, mList);
+        //    // Ίσως δημιουργήσει πρόβλημα
+        //}
     }
-
 }

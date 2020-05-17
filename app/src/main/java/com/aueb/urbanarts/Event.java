@@ -46,7 +46,7 @@ import java.util.Map;
 public class Event extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+    ImageView no_image_view;
     String ArtistID, Artist, Location, genre;
     String likes;
     Map<String, Boolean> liked = new HashMap<>();
@@ -67,6 +67,7 @@ public class Event extends AppCompatActivity {
         final String document_id = intent.getStringExtra("eventID");
         setContentView(R.layout.event);
         carouselView = findViewById(R.id.gallery);
+        no_image_view = findViewById(R.id.no_image_view);
         carouselView.setPageCount(Images.size());
         carouselView.setImageListener(imageListener);
         DocumentReference docRef = db.collection("events").document(document_id);
@@ -146,7 +147,11 @@ public class Event extends AppCompatActivity {
                         upvotes.setText(likes + " upvotes");
                         if (!Images.isEmpty()) {
                             showGallery(Images);
+                            carouselView.setVisibility(View.VISIBLE);
+                        } else {
+                            no_image_view.setVisibility(View.VISIBLE);
                         }
+
                         if (mAuth.getCurrentUser() != null) {
                             DocumentReference docRef2 = db.collection("users").document(mAuth.getCurrentUser().getUid());
                             docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
