@@ -2,20 +2,31 @@ package com.aueb.urbanarts;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Feed extends AppCompatActivity {
-    String location = "", name = "", typeOfArt = "", liveStr = "";
+    String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "";
+    String docArtist, docGenre, docLocation, docArtistID;
     boolean locationExists = false, nameExists = false, typeOfArtExists = false;
     Boolean live;
     int size;
     Adapter adapter;
+    FirebaseFirestore database = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +35,7 @@ public class Feed extends AppCompatActivity {
             location = intent.getStringExtra("location");
             locationExists = true;
         }
+
         if (intent.getStringExtra("name") != null) {
             name = intent.getStringExtra("name");
             nameExists = true;
@@ -45,21 +57,21 @@ public class Feed extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        List<item> mList = new ArrayList<>();
+        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        final List<item> mList = new ArrayList<>();
 
-        mList.add(new item(R.drawable.artist_ex, "Panos", "Dancing", "Piraeus", 5, 5, true));
-        mList.add(new item(R.drawable.artist_image_1, "Panos", "Magic Show", "Piraeus", 15, 15, false));
-        mList.add(new item(R.drawable.artist_image_2, "Panos", "Music", "piraeus", 25, 25, true));
-        mList.add(new item(R.drawable.artist_image_3, "Panos", "Painting", "Athens", 35, 35, true));
-        mList.add(new item(R.drawable.artist_ex, "panos", "Music", "Athens", 45, 45, false));
-        mList.add(new item(R.drawable.artist_image_1, "panos", "Stand-Up Comedy", "Athens", 55, 55, false));
-        mList.add(new item(R.drawable.artist_image_2, "panos", "Graffiti", "Athens", 55, 55, false));
-        mList.add(new item(R.drawable.artist_image_3, "panos", "Graffiti", "Athens", 55, 55, true));
-        mList.add(new item(R.drawable.artist_ex, "panos", "Magic Show", "Athens", 45, 45, false));
-        mList.add(new item(R.drawable.artist_image_1, "panos", "Stand-Up Comedy", "piraeus", 55, 55, false));
-        mList.add(new item(R.drawable.artist_image_2, "panos", "Dancing", "Athens", 55, 55, false));
-        mList.add(new item(R.drawable.artist_image_3, "panos", "Stand-Up Comedy", "Piraeus", 55, 55, true));
+        mList.add(new item(R.drawable.artist_ex, "Panos", "Dancing", "Piraeus", true));
+        mList.add(new item(R.drawable.artist_image_1, "Panos", "Magic Show", "Piraeus", false));
+        mList.add(new item(R.drawable.artist_image_2, "Panos", "Music", "Piraeus", true));
+        mList.add(new item(R.drawable.artist_image_3, "Panos", "Painting", "Athens", true));
+        mList.add(new item(R.drawable.artist_ex, "Panos", "Music", "Athens", false));
+        mList.add(new item(R.drawable.artist_image_1, "Panos", "Stand-Up Comedy", "Athens", false));
+        mList.add(new item(R.drawable.artist_image_2, "Panos", "Graffiti", "Athens", false));
+        mList.add(new item(R.drawable.artist_image_3, "Panos", "Graffiti", "Athens", true));
+        mList.add(new item(R.drawable.artist_ex, "Panos", "Magic Show", "Athens", false));
+        mList.add(new item(R.drawable.artist_image_1, "Panos", "Stand-Up Comedy", "Piraeus", false));
+        mList.add(new item(R.drawable.artist_image_2, "Panos", "Dancing", "Athens", false));
+        mList.add(new item(R.drawable.artist_image_3, "Professor Gooby", "Music", "Lesvou 8, Dafni, 17237, Athens, Greece", true));
 
         if (locationExists || nameExists || typeOfArtExists) {
             List<item> filterList = new ArrayList<>();
@@ -121,5 +133,40 @@ public class Feed extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                final String artistName = mList.get(position).getArtistName();
+                final String typeOfArt = mList.get(position).getTypeOfArt();
+                final String eventLocation = mList.get(position).getLocation();
+
+                DocumentReference docRef = database.collection("events").document("pz56iXB5RWdPygrRaoBT");
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                docArtist = document.getString("Artist");
+                                docGenre = document.getString("genre");
+                                docLocation = document.getString("location");
+                                if(artistName.equalsIgnoreCase(docArtist) && typeOfArt.equalsIgnoreCase(docGenre) && eventLocation.equalsIgnoreCase(docLocation)) {
+                                    docArtistID = document.getString("ArtistID");
+                                }
+                                Intent intent = new Intent(Feed.this, ArtistProfileActivity.class);
+                                intent.putExtra("ARTIST_DOCUMENT_ID", docArtistID);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+            }
+        });
     }
+
 }

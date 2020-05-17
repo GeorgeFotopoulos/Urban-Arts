@@ -1,10 +1,8 @@
 package com.aueb.urbanarts;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -25,11 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostSomething extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 22;
@@ -40,7 +35,6 @@ public class PostSomething extends AppCompatActivity {
     Spinner sItems;
     Button btnUpload, btnProceed;
     private Uri filePath;
-    private Bitmap bitmap;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
     @Override
