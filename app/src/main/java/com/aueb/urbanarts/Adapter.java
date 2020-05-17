@@ -1,6 +1,7 @@
 package com.aueb.urbanarts;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         holder.commentCount.setText(String.valueOf(mData.get(position).getCommentCount()));
         if (mData.get(position).isLiveEvent()) {
             holder.liveImage.setVisibility(View.VISIBLE);
+        }
+        if (mData.get(position).isLiked()) {
+            holder.likeImage.setColorFilter(Color.parseColor("#b71e42"));
         }
     }
 

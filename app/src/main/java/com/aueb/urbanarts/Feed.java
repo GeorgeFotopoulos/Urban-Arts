@@ -1,7 +1,6 @@
 package com.aueb.urbanarts;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -25,12 +24,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Feed extends AppCompatActivity {
     String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "", docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
-    boolean locationExists = false, nameExists = false, typeOfArtExists = false, docLive;
+    boolean locationExists = false, nameExists = false, typeOfArtExists = false, docLive,liked;
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     List<String> eventsList = new ArrayList<>();
     List<String> docGallery = new ArrayList<>();
@@ -39,7 +39,8 @@ public class Feed extends AppCompatActivity {
     List<String> eventID = new ArrayList<>();
     int size, docLikes = 0, docComments = 0;
     List<item> mList = new ArrayList<>();
-    Map<String, Boolean> likedEvents;
+    Map<String, Boolean> likedEvents=new HashMap<>();
+            ;
     private FirebaseAuth mAuth;
     Adapter adapter;
     Boolean live;
@@ -96,7 +97,20 @@ public class Feed extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+
                     for (final QueryDocumentSnapshot document : task.getResult()) {
+                        liked=false;
+                        try {
+                            Log.d("asdasda",document.getId());
+
+                           if(likedEvents.get(document.getId())){
+                                liked=true;
+                           }
+                        } catch (Exception exception) {
+                            Log.d(TAG, "Mphke");
+                            Log.d("asdasda________",document.getId());
+                        }
+
                         docArtist = document.getString("Artist");
                         docGenre = document.getString("genre");
                         docLocation = document.getString("location");
@@ -113,6 +127,7 @@ public class Feed extends AppCompatActivity {
                         docArtistID = document.getString("ArtistID");
                         if (!docArtistID.equals("")) {
                             DocumentReference docRef = database.collection("artists").document(docArtistID);
+
                             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -123,19 +138,14 @@ public class Feed extends AppCompatActivity {
                                     if (documentSnapshot != null && documentSnapshot.exists()) {
                                         docArtistProfilePicture = documentSnapshot.getString("profile_image_url");
                                     }
-                                    mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments));
-                                    eventsList.add(document.getId());
+
+
 
                                     recyclerView.setAdapter(adapter);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
-                                    try {
-                                        if(likedEvents.get(eventsList.get(eventsList.size()-1))){
-                                            recyclerView.getAdapter().getItemId(1);
-                                            upvoteImage.setColorFilter(Color.parseColor("#b71e42"));
-                                        }
-                                    } catch (Exception exception) {
-                                        Log.d(TAG, "Mphke");
-                                    }
+
+                                    mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked));
+                                    eventsList.add(document.getId());
                                     System.out.println("TEST");
                                     adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
                                         @Override
@@ -167,7 +177,7 @@ public class Feed extends AppCompatActivity {
                         } else {
                             docArtistProfilePicture = "none";
                             docArtist = "none";
-                            mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments));
+                            mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments,liked));
                             eventsList.add(document.getId());
 
                             Log.d("", eventsList.get(eventsList.size() - 1));

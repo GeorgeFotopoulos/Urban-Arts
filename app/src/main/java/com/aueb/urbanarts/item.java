@@ -3,9 +3,9 @@ package com.aueb.urbanarts;
 public class item {
     private int likeCount, commentCount;
     private String artistName, typeOfArt, location, eventPhoto="none", profilePhoto="none";
-    private boolean liveEvent;
+    private boolean liveEvent,liked;
 
-    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount) {
+    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount,boolean liked) {
         this.profilePhoto = profilePhoto;
         this.eventPhoto = eventPhoto;
         this.artistName = artistName;
@@ -14,6 +14,7 @@ public class item {
         this.liveEvent = liveEvent;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
+        this.liked=liked;
     }
 
     public String getProfilePhoto() {
@@ -78,5 +79,9 @@ public class item {
 
     public void setLiveEvent(boolean liveEvent) {
         this.liveEvent = liveEvent;
+    }
+
+    public boolean isLiked(){
+        return liked;
     }
 }
