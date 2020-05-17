@@ -150,13 +150,12 @@ public class Event extends AppCompatActivity {
                                         final DocumentSnapshot document2 = task.getResult();
                                         if (document2.exists()) {
                                             final EditText comment = findViewById(R.id.textComment);
-
                                             CommentBtn.setOnClickListener(new View.OnClickListener() {
 
                                                 @Override
                                                 public void onClick(View v) {
                                                     if (!TextUtils.isEmpty(comment.getText())) {
-                                                        if(Users.size()!=UsersAndComments.size()){
+                                                        if(Users.size()!=UsersAndComments.size()&Comments.contains("No comments yet.\nBe the first one to comment!")){
                                                             Users.remove(0);
                                                             Comments.remove(0);
                                                             recyclerView.removeViewAt(0);
