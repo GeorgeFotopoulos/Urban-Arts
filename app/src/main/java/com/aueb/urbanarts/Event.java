@@ -63,12 +63,13 @@ public class Event extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
-
+        Intent intent = getIntent();
+        final String document_id = intent.getStringExtra("eventID");
         setContentView(R.layout.event);
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(Images.size());
         carouselView.setImageListener(imageListener);
-        DocumentReference docRef = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
+        DocumentReference docRef = db.collection("events").document("document_id");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -173,7 +174,7 @@ public class Event extends AppCompatActivity {
 
                                                         Comments.add(comment.getText().toString());
                                                         CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
-                                                        DocumentReference docRef4 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
+                                                        DocumentReference docRef4 = db.collection("events").document(document_id);
                                                         docRef4.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -182,7 +183,7 @@ public class Event extends AppCompatActivity {
                                                                     if (document4.exists()) {
                                                                         UsersAndComments = (ArrayList<String>) document4.get("comments");
                                                                         UsersAndComments.add(document2.get("username") + "@token@" + Comments.get(Comments.size() - 1));
-                                                                        db.collection("events").document("pz56iXB5RWdPygrRaoBT").update("comments", UsersAndComments);
+                                                                        db.collection("events").document(document_id).update("comments", UsersAndComments);
                                                                     }
                                                                 }
                                                             }
@@ -209,8 +210,8 @@ public class Event extends AppCompatActivity {
                                                 db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
                                             }
                                             try {
-                                                if (liked.containsKey("pz56iXB5RWdPygrRaoBT")) {
-                                                    if (liked.get("pz56iXB5RWdPygrRaoBT") == true) {
+                                                if (liked.containsKey(document_id)) {
+                                                    if (liked.get(document_id) == true) {
                                                         check.setColorFilter(Color.parseColor("#b71e42"));
                                                         upvtext.setText("Upvoted");
                                                     }
@@ -222,11 +223,11 @@ public class Event extends AppCompatActivity {
                                             CL.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    if (liked.containsKey("pz56iXB5RWdPygrRaoBT")) {
-                                                        if (liked.get("pz56iXB5RWdPygrRaoBT") == true) {
+                                                    if (liked.containsKey(document_id)) {
+                                                        if (liked.get(document_id) == true) {
                                                             check.setColorFilter(Color.parseColor("#7C7C7C"));
                                                             upvtext.setText("Upvote");
-                                                            DocumentReference docRef3 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
+                                                            DocumentReference docRef3 = db.collection("events").document(document_id);
                                                             docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -235,9 +236,9 @@ public class Event extends AppCompatActivity {
                                                                         int templikes = Integer.parseInt(document3.getString("likes"));
                                                                         templikes--;
 
-                                                                        liked.put("pz56iXB5RWdPygrRaoBT", false);
+                                                                        liked.put(document_id, false);
                                                                         upvotes.setText(templikes + " upvotes");
-                                                                        db.collection("events").document("pz56iXB5RWdPygrRaoBT").update("likes", templikes + "");
+                                                                        db.collection("events").document(document_id).update("likes", templikes + "");
                                                                         db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
                                                                     }
                                                                 }
@@ -245,7 +246,7 @@ public class Event extends AppCompatActivity {
                                                         } else {
                                                             check.setColorFilter(Color.parseColor("#b71e42"));
                                                             upvtext.setText("Upvoted");
-                                                            DocumentReference docRef3 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
+                                                            DocumentReference docRef3 = db.collection("events").document(document_id);
                                                             docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -254,9 +255,9 @@ public class Event extends AppCompatActivity {
                                                                         int templikes = Integer.parseInt(document3.getString("likes"));
                                                                         templikes++;
 
-                                                                        liked.put("pz56iXB5RWdPygrRaoBT", true);
+                                                                        liked.put(document_id, true);
                                                                         upvotes.setText(templikes + " upvotes");
-                                                                        db.collection("events").document("pz56iXB5RWdPygrRaoBT").update("likes", templikes + "");
+                                                                        db.collection("events").document(document_id).update("likes", templikes + "");
                                                                         db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
                                                                     }
                                                                 }
@@ -275,9 +276,9 @@ public class Event extends AppCompatActivity {
                                                                     int templikes = Integer.parseInt(document3.getString("likes"));
                                                                     templikes++;
 
-                                                                    liked.put("pz56iXB5RWdPygrRaoBT", true);
+                                                                    liked.put(document_id, true);
                                                                     upvotes.setText(templikes + " upvotes");
-                                                                    db.collection("events").document("pz56iXB5RWdPygrRaoBT").update("likes", templikes + "");
+                                                                    db.collection("events").document(document_id).update("likes", templikes + "");
                                                                     db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
                                                                 }
                                                             }
