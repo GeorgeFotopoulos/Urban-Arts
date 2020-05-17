@@ -83,7 +83,7 @@ public class Feed extends AppCompatActivity {
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful()){
                         final DocumentSnapshot document = task.getResult();
                         likedEvents = (Map<String, Boolean>) document.get("UserLiked");
                     }
