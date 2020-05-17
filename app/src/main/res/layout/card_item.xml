@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:focusable="auto"
-    android:focusableInTouchMode="true">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/CardView"
+        android:id="@+id/feedCard"
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="300dp"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        card_view:cardUseCompatPadding="true"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
         card_view:layout_constraintTop_toTopOf="parent">
@@ -18,92 +24,96 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/customborder">
+            android:elevation="10dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/profilePhoto"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/profilePhoto">
+
+                <TextView
+                    android:id="@+id/artistName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Artist Name"
+                    android:textColor="#B71E42"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Address"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/artistName" />
+
+                <TextView
+                    android:id="@+id/eventType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Genre"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/address" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.mikhaellopez.circularimageview.CircularImageView
-                android:scaleType="centerCrop"
                 android:id="@+id/profilePhoto"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                card_view:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:srcCompat="@drawable/artist_ex" />
-
-            <TextView
-                android:id="@+id/artistName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Artist Name"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/eventType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Event Type"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-                app:layout_constraintTop_toBottomOf="@+id/artistName" />
-
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Address"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-                app:layout_constraintTop_toBottomOf="@+id/eventType" />
+                card_view:srcCompat="@drawable/profile" />
 
             <ImageView
                 android:id="@+id/commentImage"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                app:layout_constraintBottom_toBottomOf="@+id/likeImage"
-                app:layout_constraintStart_toEndOf="@+id/commentCount"
-                app:layout_constraintTop_toTopOf="@+id/likeImage"
-                card_view:srcCompat="@drawable/comment" />
+                android:layout_marginStart="32dp"
+                android:layout_marginLeft="32dp"
+                app:layout_constraintBottom_toBottomOf="@+id/upvoteImage"
+                app:layout_constraintStart_toEndOf="@+id/likeCount"
+                app:layout_constraintTop_toTopOf="@+id/upvoteImage"
+                android:src="@drawable/comment" />
 
             <ImageView
-                android:id="@+id/likeImage"
+                android:id="@+id/upvoteImage"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
                 android:layout_marginBottom="8dp"
+                android:src="@drawable/upvote"
+                android:tint="#7C7C7C"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/likeCount"
-                card_view:srcCompat="@drawable/like" />
+                app:layout_constraintStart_toStartOf="@+id/profilePhoto" />
 
             <ImageView
                 android:id="@+id/liveImage"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginLeft="32dp"
+                android:scaleType="fitStart"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/likeImage"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/likeImage"
-                card_view:srcCompat="@drawable/live_event_yes" />
+                app:layout_constraintBottom_toBottomOf="@+id/commentImage"
+                app:layout_constraintStart_toEndOf="@+id/commentCount"
+                app:layout_constraintTop_toTopOf="@+id/commentImage"
+                android:src="@drawable/live_event_yes" />
 
             <TextView
                 android:id="@+id/likeCount"
@@ -111,21 +121,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/likeImage"
-                app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-                app:layout_constraintTop_toTopOf="@+id/likeImage" />
+                android:text="15"
+                app:layout_constraintBottom_toBottomOf="@+id/upvoteImage"
+                app:layout_constraintStart_toEndOf="@+id/upvoteImage"
+                app:layout_constraintTop_toTopOf="@+id/upvoteImage" />
 
             <TextView
                 android:id="@+id/commentCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="3"
                 app:layout_constraintBottom_toBottomOf="@+id/likeCount"
-                app:layout_constraintEnd_toStartOf="@+id/liveImage"
-                app:layout_constraintStart_toStartOf="@+id/likeImage"
+                app:layout_constraintStart_toEndOf="@+id/commentImage"
                 app:layout_constraintTop_toTopOf="@+id/likeCount" />
+
+            <ImageView
+                android:id="@+id/postImage"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toTopOf="@+id/commentImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+                app:srcCompat="@drawable/art" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

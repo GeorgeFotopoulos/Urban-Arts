@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -62,17 +63,42 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     protected LatLng position;
     double lat;
     double lon;
+    String name, typeOfArt, liveStr, filePathStr;
+    Boolean live;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        if (intent.getStringExtra("name") != null) {
+            name = intent.getStringExtra("name");
+        }
+
+        if (intent.getStringExtra("typeOfArt") != null) {
+            typeOfArt = intent.getStringExtra("typeOfArt");
+        }
+
+        if (intent.getStringExtra("live") != null) {
+            liveStr = intent.getStringExtra("live");
+            if (liveStr.equals("true")) {
+                live = true;
+            } else if (liveStr.equals("false")) {
+                live = false;
+            }
+        }
+
+        if(intent.getStringExtra("filePath") != null) {
+            filePathStr = intent.getStringExtra("filePath");
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_post_on_map);
+
         checkPermission();
         getLocation();
+
         showAddress = findViewById(R.id.address_text);
         showAddress.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         showAddress.requestFocus();
-
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
@@ -109,7 +135,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         Button yes = dialog.findViewById(R.id.yes);
-        Button createnew = dialog.findViewById(R.id.signUp);
+        Button signUp = dialog.findViewById(R.id.signUp);
 
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +144,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
             }
         });
 
-        createnew.setOnClickListener(new View.OnClickListener() {
+        signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -184,7 +210,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
         }
-
     }
 
     public void getLocation() {
@@ -296,7 +321,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
             showAddress.setText(address);
         }
 
-
         if (marker != null) {
             marker.remove();
         }
@@ -336,4 +360,3 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         finish();
     }
 }
-

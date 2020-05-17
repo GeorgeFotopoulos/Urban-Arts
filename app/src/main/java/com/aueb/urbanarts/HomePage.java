@@ -62,7 +62,7 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mAuth.signOut();
-                    Intent myIntent = new Intent(HomePage.this, LogIn.class);
+                    Intent myIntent = new Intent(HomePage.this, HomePage.class);
                     HomePage.this.startActivity(myIntent);
                 }
             });
@@ -162,12 +162,12 @@ public class HomePage extends AppCompatActivity {
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // if (mAuth.getCurrentUser() != null) {
+                if (mAuth.getCurrentUser() != null) {
                     Intent myIntent = new Intent(HomePage.this, Event.class);
                     HomePage.this.startActivity(myIntent);
-               // } else {
-                 //   openDialog();
-               // }
+                } else {
+                    openDialog();
+                }
             }
         });
     }

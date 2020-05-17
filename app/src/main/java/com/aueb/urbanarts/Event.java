@@ -82,7 +82,7 @@ public class Event extends AppCompatActivity {
                         ArtistTV = findViewById(R.id.ArtistName);
                         GenreTV = findViewById(R.id.genre);
                         final ConstraintLayout CL = findViewById(R.id.upvotebtn);
-                        final Button CommentBtn = findViewById(R.id.commentbtn);
+                        final Button CommentBtn = findViewById(R.id.btnComment);
                         upvtext = findViewById(R.id.upvtext);
                         check = findViewById(R.id.check);
                         Images = (List<String>) document.get("gallery");
@@ -136,7 +136,7 @@ public class Event extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         final DocumentSnapshot document2 = task.getResult();
                                         if (document2.exists()) {
-                                            final EditText comment = findViewById(R.id.commenttext);
+                                            final EditText comment = findViewById(R.id.textComment);
 
                                                 CommentBtn.setOnClickListener(new View.OnClickListener() {
 

@@ -15,23 +15,22 @@ public class item {
         this.liveEvent = item.liveEvent;
     }
 
-    public item(int profilePhoto, String artistName, String typeOfArt, String location) {
+    public item(int profilePhoto, String typeOfArt, String location, boolean liveEvent) {
+        this.profilePhoto = profilePhoto;
+        this.typeOfArt = typeOfArt;
+        this.location = location;
+        this.likeCount = 0;
+        this.commentCount = 0;
+        this.liveEvent = liveEvent;
+    }
+
+    public item(int profilePhoto, String artistName, String typeOfArt, String location, boolean liveEvent) {
         this.profilePhoto = profilePhoto;
         this.artistName = artistName;
         this.typeOfArt = typeOfArt;
         this.location = location;
         this.likeCount = 0;
         this.commentCount = 0;
-        this.liveEvent = true;
-    }
-
-    item(int profilePhoto, String artistName, String typeOfArt, String location, int likeCount, int commentCount, boolean liveEvent) {
-        this.profilePhoto = profilePhoto;
-        this.artistName = artistName;
-        this.typeOfArt = typeOfArt;
-        this.location = location;
-        this.likeCount = likeCount;
-        this.commentCount = commentCount;
         this.liveEvent = liveEvent;
     }
 
