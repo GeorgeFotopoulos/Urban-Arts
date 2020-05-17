@@ -16,10 +16,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -200,17 +206,22 @@ public class HomePage extends AppCompatActivity {
                                         if (document.exists()) {
 
                                             if (!document.getString("profile_image_url").equals("none")) {
-                                                Picasso.with(getApplicationContext()).load(document.getString("profile_image_url")).into(accountImage, new com.squareup.picasso.Callback() {
-                                                    @Override
-                                                    public void onSuccess() {
-                                                        loadingIimage.setVisibility(View.INVISIBLE);
-                                                    }
+                                                Glide.with(getApplicationContext())
+                                                        .load(document.getString("profile_image_url"))
+                                                        .listener(new RequestListener() {
+                                                            @Override
+                                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                                                                loadingIimage.setVisibility(View.INVISIBLE);
+                                                                return false;
+                                                            }
 
-                                                    @Override
-                                                    public void onError() {
-
-                                                    }
-                                                });
+                                                            @Override
+                                                            public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                                                                loadingIimage.setVisibility(View.INVISIBLE);
+                                                                return false;
+                                                            }
+                                                        })
+                                                        .into(accountImage);
                                             } else {
                                                 accountImage.setImageResource(R.drawable.profile);
                                                 loadingIimage.setVisibility(View.INVISIBLE);

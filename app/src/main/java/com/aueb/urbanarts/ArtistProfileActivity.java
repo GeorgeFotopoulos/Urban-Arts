@@ -1,7 +1,6 @@
 package com.aueb.urbanarts;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,12 +11,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +28,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
@@ -228,17 +230,22 @@ public class ArtistProfileActivity extends AppCompatActivity {
             profileImage.setImageResource(R.drawable.profile);
             imageProg.setVisibility(View.INVISIBLE);
         } else {
-            Picasso.with(getApplicationContext()).load(imageURL).into(profileImage, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    imageProg.setVisibility(View.INVISIBLE);
-                }
+            Glide.with(getApplicationContext())
+                    .load(imageURL)
+                    .listener(new RequestListener() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                            imageProg.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
 
-                @Override
-                public void onError() {
-
-                }
-            });
+                        @Override
+                        public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                            imageProg.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
+                    })
+                    .into(profileImage);
         }
     }
 
@@ -252,16 +259,23 @@ public class ArtistProfileActivity extends AppCompatActivity {
         public void setImageForPosition(int position, ImageView imageView) {
 
             final ProgressBar loadGallery = findViewById(R.id.load_carousel);
-            Picasso.with(getApplicationContext()).load(artistGallery.get(position)).into(imageView, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    loadGallery.setVisibility(View.INVISIBLE);
-                }
 
-                @Override
-                public void onError() {
-                }
-            });
+            Glide.with(getApplicationContext())
+                    .load(artistGallery.get(position))
+                    .listener(new RequestListener() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                            loadGallery.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                            loadGallery.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
+                    })
+                    .into(imageView);
         }
     };
 

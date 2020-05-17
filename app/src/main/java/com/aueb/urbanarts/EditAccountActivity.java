@@ -30,6 +30,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,7 +53,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 
 import java.io.IOException;
@@ -764,17 +768,23 @@ public class EditAccountActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 imageURL[0] = String.valueOf(document.get("profile_image_url"));
                                 if (!imageURL[0].equals("none")) {
-                                    Picasso.with(getApplicationContext()).load(imageURL[0]).into(profileImage, new com.squareup.picasso.Callback() {
-                                        @Override
-                                        public void onSuccess() {
-                                            imageProg.setVisibility(View.INVISIBLE);
-                                        }
 
-                                        @Override
-                                        public void onError() {
+                                    Glide.with(getApplicationContext())
+                                            .load(document.getString("profile_image_url"))
+                                            .listener(new RequestListener() {
+                                                @Override
+                                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                                                    imageProg.setVisibility(View.INVISIBLE);
+                                                    return false;
+                                                }
 
-                                        }
-                                    });
+                                                @Override
+                                                public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                                                    imageProg.setVisibility(View.INVISIBLE);
+                                                    return false;
+                                                }
+                                            })
+                                            .into(profileImage);
                                 } else {
                                     profileImage.setImageResource(R.drawable.profile);
                                     imageProg.setVisibility(View.INVISIBLE);
