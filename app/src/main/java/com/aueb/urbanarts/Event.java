@@ -100,7 +100,14 @@ public class Event extends AppCompatActivity {
                             Comments.add(result[1]);
                         }
                         final RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
-                        CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
+                        if(Users.size()==0){
+                            Users.add(" ");
+                            Comments.add("No comments yet.\nBe the first one to comment!");
+                            CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
+                        }
+                        else {
+                            CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
+                        }
                         recyclerView.setAdapter(CommentAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(Event.this));
                         if (ArtistID != "") {
@@ -149,6 +156,15 @@ public class Event extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(View v) {
                                                     if (!TextUtils.isEmpty(comment.getText())) {
+                                                        if(Users.size()!=UsersAndComments.size()){
+                                                            Users.remove(0);
+                                                            Comments.remove(0);
+                                                            recyclerView.removeViewAt(0);
+                                                            CommentAdapter.notifyItemRemoved(0);
+                                                            CommentAdapter.notifyItemRangeChanged(0, UsersAndComments.size());
+                                                            CommentAdapter.notifyDataSetChanged();
+                                                        }
+
                                                         Users.add(document2.get("username") + "");
 
                                                         Comments.add(comment.getText().toString());
