@@ -81,7 +81,6 @@ public class GridViewAdapter extends BaseAdapter {
         layoutInFlater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-
             view = new View(context);
             view = layoutInFlater.inflate(R.layout.grid_item, null);
             ImageView imageDisplay = view.findViewById(R.id.image);
