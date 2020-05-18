@@ -169,8 +169,7 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mAuth.getCurrentUser() != null) {
-                    Intent myIntent = new Intent(HomePage.this, Event.class);
-                    HomePage.this.startActivity(myIntent);
+                    goMapView();
                 } else {
                     openDialog();
                 }
@@ -294,6 +293,13 @@ public class HomePage extends AppCompatActivity {
         Intent intent = new Intent(this, EditAccountActivity.class);
         startActivity(intent);
         Animatoo.animateInAndOut(this);
+        finish();
+    }
+
+    private void goMapView() {
+        Intent myIntent = new Intent(HomePage.this, ShowMapActivity.class);
+        HomePage.this.startActivity(myIntent);
+        Animatoo.animateFade(this);
         finish();
     }
 }

@@ -85,7 +85,7 @@ public class EditAccountActivity extends AppCompatActivity {
     String artistDescription;
     List<String> artistGallery;
     final List<String> artist_type = new ArrayList<>();
-
+    GridViewAdapter gridViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +118,13 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 findViewById(R.id.artist_image).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-                                        uploadGallery = false;
-                                        showFileChooser();
+                                        try {
+                                            uploadGallery = false;
+                                            showFileChooser();
+                                        } catch (Exception e) {
+                                            Toast.makeText(getApplicationContext(), "Please, try later!", Toast.LENGTH_LONG).show();
+                                            goHomePage();
+                                        }
                                     }
                                 });
 
@@ -137,8 +142,14 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 findViewById(R.id.upload_gallery).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-                                        uploadGallery = true;
-                                        showFileChooser();
+                                        try {
+                                            uploadGallery = true;
+                                            showFileChooser();
+                                        } catch (Exception e) {
+                                            Toast.makeText(getApplicationContext(), "Please, try later!", Toast.LENGTH_LONG).show();
+                                            goHomePage();
+                                        }
+
                                     }
                                 });
 
@@ -157,10 +168,15 @@ public class EditAccountActivity extends AppCompatActivity {
                                             EditText oldPassword = findViewById(R.id.old_password);
                                             final EditText newPassword = findViewById(R.id.new_password);
 
-                                            if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
-                                                updateEverything(oldPassword, newPassword);
-                                            } else {
-                                                updateInfo();
+                                            try {
+                                                if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
+                                                    updateEverything(oldPassword, newPassword);
+                                                } else {
+                                                    updateInfo();
+                                                }
+                                            } catch (Exception e) {
+                                                Toast.makeText(getApplicationContext(), "Please, try later!", Toast.LENGTH_LONG).show();
+                                                goHomePage();
                                             }
                                         }
                                     }
@@ -419,7 +435,7 @@ public class EditAccountActivity extends AppCompatActivity {
             changedSomething[0] = true;
         }
 
-        if (changedSomething[0] || changePhoto || uploadGallery) {
+        if (changedSomething[0] || filePathProfile != null || filePathGallery != null) {
             db.collection("users").document(user.getUid()).update(userMap);
 
             DocumentReference docArtist = db.collection("artists").document(user.getUid());
@@ -437,7 +453,7 @@ public class EditAccountActivity extends AppCompatActivity {
                 }
             });
 
-            if (changePhoto || uploadGallery) {
+            if (filePathProfile != null || filePathGallery != null) {
                 uploadPhoto();
             } else {
                 Toast.makeText(getApplicationContext(), "Update Successful!", Toast.LENGTH_LONG).show();
@@ -449,11 +465,15 @@ public class EditAccountActivity extends AppCompatActivity {
 
     private void showGallery() {
         TextView noGallery = findViewById(R.id.no_gallery);
+        GridView gridViewXML = (GridView) findViewById(R.id.delete_gallery);
+
         if (artistGallery.isEmpty()) {
+            if (gridViewAdapter != null) {
+                gridViewAdapter.clear(gridViewXML);
+            }
             noGallery.setText("What are you waiting for?\nUpload something!!!");
         } else {
-            GridViewAdapter gridViewAdapter = new GridViewAdapter(this, artistGallery);
-            GridView gridViewXML = (GridView) findViewById(R.id.delete_gallery);
+            gridViewAdapter = new GridViewAdapter(this, artistGallery);
             gridViewXML.setAdapter(gridViewAdapter);
             GridViewAdapter.setDynamicHeight(gridViewXML);
             noGallery.setText("");
@@ -861,13 +881,10 @@ public class EditAccountActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Uri> task) {
                                         if (task.isSuccessful()) {
                                             Uri downloadUri = task.getResult();
-                                            if (downloadUri == null)
+                                            if (downloadUri == null) {
                                                 return;
-                                            else {
-
+                                            } else {
                                                 percentage.setText("Just a moment...");
-                                                dialogBox.setVisibility(View.VISIBLE);
-                                                wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                                                 photoPath = String.valueOf(downloadUri);
 
                                                 DocumentReference docArtist = db.collection("artists").document(user.getUid());
@@ -877,7 +894,6 @@ public class EditAccountActivity extends AppCompatActivity {
                                                         if (task.isSuccessful()) {
                                                             final DocumentSnapshot document = task.getResult();
                                                             if (document.exists()) {
-
                                                                 if (!document.getString("profile_image_url").equals("none")) {
                                                                     StorageReference desertRef = mFirebaseStorage.getReferenceFromUrl(document.getString("profile_image_url"));
                                                                     desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -887,9 +903,11 @@ public class EditAccountActivity extends AppCompatActivity {
                                                                             artistMap.put("profile_image_url", photoPath);
                                                                             db.collection("artists").document(document.getId()).update(artistMap);
 
-                                                                            if (uploadGallery) {
+                                                                            if (filePathGallery != null) {
                                                                                 uploadGallery();
                                                                             } else {
+                                                                                dialogBox.setVisibility(View.INVISIBLE);
+                                                                                wholeLayout.setBackgroundColor(Color.WHITE);
                                                                                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                                                                 Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
                                                                                 goHomePage();
@@ -908,18 +926,26 @@ public class EditAccountActivity extends AppCompatActivity {
                                                                     Map<String, Object> artistMap = new HashMap<>();
                                                                     artistMap.put("profile_image_url", photoPath);
                                                                     db.collection("artists").document(document.getId()).update(artistMap);
+                                                                    Toast.makeText(getApplicationContext(), "Account Updated!", Toast.LENGTH_LONG).show();
+                                                                    goHomePage();
                                                                 }
                                                             } else {
+                                                                dialogBox.setVisibility(View.VISIBLE);
+                                                                wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                                                                 Log.d(TAG, "No such document");
                                                             }
                                                         } else {
+                                                            dialogBox.setVisibility(View.VISIBLE);
+                                                            wholeLayout.setBackgroundColor(Color.parseColor("#808080"));
                                                             Log.d(TAG, "get failed with ", task.getException());
                                                         }
                                                     }
                                                 });
                                             }
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_LONG).show();
                                         }
-                                        filePathProfile = null;
+
                                     }
                                 });
                             }
@@ -1053,7 +1079,6 @@ public class EditAccountActivity extends AppCompatActivity {
 
                 if (!uploadGallery) {
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePathProfile);
-                    changePhoto = true;
                     CircleImageView image = findViewById(R.id.artist_image);
                     image.setImageBitmap(bitmap);
                 } else {

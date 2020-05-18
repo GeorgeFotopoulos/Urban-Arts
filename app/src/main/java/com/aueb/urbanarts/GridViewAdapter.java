@@ -91,4 +91,16 @@ public class GridViewAdapter extends BaseAdapter {
         }
         return view;
     }
+
+    public void clear(GridView gridView) {
+        ListAdapter gridViewAdapter = gridView.getAdapter();
+        if (gridViewAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        ViewGroup.LayoutParams params = gridView.getLayoutParams();
+        params.height = 0;
+        gridView.setLayoutParams(params);
+    }
 }
