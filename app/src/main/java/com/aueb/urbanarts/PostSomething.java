@@ -19,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,12 +39,14 @@ public class PostSomething extends AppCompatActivity {
     Button btnUpload, btnProceed;
     private Uri filePath;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private List<ExampleItem> AppArtists=new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.make_post);
-
+        retrieveList();
         final List<String> genres = new ArrayList<>();
 
         fStore.collection("genre")
@@ -114,6 +119,33 @@ public class PostSomething extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void retrieveList() {
+
+        final CollectionReference eventsCollection = fStore.collection("Artists");
+        eventsCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (final QueryDocumentSnapshot document : task.getResult()) {
+                        final ExampleItem itemtoadd=new ExampleItem();
+                        itemtoadd.setID(document.getId());
+                        DocumentReference docRef = fStore.collection("Artists").document(document.getId());
+                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot artistinfo = task.getResult();
+                                    if (artistinfo.exists()) {
+                                        itemtoadd.setText1(artistinfo.getString("display_name"));
+                                    }
+                    }
+
+                }
+            }
+        });
+
     }
 
     @Override
