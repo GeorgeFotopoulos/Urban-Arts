@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="95dp"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar">
+        app:layout_constraintTop_toTopOf="parent"
+        card_view:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" >
 
-            <ImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profilePhoto"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +37,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:text="Name"
                 android:textColor="#000000"
                 android:textSize="18sp"
@@ -41,16 +44,45 @@
                 app:layout_constraintTop_toTopOf="@+id/profilePhoto" />
 
             <TextView
-                android:id="@+id/artistDescription"
+                android:id="@+id/artistGenre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Description"
-                android:ellipsize="end"
-                android:gravity="start"
-                android:maxLines="1"
+                android:text="Genre"
+                android:textColor="#B71E42"
                 app:layout_constraintStart_toStartOf="@+id/artistName"
                 app:layout_constraintTop_toBottomOf="@+id/artistName" />
+
+            <TextView
+                android:id="@+id/artistDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Description"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/artistName"
+                app:layout_constraintTop_toBottomOf="@+id/artistGenre" />
+
+            <TextView
+                android:id="@+id/artistAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="Age"
+                app:layout_constraintBottom_toBottomOf="@+id/artistGenre"
+                app:layout_constraintStart_toEndOf="@+id/comma"
+                app:layout_constraintTop_toTopOf="@+id/artistGenre" />
+
+            <TextView
+                android:id="@+id/comma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=","
+                app:layout_constraintBottom_toBottomOf="@+id/artistGenre"
+                app:layout_constraintStart_toEndOf="@+id/artistGenre"
+                app:layout_constraintTop_toTopOf="@+id/artistGenre" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

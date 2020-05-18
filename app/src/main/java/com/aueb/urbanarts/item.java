@@ -1,11 +1,11 @@
 package com.aueb.urbanarts;
 
 public class item {
+    private String artistName, typeOfArt, location, eventPhoto, profilePhoto, artistDescription, year, artistType;
     private int likeCount, commentCount;
-    private String artistName, typeOfArt, location, eventPhoto="none", profilePhoto="none";
-    private boolean liveEvent,liked;
+    private boolean liveEvent, liked;
 
-    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount,boolean liked) {
+    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount, boolean liked) {
         this.profilePhoto = profilePhoto;
         this.eventPhoto = eventPhoto;
         this.artistName = artistName;
@@ -14,7 +14,48 @@ public class item {
         this.liveEvent = liveEvent;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
-        this.liked=liked;
+        this.liked = liked;
+    }
+
+    public item(String profilePhoto, String artistName, String artistDescription, String typeOfArt, String year, String artistType) {
+        this.profilePhoto = profilePhoto;
+        this.artistName = artistName;
+        this.artistDescription = artistDescription;
+        this.typeOfArt = typeOfArt;
+        this.year = year;
+        this.artistType = artistType;
+    }
+
+    public String getArtistType() {
+        return artistType;
+    }
+
+    public void setArtistType(String artistType) {
+        this.artistType = artistType;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getArtistDescription() {
+        return artistDescription;
+    }
+
+    public void setArtistDescription(String artistDescription) {
+        this.artistDescription = artistDescription;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     public String getProfilePhoto() {
@@ -79,9 +120,5 @@ public class item {
 
     public void setLiveEvent(boolean liveEvent) {
         this.liveEvent = liveEvent;
-    }
-
-    public boolean isLiked(){
-        return liked;
     }
 }

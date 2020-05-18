@@ -53,6 +53,8 @@ public class ArtistProfileActivity extends AppCompatActivity {
     String followersNum;
     String artistDescription;
     String artistImage;
+    String artist_id;
+    String artistID;
     List<String> artistGallery = new ArrayList<>();
 
 
@@ -65,10 +67,17 @@ public class ArtistProfileActivity extends AppCompatActivity {
         imageProg.setVisibility(View.VISIBLE);
 
         Intent intent = getIntent();
-        final String artist_id = intent.getStringExtra("ARTIST_DOCUMENT_ID");
-        whoIsIt(artist_id);
+        if(intent.getStringExtra("ARTIST_DOCUMENT_ID")!=null){
+            artist_id = intent.getStringExtra("ARTIST_DOCUMENT_ID");
+            whoIsIt(artist_id);
+            getArtistInformation(artist_id);
+        }
 
-        getArtistInformation(artist_id);
+        if(intent.getStringExtra("artistID") != null){
+            String artistID = intent.getStringExtra("artistID");
+            whoIsIt(artistID);
+            getArtistInformation(artistID);
+        }
 
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(artistGallery.size());
