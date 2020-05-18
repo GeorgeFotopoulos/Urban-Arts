@@ -39,7 +39,7 @@ public class PostSomething extends AppCompatActivity {
     Button btnUpload, btnProceed;
     private Uri filePath;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    private List<ExampleItem> AppArtists=new ArrayList<>();
+    private List<ExampleItem> AppArtists = new ArrayList<>();
 
 
     @Override
@@ -73,7 +73,7 @@ public class PostSomething extends AppCompatActivity {
         btnUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (v == btnUpload) {
-                    showFileChooser();
+//                    showFileChooser();
                     yesFilter = true;
                 }
             }
@@ -129,7 +129,7 @@ public class PostSomething extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (final QueryDocumentSnapshot document : task.getResult()) {
-                        final ExampleItem itemtoadd=new ExampleItem();
+                        final ExampleItem itemtoadd = new ExampleItem();
                         itemtoadd.setID(document.getId());
                         DocumentReference docRef = fStore.collection("Artists").document(document.getId());
                         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -140,12 +140,16 @@ public class PostSomething extends AppCompatActivity {
                                     if (artistinfo.exists()) {
                                         itemtoadd.setText1(artistinfo.getString("display_name"));
                                     }
-                    }
+                                }
 
+                            }
+
+
+                        });
+                    }
                 }
             }
         });
-
     }
 
     @Override
