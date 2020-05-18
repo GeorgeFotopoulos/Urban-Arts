@@ -26,12 +26,12 @@ import java.util.List;
 
 public class SearchFilters extends AppCompatActivity {
     String TAG, location = "", name = "", typeOfArt = "", live = "";
-    boolean yesFilter = false;
+    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     EditText tv_location, tv_name;
+    boolean yesFilter = false;
+    Button btnSearch;
     Switch aSwitch;
     Spinner sItems;
-    Button btnSearch;
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

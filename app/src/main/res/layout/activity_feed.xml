@@ -88,7 +88,7 @@
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginBottom="4dp"
-            android:background="#ffffff"
+            android:background="@null"
             android:scaleType="fitXY"
             android:src="@drawable/google_maps_location"
             app:layout_constraintBottom_toBottomOf="parent"

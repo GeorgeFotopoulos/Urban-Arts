@@ -4,8 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,17 +30,17 @@ import java.util.List;
 import java.util.Map;
 
 public class Feed extends AppCompatActivity {
-    String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "", docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
-    boolean locationExists = false, nameExists = false, typeOfArtExists = false, docLive, liked;
+    String docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
+    String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "";
+    boolean locationExists = false, nameExists = false, typeOfArtExists = false;
+    boolean docLive, liked, toBeAdded = true;
     FirebaseFirestore database = FirebaseFirestore.getInstance();
+    Map<String, Boolean> likedEvents = new HashMap<>();
+    List<String> docCommentCount = new ArrayList<>();
     List<String> eventsList = new ArrayList<>();
     List<String> docGallery = new ArrayList<>();
-    List<String> docCommentCount = new ArrayList<>();
-    List<item> filterList = new ArrayList<>();
-    List<String> eventID = new ArrayList<>();
-    int size, docLikes = 0, docComments = 0;
     List<item> mList = new ArrayList<>();
-    Map<String, Boolean> likedEvents = new HashMap<>();
+    int docLikes = 0, docComments = 0;
     private FirebaseAuth mAuth;
     Adapter adapter;
     Boolean live;
@@ -50,8 +49,8 @@ public class Feed extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-
         adapter = new Adapter(Feed.this, mList);
+
         Intent intent = getIntent();
         if (intent.getStringExtra("location") != null) {
             location = intent.getStringExtra("location");
@@ -77,10 +76,19 @@ public class Feed extends AppCompatActivity {
         }
 
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        final ImageView upvoteImage = findViewById(R.id.upvoteImage);
+
+        ImageButton btn_map = findViewById(R.id.my_location);
+        btn_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Feed.this, ShowMapActivity.class);
+                intent.putStringArrayListExtra("events", (ArrayList<String>) eventsList);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         mAuth = FirebaseAuth.getInstance();
-
-
         if (mAuth.getCurrentUser() != null) {
             final DocumentReference docRef = database.collection("users").document(mAuth.getCurrentUser().getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -94,120 +102,128 @@ public class Feed extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
-
                                     for (final QueryDocumentSnapshot document : task.getResult()) {
-                                        if (document.getString("Artist").equals("Professor Gooby")) {
-
-                                            liked = false;
-                                            try {
-                                                Log.d("asdasda", document.getId());
-
-                                                if (likedEvents.get(document.getId())) {
-                                                    liked = true;
-                                                }
-                                            } catch (Exception exception) {
-                                                Log.d(TAG, "Mphke");
-                                                Log.d("asdasda________", document.getId());
+                                        toBeAdded = true;
+                                        liked = false;
+                                        try {
+                                            if (likedEvents.get(document.getId())) {
+                                                liked = true;
                                             }
-
-                                            docArtist = document.getString("Artist");
-                                            docGenre = document.getString("genre");
-                                            docLocation = document.getString("location");
-                                            docGallery = (List<String>) document.get("gallery");
-                                            try {
-                                                docGalleryImage = docGallery.get(0);
-                                            } catch (Exception e) {
-                                                docGalleryImage = "none";
-                                            }
-                                            docLive = document.getBoolean("Live");
-                                            docCommentCount = (List<String>) document.get("comments");
-                                            docComments = docCommentCount.size();
+                                        } catch (Exception exception) {
+                                            Log.d(TAG, "Exception");
+                                        }
+                                        docArtist = document.getString("Artist");
+                                        docGenre = document.getString("genre");
+                                        docLocation = document.getString("location");
+                                        docGallery = (List<String>) document.get("gallery");
+                                        try {
+                                            docGalleryImage = docGallery.get(0);
+                                        } catch (Exception e) {
+                                            docGalleryImage = "none";
+                                        }
+                                        docLive = document.getBoolean("Live");
+                                        docCommentCount = (List<String>) document.get("comments");
+                                        docComments = docCommentCount.size();
+                                        try {
                                             docLikes = Integer.parseInt(document.getString("likes"));
-                                            docArtistID = document.getString("ArtistID");
-                                            if (!docArtistID.equals("")) {
-                                                DocumentReference docRef = database.collection("artists").document(docArtistID);
-
-                                                docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                                        if (e != null) {
-                                                            Log.w(TAG, "Listen failed.", e);
-                                                            return;
-                                                        }
-                                                        if (documentSnapshot != null && documentSnapshot.exists()) {
-                                                            docArtistProfilePicture = documentSnapshot.getString("profile_image_url");
-                                                        }
-
-
-                                                        recyclerView.setAdapter(adapter);
-                                                        recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
-
+                                        } catch (Exception e) {
+                                        }
+                                        if (locationExists) {
+                                            if (!location.equals(docLocation))
+                                                toBeAdded = false;
+                                        }
+                                        if (nameExists) {
+                                            if (!name.equals(docArtist))
+                                                toBeAdded = false;
+                                        }
+                                        if (typeOfArtExists) {
+                                            if (!typeOfArt.equals(docGenre))
+                                                toBeAdded = false;
+                                        }
+                                        if (live != null) {
+                                            if (!(live == docLive))
+                                                toBeAdded = false;
+                                        }
+                                        docArtistID = document.getString("ArtistID");
+                                        if (!docArtistID.equals("")) {
+                                            DocumentReference docRef = database.collection("artists").document(docArtistID);
+                                            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                                    if (e != null) {
+                                                        Log.w(TAG, "Listen failed.", e);
+                                                        return;
+                                                    }
+                                                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                                                        docArtistProfilePicture = documentSnapshot.getString("profile_image_url");
+                                                    }
+                                                    recyclerView.setAdapter(adapter);
+                                                    recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+                                                    if (toBeAdded) {
                                                         mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked));
                                                         eventsList.add(document.getId());
-                                                        System.out.println("TEST");
-                                                        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
-                                                            @Override
-                                                            public void onItemClick(int position) {
-                                                                final String eventID = eventsList.get(position);
-                                                                DocumentReference docRef = database.collection("events").document(eventID);
-                                                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                        if (task.isSuccessful()) {
-                                                                            DocumentSnapshot document = task.getResult();
-                                                                            if (document.exists()) {
-                                                                                Intent intent = new Intent(Feed.this, Event.class);
-                                                                                intent.putExtra("eventID", eventID);
-                                                                                startActivity(intent);
-                                                                                finish();
-                                                                            } else {
-                                                                                Log.d(TAG, "No such document");
-                                                                            }
-                                                                        } else {
-                                                                            Log.d(TAG, "get failed with ", task.getException());
-                                                                        }
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
                                                     }
-                                                });
-                                            } else {
-                                                docArtistProfilePicture = "none";
-                                                docArtist = "none";
+                                                    adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+                                                        @Override
+                                                        public void onItemClick(int position) {
+                                                            final String eventID = eventsList.get(position);
+                                                            DocumentReference docRef = database.collection("events").document(eventID);
+                                                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        DocumentSnapshot document = task.getResult();
+                                                                        if (document.exists()) {
+                                                                            Intent intent = new Intent(Feed.this, Event.class);
+                                                                            intent.putExtra("eventID", eventID);
+                                                                            startActivity(intent);
+                                                                            finish();
+                                                                        } else {
+                                                                            Log.d(TAG, "No such document");
+                                                                        }
+                                                                    } else {
+                                                                        Log.d(TAG, "get failed with ", task.getException());
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            docArtistProfilePicture = "none";
+                                            docArtist = "none";
+                                            if (toBeAdded) {
                                                 mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked));
                                                 eventsList.add(document.getId());
-
-                                                Log.d("", eventsList.get(eventsList.size() - 1));
-                                                recyclerView.setAdapter(adapter);
-                                                recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
-                                                adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
-                                                    @Override
-                                                    public void onItemClick(int position) {
-                                                        final String eventID = eventsList.get(position);
-
-                                                        DocumentReference docRef = database.collection("events").document(eventID);
-                                                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    DocumentSnapshot document = task.getResult();
-                                                                    if (document.exists()) {
-                                                                        Intent intent = new Intent(Feed.this, Event.class);
-                                                                        intent.putExtra("eventID", eventID);
-                                                                        startActivity(intent);
-                                                                        finish();
-                                                                    } else {
-                                                                        Log.d(TAG, "No such document");
-                                                                    }
-                                                                } else {
-                                                                    Log.d(TAG, "get failed with ", task.getException());
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                });
                                             }
+                                            recyclerView.setAdapter(adapter);
+                                            recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+                                            adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+                                                @Override
+                                                public void onItemClick(int position) {
+                                                    final String eventID = eventsList.get(position);
+                                                    DocumentReference docRef = database.collection("events").document(eventID);
+                                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                DocumentSnapshot document = task.getResult();
+                                                                if (document.exists()) {
+                                                                    Intent intent = new Intent(Feed.this, Event.class);
+                                                                    intent.putExtra("eventID", eventID);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                } else {
+                                                                    Log.d(TAG, "No such document");
+                                                                }
+                                                            } else {
+                                                                Log.d(TAG, "get failed with ", task.getException());
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            });
                                         }
                                     }
                                 } else {
@@ -220,61 +236,5 @@ public class Feed extends AppCompatActivity {
             });
         }
 
-
-        //if (locationExists || nameExists || typeOfArtExists) {
-        //    adapter = new Adapter(this, filterList);
-        //    size = mList.size();
-        //    for (int i = 0; i < size; i++) {
-        //        if (locationExists) {
-        //            if (nameExists) {
-        //                if (typeOfArtExists) {
-        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-        //                        filterList.add(mList.get(i));
-        //                    }
-        //                } else {
-        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
-        //                        filterList.add(mList.get(i));
-        //                    }
-        //                }
-        //            } else {
-        //                if (typeOfArtExists) {
-        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-        //                        filterList.add(mList.get(i));
-        //                    }
-        //                } else {
-        //                    if (mList.get(i).getLocation().equalsIgnoreCase(location) && mList.get(i).isLiveEvent() == live) {
-        //                        filterList.add(mList.get(i));
-        //                    }
-        //                }
-        //            }
-        //        } else {
-        //            if (nameExists) {
-        //                if (typeOfArtExists) {
-        //                    if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-        //                        filterList.add(mList.get(i));
-        //                    }
-        //                } else {
-        //                    if (mList.get(i).getArtistName().equalsIgnoreCase(name) && mList.get(i).isLiveEvent() == live) {
-        //                        filterList.add(mList.get(i));
-        //                    }
-        //                }
-        //            } else {
-        //                if (mList.get(i).getTypeOfArt().equalsIgnoreCase(typeOfArt) && mList.get(i).isLiveEvent() == live) {
-        //                    filterList.add(mList.get(i));
-        //                }
-        //            }
-        //        }
-        //    }
-        //} else if (live != null) {
-        //    size = mList.size();
-        //    for (int i = 0; i < size; i++) {
-        //        if (mList.get(i).isLiveEvent() == live) {
-        //            filterList.add(mList.get(i));
-        //        }
-        //    }
-        //} else {
-        //    adapter = new Adapter(this, mList);
-        //    // Ίσως δημιουργήσει πρόβλημα
-        //}
     }
 }

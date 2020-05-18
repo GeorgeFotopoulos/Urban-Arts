@@ -19,6 +19,8 @@
         <activity android:name=".Adapter" />
         <activity android:name=".ArtistAccountRequestActivity" />
         <activity android:name=".EditAccountActivity" />
+        <activity android:name=".Favorites"
+            android:theme="@style/AppThemeNoLabel" />
         <activity
             android:name=".ShowMapActivity"
             android:screenOrientation="portrait"
@@ -37,7 +39,6 @@
         <activity
             android:name=".LogIn"
             android:theme="@style/AppThemeNoLabel">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

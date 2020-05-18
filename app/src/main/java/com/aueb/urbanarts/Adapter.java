@@ -55,7 +55,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
             holder.postImage.setImageResource(R.drawable.no_image_found);
         }
         holder.artistName.setText(mData.get(position).getArtistName());
-        if(mData.get(position).getArtistName().equalsIgnoreCase("none")){
+        if (mData.get(position).getArtistName().equalsIgnoreCase("none")) {
             holder.artistName.setText("Unknown");
         }
         holder.eventType.setText(mData.get(position).getTypeOfArt());

@@ -53,8 +53,6 @@ public class HomePage extends AppCompatActivity {
             final ProgressBar loadingImage = findViewById(R.id.loading_image);
             loadingImage.setVisibility(View.VISIBLE);
             showUserInfo(loadingImage);
-            final CircleImageView accountImage = findViewById(R.id.account);
-
         }
 
         ImageView loginImg = findViewById(R.id.logIn);
@@ -168,16 +166,13 @@ public class HomePage extends AppCompatActivity {
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAuth.getCurrentUser() != null) {
-                    goMapView();
-                } else {
-                    openDialog();
-                }
+                Intent intent = new Intent(HomePage.this, Favorites.class);
+                startActivity(intent);
             }
         });
     }
 
-    private void showUserInfo(final ProgressBar loadingIimage) {
+    private void showUserInfo(final ProgressBar loadingImage) {
         DocumentReference docUser = db.collection("users").document(mAuth.getUid());
         docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -194,7 +189,7 @@ public class HomePage extends AppCompatActivity {
                         displayName.setText(userName);
 
                         if (document.getBoolean("is_artist")) {
-                            loadingIimage.setVisibility(View.VISIBLE);
+                            loadingImage.setVisibility(View.VISIBLE);
 
                             DocumentReference docArtist = db.collection("artists").document(mAuth.getUid());
                             docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -210,22 +205,21 @@ public class HomePage extends AppCompatActivity {
                                                         .listener(new RequestListener() {
                                                             @Override
                                                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
-                                                                loadingIimage.setVisibility(View.INVISIBLE);
+                                                                loadingImage.setVisibility(View.INVISIBLE);
                                                                 return false;
                                                             }
 
                                                             @Override
                                                             public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
-                                                                loadingIimage.setVisibility(View.INVISIBLE);
+                                                                loadingImage.setVisibility(View.INVISIBLE);
                                                                 return false;
                                                             }
                                                         })
                                                         .into(accountImage);
                                             } else {
                                                 accountImage.setImageResource(R.drawable.profile);
-                                                loadingIimage.setVisibility(View.INVISIBLE);
+                                                loadingImage.setVisibility(View.INVISIBLE);
                                             }
-
                                         } else {
                                             Log.d(TAG, "No such document");
                                         }
@@ -236,7 +230,7 @@ public class HomePage extends AppCompatActivity {
                             });
                         } else {
                             accountImage.setImageResource(R.drawable.profile);
-                            loadingIimage.setVisibility(View.INVISIBLE);
+                            loadingImage.setVisibility(View.INVISIBLE);
                         }
                     } else {
                         Log.d(TAG, "No such document");
@@ -246,7 +240,6 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     protected void openDialog() {
