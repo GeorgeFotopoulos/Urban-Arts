@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -144,6 +145,7 @@ public class PostSomething extends AppCompatActivity {
                                         intent.putExtra("filePath", filePath.toString());
                                     }
                                     startActivity(intent);
+                                    Animatoo.animateFade(PostSomething.this);
                                 }
                             }
                         }
@@ -157,17 +159,12 @@ public class PostSomething extends AppCompatActivity {
     }
 
 private void onsuccess(){
-    //
-    // Log.d("===",AppArtists.get(1).getText1());
     AutoCompleteTextView editText = findViewById(R.id.actv);
     SearchAdapter adapter = new SearchAdapter(this, AppArtists);
     editText.setAdapter(adapter);
-
-
 }
 
     private void retrieveList() {
-
         final CollectionReference eventsCollection = fStore.collection("artists");
         eventsCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -188,18 +185,14 @@ private void onsuccess(){
                                         itemtoadd.setText2(artistinfo.getString("genre"));
                                     }
                                     AppArtists.add(itemtoadd);
-
                                     onsuccess();
-
                                 }
                             }
                         });
                     }
-
                 }
             }
         });
-
     }
 
     @Override
@@ -217,5 +210,14 @@ private void onsuccess(){
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(PostSomething.this, HomePage.class);
+        startActivity(intent);
+        Animatoo.animateZoom(PostSomething.this);
+        finish();
     }
 }

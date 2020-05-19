@@ -19,12 +19,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -54,7 +54,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,7 +64,6 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditAccountActivity extends AppCompatActivity {
-
     final String TAG = "123";
     private final int PICK_IMAGE_REQUEST = 22;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -73,9 +71,7 @@ public class EditAccountActivity extends AppCompatActivity {
     FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    private Bitmap bitmap;
     private String photoPath;
-    private boolean changePhoto = false;
     private boolean uploadGallery = false;
     Spinner sItems;
     private Uri filePathProfile;
@@ -86,12 +82,13 @@ public class EditAccountActivity extends AppCompatActivity {
     List<String> artistGallery;
     final List<String> artist_type = new ArrayList<>();
     GridViewAdapter gridViewAdapter;
+    ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
 
+        try {
             DocumentReference docArtist = db.collection("users").document(user.getUid());
             docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -102,6 +99,16 @@ public class EditAccountActivity extends AppCompatActivity {
 // ARTIST
                             if (document.getBoolean("is_artist")) {
                                 setContentView(R.layout.edit_artist_account);
+                                scrollView = findViewById(R.id.scrollView4);
+                                scrollView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        scrollView.scrollTo(0, 0);
+                                        scrollView.pageScroll(View.FOCUS_UP);
+                                        scrollView.smoothScrollTo(0,0);
+                                    }
+                                });
+
                                 final ConstraintLayout dialog = findViewById(R.id.dialog);
                                 final RelativeLayout wholeLayout = findViewById(R.id.constraint);
                                 dialog.setVisibility(View.INVISIBLE);
@@ -207,10 +214,18 @@ public class EditAccountActivity extends AppCompatActivity {
                                                 });
                                     }
                                 });
-
 // USER
                             } else {
                                 setContentView(R.layout.edit_user_account);
+                                scrollView = findViewById(R.id.scrollView4);
+                                scrollView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        scrollView.scrollTo(0, 0);
+                                        scrollView.pageScroll(View.FOCUS_UP);
+                                        scrollView.smoothScrollTo(0,0);
+                                    }
+                                });
 
                                 findViewById(R.id.request_artist).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
@@ -226,7 +241,6 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-
                                         Map<String, Object> userMap = new HashMap<>();
                                         EditText username = findViewById(R.id.username);
                                         EditText oldPassword = findViewById(R.id.old_password);
@@ -846,7 +860,6 @@ public class EditAccountActivity extends AppCompatActivity {
             uploadGallery();
         } else {
             if (filePathProfile != null) {
-
                 final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
                 final TextView percentage = findViewById(R.id.perc);
                 final ConstraintLayout dialogBox = findViewById(R.id.dialog);
@@ -870,7 +883,6 @@ public class EditAccountActivity extends AppCompatActivity {
                                     @Override
                                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                                         if (!task.isSuccessful()) {
-
                                             throw task.getException();
                                         }
                                         // Continue with the task to get the download URL
@@ -972,7 +984,6 @@ public class EditAccountActivity extends AppCompatActivity {
 
     private void uploadGallery() {
         if (filePathGallery != null) {
-
             final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
             final TextView percentage = findViewById(R.id.perc);
             final ConstraintLayout dialogBox = findViewById(R.id.dialog);
@@ -986,12 +997,10 @@ public class EditAccountActivity extends AppCompatActivity {
 
             final StorageReference riversRef = storageReference.child("galleries/gallery_image" + user.getUid() + new Date().getTime() + ".jpg");
 
-
             riversRef.putFile(filePathGallery)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                             riversRef.putFile(filePathGallery).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                                 @Override
                                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -1041,7 +1050,6 @@ public class EditAccountActivity extends AppCompatActivity {
                                             });
                                         }
                                     }
-
                                 }
                             });
                         }
@@ -1077,6 +1085,7 @@ public class EditAccountActivity extends AppCompatActivity {
             }
             try {
 
+                Bitmap bitmap;
                 if (!uploadGallery) {
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePathProfile);
                     CircleImageView image = findViewById(R.id.artist_image);
@@ -1118,7 +1127,7 @@ public class EditAccountActivity extends AppCompatActivity {
     private void goArtistAccountRequest() {
         Intent intent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.class);
         startActivity(intent);
-        Animatoo.animateCard(this);
+        Animatoo.animateFade(this);
         finish();
     }
 

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,6 +36,7 @@ public class LogIn extends AppCompatActivity {
         if (fAuth.getCurrentUser() != null) {
             Intent myIntent = new Intent(LogIn.this, HomePage.class);
             LogIn.this.startActivity(myIntent);
+            Animatoo.animateZoom(LogIn.this);
             finish();
         }
 
@@ -53,6 +55,7 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View v) {
                 Intent myIntent = new Intent(LogIn.this, HomePage.class);
                 LogIn.this.startActivity(myIntent);
+                Animatoo.animateZoom(LogIn.this);
                 finish();
             }
         });
@@ -90,6 +93,7 @@ public class LogIn extends AppCompatActivity {
                             userID = fAuth.getCurrentUser().getUid();
                             Toast.makeText(LogIn.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
+                            Animatoo.animateZoom(LogIn.this);
                             finish();
                         } else {
                             Toast.makeText(LogIn.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -104,6 +108,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), SignUp.class));
+                Animatoo.animateFade(LogIn.this);
                 finish();
             }
         });
@@ -147,5 +152,14 @@ public class LogIn extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(LogIn.this, HomePage.class);
+        startActivity(intent);
+        Animatoo.animateZoom(this);
+        finish();
     }
 }

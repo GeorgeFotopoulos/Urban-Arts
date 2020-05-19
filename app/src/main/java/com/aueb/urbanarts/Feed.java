@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Feed extends AppCompatActivity {
     String docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
@@ -158,9 +158,16 @@ public class Feed extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(Feed.this, HomePage.class);
+        startActivity(intent);
+        Animatoo.animateZoom(this);
+        finish();
+    }
 
     public void makeArtists(final RecyclerView recyclerView, final double lat, final double lng) {
-
         database.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -268,7 +275,6 @@ public class Feed extends AppCompatActivity {
 
             }
         });
-
     }
 
     public void addItem(String docArtistProfilePicture, String docArtist, QueryDocumentSnapshot document, RecyclerView recyclerView) {

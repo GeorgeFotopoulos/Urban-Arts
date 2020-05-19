@@ -297,7 +297,6 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     }
 
     private boolean checkToMakeArtist(String artistType, String indiv_or_group, String year) {
-        final ProgressBar progress = findViewById(R.id.progressBar);
         final TextView percentage = findViewById(R.id.perc);
         int findAge = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(year);
         if (!artistType.equals("")) {
@@ -382,19 +381,14 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         super.onBackPressed();
         Intent intent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
         startActivity(intent);
+        Animatoo.animateZoom(this);
         finish();
     }
 
     private void goHomePage() {
         Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
         startActivity(myIntent);
-        finish();
-    }
-
-    private void goEditAccount() {
-        Intent intent = new Intent(this, EditAccountActivity.class);
-        startActivity(intent);
-        Animatoo.animateFade(this);
+        Animatoo.animateZoom(this);
         finish();
     }
 

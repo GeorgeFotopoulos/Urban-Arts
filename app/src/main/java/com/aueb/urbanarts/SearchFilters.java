@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -100,11 +101,21 @@ public class SearchFilters extends AppCompatActivity {
                         intent.putExtra("live", live);
                     }
                     startActivity(intent);
+                    Animatoo.animateFade(SearchFilters.this);
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "No filters were selected.", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(SearchFilters.this, HomePage.class);
+        startActivity(intent);
+        Animatoo.animateZoom(this);
+        finish();
     }
 }

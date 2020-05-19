@@ -23,7 +23,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView8"
@@ -50,7 +50,7 @@
                     android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="32dp"
                     android:text="Artist's Type:"
                     android:textColor="#000000"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,7 @@
                     android:id="@+id/years"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="32dp"
                     android:text="Date of Birth:"
                     android:textColor="#000000"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -160,50 +160,50 @@
                 <TextView
                     android:id="@+id/require1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:text="*"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/years"
                     app:layout_constraintStart_toEndOf="@+id/years"
                     app:layout_constraintTop_toTopOf="@+id/years" />
 
                 <TextView
                     android:id="@+id/require2"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:text="*"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView9"
                     app:layout_constraintStart_toEndOf="@+id/textView9"
                     app:layout_constraintTop_toTopOf="@+id/textView9" />
 
                 <TextView
                     android:id="@+id/require"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:text="*"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/group"
                     app:layout_constraintStart_toEndOf="@+id/group"
                     app:layout_constraintTop_toTopOf="@+id/group" />
 
                 <TextView
                     android:id="@+id/require3"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_height="0dp"
                     android:text="*"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView22"
                     app:layout_constraintStart_toEndOf="@+id/group"
                     app:layout_constraintStart_toStartOf="@+id/textView17"
-                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                    app:layout_constraintTop_toTopOf="@+id/textView22" />
 
                 <DatePicker
                     android:id="@+id/calendar"

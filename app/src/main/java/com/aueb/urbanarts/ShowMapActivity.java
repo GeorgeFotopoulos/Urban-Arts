@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
-import android.hardware.camera2.CaptureRequest;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -53,9 +52,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
-import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +59,6 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
-
     GoogleMap map;
     Marker marker;
     LocationManager locationManager;
@@ -93,12 +88,10 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        Intent intent = getIntent();
         getAllEvents();
 
-
         getLocation();
-        showAddress = (EditText) findViewById(R.id.address_text);
+        showAddress = findViewById(R.id.address_text);
         showAddress.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         showAddress.requestFocus();
 
@@ -159,7 +152,6 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                 createCircle(distanceInMeters);
             }
         });
-
     }
 
     private void getAllEvents() {
@@ -461,12 +453,10 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         Intent myIntent = new Intent(ShowMapActivity.this, HomePage.class);
         startActivity(myIntent);
-        Animatoo.animateShrink(this);
+        Animatoo.animateZoom(this);
         finish();
-
     }
 
     private void deleteEvents() {
@@ -477,15 +467,11 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
             currEventsList.removeAll(currEventsList);
             markersList.removeAll(markersList);
         }
-
     }
 
     private void showEvents() {
-
         deleteEvents();
-
         String.valueOf(calculateDistance(lat, lon, 37.955250, 23.738130));
-
         int height = 100;
         int width = 80;
         BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.event_marker_green);
@@ -493,17 +479,14 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         Bitmap b = markerImage.getBitmap();
         Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-
         if (!eventsList.isEmpty()) {
             for (int i = 0; i < eventsList.size(); i++) {
                 getEventLocation(eventsList.get(i), smallerMarker);
             }
-
         }
     }
 
     private void getEventLocation(final String event_id, final Bitmap smallerMarker) {
-
         DocumentReference docArtist = db.collection("events").document(event_id);
         docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -511,7 +494,6 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-
                         try {
                             List<Address> address = geocoder.getFromLocationName(String.valueOf(document.getString("location")), 1);
 
@@ -561,7 +543,6 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                 if (String.valueOf(currMarker.getPosition()).equals(String.valueOf(markersList.get(i).getPosition())))
                     markersList.get(i).showInfoWindow();
             }
-
         }
         return false;
     }
@@ -579,7 +560,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         Intent intent = new Intent(ShowMapActivity.this, Event.class);
         intent.putExtra("eventID", eventID);
         startActivity(intent);
-        Animatoo.animateInAndOut(this);
+        Animatoo.animateFade(this);
         finish();
     }
 

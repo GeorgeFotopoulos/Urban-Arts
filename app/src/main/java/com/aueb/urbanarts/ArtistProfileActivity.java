@@ -344,7 +344,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
 
     private void goReportUser() {
         startActivity(new Intent(this, ReportUser.class));
-        Animatoo.animateInAndOut(this);
+        Animatoo.animateFade(this);
         finish();
     }
 }
