@@ -82,7 +82,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     String anotherEventName, anotherEventType, anotherEventAddress;
     Boolean live;
     ArrayList<String> foundEvents = new ArrayList<>();
-    ArrayList<Dialog> foundEventDialogs = new ArrayList<>();
     Dialog currDialog;
 
     @Override
@@ -156,15 +155,16 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     protected void confirmNewPost() {
+        if (currDialog != null) {
+            currDialog.dismiss();
+        }
         currDialog = new Dialog(this, android.R.style.Theme_Dialog);
         currDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         currDialog.setContentView(R.layout.create_post_popup);
 
-        foundEventDialogs.add(currDialog);
-        currDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        currDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
-            public void onDismiss(final DialogInterface arg0) {
-                foundEventDialogs.removeAll(foundEventDialogs);
+            public void onCancel(DialogInterface dialog) {
                 foundEvents.removeAll(foundEvents);
             }
         });
@@ -205,14 +205,14 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
     private void mergePost(String s) {
         if (currDialog != null) {
-            foundEventDialogs.removeAll(foundEventDialogs);
+            currDialog.dismiss();
         }
 //        Sixoneysi ton Events
     }
 
     private void makeNewPost() {
         if (currDialog != null) {
-            foundEventDialogs.removeAll(foundEventDialogs);
+            currDialog.dismiss();
         }
         //String name, typeOfArt, liveStr, filePathStr,comment, ArtistID;
         Map<String, Object> data = new HashMap<>();
