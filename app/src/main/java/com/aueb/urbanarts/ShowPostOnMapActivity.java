@@ -17,6 +17,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -57,6 +58,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,6 +74,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     GoogleMap map;
     Marker marker;
+    String url="";
     LocationManager locationManager;
     GoogleApiClient mGoogleApiClient;
     Location currLocation;
@@ -86,8 +91,10 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     ArrayList<String> foundEvents = new ArrayList<>();
     Dialog currDialog;
     private FirebaseAuth mAuth;
+    ArrayList<String> gallery=new ArrayList<>();
+    ArrayList<String> Images=new ArrayList<>();
+    String ID;
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -159,8 +166,74 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                 b=findViewById(R.id.post_button);
                 b.setClickable(false);
                 getEventDetails();
+
             }
         });
+    }
+
+    public void uploadImage() {
+        if(!filePathStr.isEmpty()) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+
+            // [START upload_create_reference]
+            // Create a storage reference from our app
+            StorageReference storageRef = storage.getReference();
+            Uri file = Uri.parse(filePathStr);
+            final StorageReference riversRef = storageRef.child("galleries/"+file.getLastPathSegment());
+            UploadTask uploadTask = riversRef.putFile(file);
+
+// Register observers to listen for when the download is done or if it fails
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                        @Override
+                                                                        public void onSuccess(Uri uri) {
+                                                                            Uri downloadUrl = uri;
+                                                                            url=downloadUrl.toString();
+                                                                            gallery.add(url);
+                                                                            DocumentReference washingtonRef = fStore.collection("events").document(ID);
+
+// Set the "isCapital" field of the city 'DC'
+                                                                            washingtonRef
+                                                                                    .update("gallery", gallery)
+                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onSuccess(Void aVoid) {
+
+                                                                                            Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
+                                                                                            myIntent.putExtra("eventID", ID);
+                                                                                            ShowPostOnMapActivity.this.startActivity(myIntent);
+                                                                                            finish();
+                                                                                            Log.d("TAG", "DocumentSnapshot successfully updated!");
+                                                                                        }
+                                                                                    })
+                                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                                        @Override
+                                                                                        public void onFailure(@NonNull Exception e) {
+                                                                                            Log.w("TAG", "Error updating document", e);
+                                                                                        }
+                                                                                    });
+                                                                                                                                          }
+                                                                    });
+
+
+
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                }
+            });
+        }else {
+            Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
+            myIntent.putExtra("eventID", ID);
+            ShowPostOnMapActivity.this.startActivity(myIntent);
+            finish();
+        }
     }
 
     protected void confirmNewPost() {
@@ -213,6 +286,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     private void mergePost(final String s) {
+        ID=s;
         b.setClickable(true);
         if (currDialog != null) {
             currDialog.dismiss();
@@ -230,15 +304,10 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                             comments.add(postedBy + "@token@" + comment);
                             fStore.collection("events").document(s).update("comments", comments);
                         }
-                        ArrayList<String> Images=(ArrayList) document.get("gallery");
-                       // if(!comment.isEmpty()) {
-                       //     comments.add(postedBy + "@token@" + comment);
-                       // }
+                        Images=(ArrayList) document.get("gallery");
+                        uploadImage();
 
-                        Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
-                        myIntent.putExtra("eventID", s);
-                        ShowPostOnMapActivity.this.startActivity(myIntent);
-                        finish();
+
 
                     } else {
                         Log.d("", "No such document");
@@ -262,6 +331,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         ArrayList<String> gallery=new ArrayList<>();
         if(!comment.isEmpty())
             comments.add(postedBy+"@token@"+comment);
+
         data.put("gallery",gallery);
         data.put("comments",comments);
         data.put("Artist",name );
@@ -270,15 +340,14 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         data.put("likes", "0");
         data.put("ArtistID", ArtistID);
         data.put("location", showAddress.getText().toString());
+        data.put("gallery",gallery);
         fStore.collection("events")
                 .add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
-                        myIntent.putExtra("eventID", documentReference.getId());
-                        ShowPostOnMapActivity.this.startActivity(myIntent);
-                        finish();
+                        ID=documentReference.getId();
+                        uploadImage();
                         Log.d("", "DocumentSnapshot written with ID: " + documentReference.getId());
                     }
                 })
