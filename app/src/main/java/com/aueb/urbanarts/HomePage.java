@@ -166,6 +166,7 @@ public class HomePage extends AppCompatActivity {
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                goMapView();
                 Intent intent = new Intent(HomePage.this, Favorites.class);
                 startActivity(intent);
             }
