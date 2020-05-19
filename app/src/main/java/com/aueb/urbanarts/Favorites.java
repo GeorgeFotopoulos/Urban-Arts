@@ -38,7 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Favorites extends AppCompatActivity {
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     Map<String, Boolean> followedUsersMap = new HashMap<>();
-    String docArtist, docDescription, docProfileImage, docGenre, docYear, docArtistType, docArtistID, TAG;
+    String docArtist, docDescription, docProfileImage, docGenre, docYear, docArtistType, TAG;
     List<String> followedUsers = new ArrayList<>();
     List<String> addedArtists = new ArrayList<>();
     List<item> mList = new ArrayList<>();
@@ -108,7 +108,7 @@ public class Favorites extends AppCompatActivity {
                                                                 DocumentSnapshot document = task.getResult();
                                                                 if (document.exists()) {
                                                                     Intent intent = new Intent(Favorites.this, ArtistProfileActivity.class);
-                                                                    intent.putExtra("artistID", artistID);
+                                                                    intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
                                                                     startActivity(intent);
                                                                     finish();
                                                                 } else {

@@ -95,7 +95,7 @@ public class Event extends AppCompatActivity {
                         check = findViewById(R.id.check);
                         Images = (List<String>) document.get("gallery");
                         UsersAndComments = (ArrayList<String>) document.get("comments");
-                        String[] result = new String[2];
+                        String[] result;
                         try {
                             for (int i = 0; i < UsersAndComments.size(); i++) {
                                 result = UsersAndComments.get(i).split("@token@");
@@ -103,8 +103,7 @@ public class Event extends AppCompatActivity {
                                 Comments.add(result[1]);
                             }
                         }
-                        catch(Exception e){
-
+                        catch(Exception ignored){
                         }
                         final RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
                         if(Users.size()==0){
@@ -222,14 +221,13 @@ public class Event extends AppCompatActivity {
                                                     }
                                                 }
                                             }
-                                            catch(Exception e){
-
+                                            catch(Exception ignored){
                                             }
                                             CL.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
                                                     if (liked.containsKey(document_id)) {
-                                                        if (liked.get(document_id) == true) {
+                                                        if (liked.get(document_id)) {
                                                             check.setColorFilter(Color.parseColor("#7C7C7C"));
                                                             upvtext.setText("Upvote");
                                                             DocumentReference docRef3 = db.collection("events").document(document_id);
@@ -269,7 +267,6 @@ public class Event extends AppCompatActivity {
                                                             });
                                                         }
                                                     } else {
-
                                                         check.setColorFilter(Color.parseColor("#b71e42"));
                                                         upvtext.setText("Upvoted");
                                                         DocumentReference docRef3 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
@@ -370,19 +367,16 @@ public class Event extends AppCompatActivity {
     ImageListener imageListener = new ImageListener() {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
-//            imageView.setImageResource(artistGallery[position]);
             final ProgressBar loadGallery = findViewById(R.id.load_carousel);
             Picasso.with(getApplicationContext()).load(Images.get(position)).into(imageView, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
                     loadGallery.setVisibility(View.INVISIBLE);
                 }
-
                 @Override
                 public void onError() {
                 }
             });
         }
     };
-
 }

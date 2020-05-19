@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -33,19 +32,18 @@ import com.synnapps.carouselview.ImageListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-@SuppressWarnings("deprecation")
 public class ArtistProfileActivity extends AppCompatActivity {
-
     final String TAG = "123";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CarouselView carouselView;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
-    //    I know Fotaki
     String artistName;
     String artistType;
     String artistGenre;
@@ -54,9 +52,10 @@ public class ArtistProfileActivity extends AppCompatActivity {
     String artistDescription;
     String artistImage;
     String artist_id;
-    String artistID;
+    String text;
     List<String> artistGallery = new ArrayList<>();
-
+    Map<String, Boolean> followedUsersMap = new HashMap<>();
+    TextView followersNumDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,22 +66,14 @@ public class ArtistProfileActivity extends AppCompatActivity {
         imageProg.setVisibility(View.VISIBLE);
 
         Intent intent = getIntent();
-        if(intent.getStringExtra("ARTIST_DOCUMENT_ID")!=null){
-            artist_id = intent.getStringExtra("ARTIST_DOCUMENT_ID");
-            whoIsIt(artist_id);
-            getArtistInformation(artist_id);
-        }
+        artist_id = intent.getStringExtra("ARTIST_DOCUMENT_ID");
+        whoIsIt(artist_id);
+        getArtistInformation(artist_id);
 
-        if(intent.getStringExtra("artistID") != null){
-            String artistID = intent.getStringExtra("artistID");
-            whoIsIt(artistID);
-            getArtistInformation(artistID);
-        }
 
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(artistGallery.size());
         carouselView.setImageListener(imageListener);
-
 
         findViewById(R.id.action).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -100,25 +91,66 @@ public class ArtistProfileActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.follow_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-//                if(isFollowed()){
-//
-//                }
-            }
-        });
 
-        final ToggleButton follow = (ToggleButton) findViewById(R.id.follow_button);
-        follow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    follow.setText("Unfollow");
-                } else {
-                    follow.setText("Follow");
+        final ToggleButton follow = findViewById(R.id.follow_button);
+        DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    final DocumentSnapshot document = task.getResult();
+                    followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
+                    if (followedUsersMap.get(artist_id)) {
+                        text = "Unfollow";
+                        follow.setText(text);
+                    } else {
+                        text = "Follow";
+                        follow.setText(text);
+                    }
                 }
             }
         });
 
+        follow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            final DocumentSnapshot document = task.getResult();
+                            followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
+                            final DocumentReference docRef2 = db.collection("artists").document(artist_id);
+                            docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        final DocumentSnapshot documentSnapshot = task.getResult();
+                                        if (followedUsersMap.containsKey(artist_id)) {
+                                            if (followedUsersMap.get(artist_id)) {
+                                                showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) - 1));
+                                                docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) - 1));
+                                                followedUsersMap.put(artist_id, false);
+                                                docRef.update("followedUsers", followedUsersMap);
+                                                text = "Follow";
+                                                follow.setText(text);
+                                            } else {
+                                                showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
+                                                docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
+                                                followedUsersMap.put(artist_id, true);
+                                                docRef.update("followedUsers", followedUsersMap);
+                                                text = "Unfollow";
+                                                follow.setText(text);
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void whoIsIt(String artist_id) {
@@ -138,7 +170,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
         final TextView genreDisplay = findViewById(R.id.artist_genre);
         final TextView yearDisplay = findViewById(R.id.artist_age);
         final TextView descriptionDisplay = findViewById(R.id.artist_description);
-        final TextView followersNumDisplay = findViewById(R.id.num_follows);
+        followersNumDisplay = findViewById(R.id.num_follows);
         final ProgressBar loadGallery = findViewById(R.id.load_carousel);
         final CarouselView gallery = findViewById(R.id.gallery);
 
@@ -149,7 +181,6 @@ public class ArtistProfileActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-
                         artistName = document.getString("display_name");
                         artistType = document.getString("artist_type");
                         artistGenre = document.getString("genre");
@@ -202,7 +233,6 @@ public class ArtistProfileActivity extends AppCompatActivity {
     }
 
     private void showYear(final TextView yearDisplay, final String year) {
-
         String whatYear = String.valueOf(year);
         String type = String.valueOf(artistType);
         String whatToSay = "";
@@ -220,9 +250,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
                 whatToSay = "1 year together.";
             }
         }
-
         yearDisplay.setText(whatToSay);
-
     }
 
     private void showGenre(TextView genreDisplay, final String genre) {
@@ -266,9 +294,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
     ImageListener imageListener = new ImageListener() {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
-
             final ProgressBar loadGallery = findViewById(R.id.load_carousel);
-
             Glide.with(getApplicationContext())
                     .load(artistGallery.get(position))
                     .listener(new RequestListener() {
