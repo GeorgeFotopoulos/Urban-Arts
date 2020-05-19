@@ -133,7 +133,7 @@ public class PostSomething extends AppCompatActivity {
                     }
                     startActivity(intent);
                 } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Fields \"Art Genre\", \"Live\" & \"Upload Media\" are required.", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Field \"Art Genre\" is required.", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
