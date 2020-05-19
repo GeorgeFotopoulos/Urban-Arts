@@ -39,7 +39,6 @@ public class Favorites extends AppCompatActivity {
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     Map<String, Boolean> followedUsersMap = new HashMap<>();
     String docArtist, docDescription, docProfileImage, docGenre, docYear, docArtistType, TAG;
-    List<String> followedUsers = new ArrayList<>();
     List<String> addedArtists = new ArrayList<>();
     List<item> mList = new ArrayList<>();
     private FirebaseAuth mAuth;
@@ -68,59 +67,59 @@ public class Favorites extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         final DocumentSnapshot document = task.getResult();
                         followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
-                        for (String key : followedUsersMap.keySet()) {
-                            followedUsers.add(key);
-                        }
                         final CollectionReference artistCollection = database.collection("artists");
                         artistCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     for (final QueryDocumentSnapshot document : task.getResult()) {
-                                        if (followedUsers.contains(document.getId())) {
-                                            docArtist = document.getString("display_name");
-                                            docDescription = document.getString("description");
-                                            try {
-                                                if (document.getString("profile_image_url").equals("")) {
-                                                    docProfileImage = "none";
-                                                } else {
-                                                    docProfileImage = document.getString("profile_image_url");
+                                        try {
+                                            if (followedUsersMap.get(document.getId())) {
+                                                docArtist = document.getString("display_name");
+                                                docDescription = document.getString("description");
+                                                try {
+                                                    if (document.getString("profile_image_url").equals("")) {
+                                                        docProfileImage = "none";
+                                                    } else {
+                                                        docProfileImage = document.getString("profile_image_url");
+                                                    }
+                                                } catch (Exception e) {
+                                                    Log.d(TAG, "Error!");
                                                 }
-                                            } catch (Exception e) {
-                                                Log.d(TAG, "Error!");
-                                            }
-                                            docGenre = document.getString("genre");
-                                            docYear = document.getString("year");
-                                            docArtistType = document.getString("artist_type");
-                                            mList.add(new item(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
-                                            addedArtists.add(document.getId());
-                                            recyclerView.setAdapter(adapter);
-                                            recyclerView.setLayoutManager(new LinearLayoutManager(Favorites.this));
-                                            adapter.setOnItemClickListener(new FavoritesAdapter.OnItemClickListener() {
-                                                @Override
-                                                public void onItemClick(int position) {
-                                                    final String artistID = addedArtists.get(position);
-                                                    DocumentReference docRef = database.collection("artists").document(artistID);
-                                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                            if (task.isSuccessful()) {
-                                                                DocumentSnapshot document = task.getResult();
-                                                                if (document.exists()) {
-                                                                    Intent intent = new Intent(Favorites.this, ArtistProfileActivity.class);
-                                                                    intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
-                                                                    startActivity(intent);
-                                                                    finish();
+                                                docGenre = document.getString("genre");
+                                                docYear = document.getString("year");
+                                                docArtistType = document.getString("artist_type");
+                                                mList.add(new item(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
+                                                addedArtists.add(document.getId());
+                                                recyclerView.setAdapter(adapter);
+                                                recyclerView.setLayoutManager(new LinearLayoutManager(Favorites.this));
+                                                adapter.setOnItemClickListener(new FavoritesAdapter.OnItemClickListener() {
+                                                    @Override
+                                                    public void onItemClick(int position) {
+                                                        final String artistID = addedArtists.get(position);
+                                                        DocumentReference docRef = database.collection("artists").document(artistID);
+                                                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    DocumentSnapshot document = task.getResult();
+                                                                    if (document.exists()) {
+                                                                        Intent intent = new Intent(Favorites.this, ArtistProfileActivity.class);
+                                                                        intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
+                                                                        startActivity(intent);
+                                                                        finish();
+                                                                    } else {
+                                                                        Log.d(TAG, "No such document");
+                                                                    }
                                                                 } else {
-                                                                    Log.d(TAG, "No such document");
+                                                                    Log.d(TAG, "get failed with ", task.getException());
                                                                 }
-                                                            } else {
-                                                                Log.d(TAG, "get failed with ", task.getException());
                                                             }
-                                                        }
-                                                    });
-                                                }
-                                            });
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        } catch (Exception ignore) {
                                         }
                                     }
                                 }

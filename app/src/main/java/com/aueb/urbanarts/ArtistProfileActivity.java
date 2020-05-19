@@ -91,7 +91,6 @@ public class ArtistProfileActivity extends AppCompatActivity {
             }
         });
 
-
         final ToggleButton follow = findViewById(R.id.follow_button);
         DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -100,12 +99,15 @@ public class ArtistProfileActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     final DocumentSnapshot document = task.getResult();
                     followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
-                    if (followedUsersMap.get(artist_id)) {
-                        text = "Unfollow";
-                        follow.setText(text);
-                    } else {
-                        text = "Follow";
-                        follow.setText(text);
+                    try {
+                        if (followedUsersMap.get(artist_id)) {
+                            text = "Unfollow";
+                            follow.setText(text);
+                        } else {
+                            text = "Follow";
+                            follow.setText(text);
+                        }
+                    } catch (Exception ignore) {
                     }
                 }
             }
@@ -124,7 +126,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
                             docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         final DocumentSnapshot documentSnapshot = task.getResult();
                                         if (followedUsersMap.containsKey(artist_id)) {
                                             if (followedUsersMap.get(artist_id)) {
