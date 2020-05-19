@@ -7,10 +7,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,16 +33,17 @@ import java.util.List;
 
 public class PostSomething extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 22;
-    String TAG, name = "", typeOfArt = "", live = "";
+    public static String ID="";
+    String TAG, name = "", typeOfArt = "", live = "",comment = "";
     boolean yesFilter = false;
-    EditText tv_name;
+    EditText tv_name,tv_comment;
     Switch aSwitch;
     Spinner sItems;
     Button btnUpload, btnProceed;
     private Uri filePath;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    private List<ExampleItem> AppArtists = new ArrayList<>();
-
+    private List<ExampleItem> AppArtists=new ArrayList<>();
+    SearchAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,7 @@ public class PostSomething extends AppCompatActivity {
         btnUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (v == btnUpload) {
-//                    showFileChooser();
+                    showFileChooser();
                     yesFilter = true;
                 }
             }
@@ -83,10 +86,20 @@ public class PostSomething extends AppCompatActivity {
         btnProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_name = findViewById(R.id.name);
+                tv_name = findViewById(R.id.actv);
                 if (!TextUtils.isEmpty(tv_name.getText())) {
                     name = tv_name.getText().toString().trim();
+                }else{
+                    name="";
                 }
+
+                tv_comment = findViewById(R.id.comment);
+                if (!TextUtils.isEmpty(tv_comment.getText())) {
+                    comment = tv_comment.getText().toString().trim();
+                }else{
+                    comment="";
+                }
+
 
                 if (sItems != null) {
                     typeOfArt = sItems.getSelectedItem().toString().trim();
@@ -104,11 +117,17 @@ public class PostSomething extends AppCompatActivity {
 
                 if (yesFilter) {
                     Intent intent = new Intent(PostSomething.this, ShowPostOnMapActivity.class);
-                    if (!name.equals("")) intent.putExtra("name", name);
-                    if (!typeOfArt.equals("Choose...")) intent.putExtra("typeOfArt", typeOfArt);
-                    if (!live.equals("")) {
-                        intent.putExtra("live", live);
-                    }
+                   if(!name.contains(" (UA User)")){
+                      ID="";
+                   }
+                   else{
+                       name=name.replace(" (UA User)","");
+                   }
+                    intent.putExtra("name", name);
+                    intent.putExtra("comment", comment);
+                    intent.putExtra("typeOfArt", typeOfArt);
+                    intent.putExtra("live", live);
+                    intent.putExtra("ID",ID);
                     if (filePath != null) {
                         intent.putExtra("filePath", filePath.toString());
                     }
@@ -121,17 +140,27 @@ public class PostSomething extends AppCompatActivity {
         });
     }
 
+private void onsuccess(){
+    //
+    // Log.d("===",AppArtists.get(1).getText1());
+    AutoCompleteTextView editText = findViewById(R.id.actv);
+    SearchAdapter adapter = new SearchAdapter(this, AppArtists);
+    editText.setAdapter(adapter);
+
+
+}
+
     private void retrieveList() {
 
-        final CollectionReference eventsCollection = fStore.collection("Artists");
+        final CollectionReference eventsCollection = fStore.collection("artists");
         eventsCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (final QueryDocumentSnapshot document : task.getResult()) {
-                        final ExampleItem itemtoadd = new ExampleItem();
+                        final ExampleItem itemtoadd=new ExampleItem();
                         itemtoadd.setID(document.getId());
-                        DocumentReference docRef = fStore.collection("Artists").document(document.getId());
+                        DocumentReference docRef = fStore.collection("artists").document(document.getId());
                         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -139,17 +168,22 @@ public class PostSomething extends AppCompatActivity {
                                     DocumentSnapshot artistinfo = task.getResult();
                                     if (artistinfo.exists()) {
                                         itemtoadd.setText1(artistinfo.getString("display_name"));
+                                        itemtoadd.setImageResource(artistinfo.getString("profile_image_url"));
+                                        itemtoadd.setText2(artistinfo.getString("genre"));
                                     }
+                                    AppArtists.add(itemtoadd);
+
+                                    onsuccess();
+
                                 }
-
                             }
-
-
                         });
                     }
+
                 }
             }
         });
+
     }
 
     @Override
@@ -157,6 +191,8 @@ public class PostSomething extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
+            TextView filepath=findViewById(R.id.filepath);
+            filepath.setText("Image File: "+filePath);
         }
     }
 

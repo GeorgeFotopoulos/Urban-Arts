@@ -7,21 +7,33 @@
     android:layout_height="match_parent"
     android:visibility="visible"
     android:focusable="auto"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.aueb.urbanarts.PostSomething">
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/actv"
+                android:layout_width="292dp"
+                android:layout_height="47dp"
+                android:completionThreshold="1"
+                android:hint="Type Artist's Name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
             <Button
                 android:id="@+id/uploadFile"
@@ -42,7 +54,7 @@
                 android:id="@+id/proceed"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/pink_button"
                 android:text="Proceed"
@@ -51,30 +63,31 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/uploadFile" />
+                app:layout_constraintTop_toBottomOf="@+id/filepath" />
 
             <EditText
                 android:id="@+id/comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_width="294dp"
+                android:layout_height="51dp"
+                android:layout_marginTop="12dp"
                 android:ems="10"
                 android:hint="Modern, Classy etc"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.541"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <Spinner
                 android:id="@+id/genreSpinner"
                 style="@style/FirebaseUI.CountrySpinner"
-                android:layout_width="0dp"
+                android:layout_width="290dp"
                 android:layout_height="48dp"
                 android:hapticFeedbackEnabled="true"
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/tv_post_something"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.516"
                 app:layout_constraintStart_toStartOf="@+id/tv_post_something"
                 app:layout_constraintTop_toBottomOf="@+id/tv_art_genre" />
 
@@ -112,19 +125,18 @@
                 style="@style/Widget.AppCompat.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
                 android:text="Art Genre"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/searchview" />
+                app:layout_constraintTop_toBottomOf="@+id/actv" />
 
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="44dp"
                 android:text="Artist/Group Name"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +161,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
+                android:layout_marginTop="16dp"
                 android:text="Comment (Optional)"
                 android:textSize="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -157,17 +169,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/genreSpinner" />
 
-            <SearchView
-                android:id="@+id/searchview"
-                android:layout_width="345dp"
-                android:layout_height="47dp"
+            <TextView
+                android:id="@+id/filepath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:title="Search"
-                app:actionViewClass="android.support.v7.widget.SearchView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name"
-                app:showAsAction="ifRoom|collapseActionView" />
+                app:layout_constraintTop_toBottomOf="@+id/uploadFile" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

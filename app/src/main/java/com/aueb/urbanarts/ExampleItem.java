@@ -1,21 +1,21 @@
 package com.aueb.urbanarts;
 
 public class ExampleItem {
-    private int imageResource;
+    private String imageResource;
     private String text1;
     private String text2;
     private String ID;
     public ExampleItem(){
 
     }
-    public ExampleItem(int imageResource, String text1, String text2,String ID) {
+    public ExampleItem(String imageResource, String text1, String text2,String ID) {
         this.imageResource = imageResource;
         this.text1 = text1;
         this.text2 = text2;
         this.ID=ID;
     }
 
-    public void setImageResource(int imageResource) {
+    public void setImageResource(String imageResource) {
         this.imageResource = imageResource;
     }
 
@@ -31,7 +31,7 @@ public class ExampleItem {
         this.ID = ID;
     }
 
-    public int getImageResource() {
+    public String getImageResource() {
         return imageResource;
     }
     public String getText1() {
