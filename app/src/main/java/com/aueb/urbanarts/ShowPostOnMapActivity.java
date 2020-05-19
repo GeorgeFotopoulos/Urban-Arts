@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -45,6 +47,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,6 +59,8 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     GoogleMap map;
     Marker marker;
     LocationManager locationManager;
@@ -63,11 +72,20 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     protected LatLng position;
     double lat;
     double lon;
+    boolean foundAnotherEvent = false;
     String name, typeOfArt, liveStr, filePathStr;
+    String anotherEventName, anotherEventType, anotherEventAddress;
     Boolean live;
+    ArrayList<String> foundEvents = new ArrayList<>();
+    ArrayList<Dialog> foundEventDialogs = new ArrayList<>();
+    Dialog currDialog;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.show_post_on_map);
+
         Intent intent = getIntent();
         if (intent.getStringExtra("name") != null) {
             name = intent.getStringExtra("name");
@@ -86,12 +104,9 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
             }
         }
 
-        if(intent.getStringExtra("filePath") != null) {
+        if (intent.getStringExtra("filePath") != null) {
             filePathStr = intent.getStringExtra("filePath");
         }
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_post_on_map);
 
         checkPermission();
         getLocation();
@@ -122,39 +137,109 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
         findViewById(R.id.post_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                confirmNewPost();
+                getEventDetails();
             }
         });
     }
 
     protected void confirmNewPost() {
-        Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.create_post_popup);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        currDialog = new Dialog(this, android.R.style.Theme_Dialog);
+        currDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        currDialog.setContentView(R.layout.create_post_popup);
 
-        Button yes = dialog.findViewById(R.id.yes);
-        Button signUp = dialog.findViewById(R.id.signUp);
+        foundEventDialogs.add(currDialog);
+        currDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(final DialogInterface arg0) {
+                foundEventDialogs.removeAll(foundEventDialogs);
+                foundEvents.removeAll(foundEvents);
+            }
+        });
+
+        TextView anEvAddressDisplay = currDialog.findViewById(R.id.address);
+        TextView anEvGenreDisplay = currDialog.findViewById(R.id.genre);
+        TextView anEvArtistDisplay = currDialog.findViewById(R.id.artist);
+
+        anEvAddressDisplay.setText(anotherEventAddress);
+        anEvGenreDisplay.setText(anotherEventType);
+        anEvArtistDisplay.setText(anotherEventName);
+        foundAnotherEvent = false;
+
+        currDialog.setCanceledOnTouchOutside(true);
+        currDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button yes = currDialog.findViewById(R.id.yes);
+        Button createNew = currDialog.findViewById(R.id.create_new);
 
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mergePost(foundEvents.get(foundEvents.size() - 1));
             }
         });
 
-        signUp.setOnClickListener(new View.OnClickListener() {
+        createNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                getEventDetails();
             }
         });
 
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        dialog.getWindow().setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+        currDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        currDialog.getWindow().setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+        currDialog.show();
     }
+
+    private void mergePost(String s) {
+        if (currDialog != null) {
+            foundEventDialogs.removeAll(foundEventDialogs);
+        }
+//        Sixoneysi ton Events
+    }
+
+    private void makeNewPost() {
+        if (currDialog != null) {
+            foundEventDialogs.removeAll(foundEventDialogs);
+        }
+//        Edo kane dhmiourgia tou event
+    }
+
+    private void getEventDetails() {
+        fStore.collection("events")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                double currEventLat = getLat(document.getString("location"));
+                                double currEventLon = getLon(document.getString("location"));
+                                if (calculateDistance(currEventLat, currEventLon, lat, lon) < 0.05 && document.getString("genre").equals(typeOfArt) && !foundEvents.contains(document.getId())) {
+                                    foundAnotherEvent = true;
+                                    anotherEventAddress = document.getString("location");
+                                    anotherEventType = document.getString("genre");
+                                    if (document.getString("Artist").equals("")) {
+                                        anotherEventName = "Unknown Artist";
+                                    } else {
+                                        anotherEventName = document.getString("Artist");
+                                    }
+                                    foundEvents.add(document.getId());
+                                    break;
+                                }
+                            }
+                            if (foundAnotherEvent) {
+                                confirmNewPost();
+                            } else {
+                                makeNewPost();
+                            }
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
 
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -273,7 +358,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                             marker = map.addMarker(
                                     new MarkerOptions()
                                             .position(position)
-                                            .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
+                                            .icon(BitmapDescriptorFactory.defaultMarker(343.0f)));
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
                         }
 
@@ -328,7 +413,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         marker = map.addMarker(
                 new MarkerOptions()
                         .position(position)
-                        .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
+                        .icon(BitmapDescriptorFactory.defaultMarker(343.0f)));
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
     }
 
@@ -352,6 +437,77 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    private double getLat(String addresName) {
+        geocoder = new Geocoder(ShowPostOnMapActivity.this);
+        try {
+
+            addressList = geocoder.getFromLocationName(addresName, 1);
+
+            if (!addressList.isEmpty()) {
+                double currlat = 0;
+                for (int i = 0; i < addressList.size(); i++) {
+
+                    Address correctAddress = addressList.get(i);
+
+                    currlat = correctAddress.getLatitude();
+
+                }
+                return currlat;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return 0;
+    }
+
+    private double getLon(String addresName) {
+        geocoder = new Geocoder(ShowPostOnMapActivity.this);
+        try {
+
+            addressList = geocoder.getFromLocationName(addresName, 1);
+
+            if (!addressList.isEmpty()) {
+                double currlon = 0;
+                for (int i = 0; i < addressList.size(); i++) {
+
+                    Address correctAddress = addressList.get(i);
+
+                    currlon = correctAddress.getLongitude();
+
+                }
+                return currlon;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return 0;
+    }
+
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
     @Override

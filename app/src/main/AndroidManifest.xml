@@ -24,6 +24,7 @@
         <activity
             android:name=".ShowMapActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoLabel"
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ReportUser" />
         <activity android:name=".SearchFilters" />
