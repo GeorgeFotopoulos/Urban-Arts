@@ -213,7 +213,7 @@ public class Feed extends AppCompatActivity {
                                 }
                             }
                         } else {
-                            addItem(docArtistProfilePicture, docArtist, document, recyclerView);
+                            addItem("none", docArtist, document, recyclerView);
                         }
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
