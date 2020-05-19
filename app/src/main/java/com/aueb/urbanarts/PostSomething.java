@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,6 +40,7 @@ public class PostSomething extends AppCompatActivity {
     EditText tv_name,tv_comment;
     Switch aSwitch;
     Spinner sItems;
+    private FirebaseAuth mAuth;
     Button btnUpload, btnProceed;
     private Uri filePath;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -50,6 +52,7 @@ public class PostSomething extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.make_post);
         retrieveList();
+        mAuth = FirebaseAuth.getInstance();
         final List<String> genres = new ArrayList<>();
 
         fStore.collection("genre")
@@ -116,22 +119,35 @@ public class PostSomething extends AppCompatActivity {
                 }
 
                 if (yesFilter) {
-                    Intent intent = new Intent(PostSomething.this, ShowPostOnMapActivity.class);
-                   if(!name.contains(" (UA User)")){
-                      ID="";
-                   }
-                   else{
-                       name=name.replace(" (UA User)","");
-                   }
-                    intent.putExtra("name", name);
-                    intent.putExtra("comment", comment);
-                    intent.putExtra("typeOfArt", typeOfArt);
-                    intent.putExtra("live", live);
-                    intent.putExtra("ID",ID);
-                    if (filePath != null) {
-                        intent.putExtra("filePath", filePath.toString());
-                    }
-                    startActivity(intent);
+                    DocumentReference docUser = fStore.collection("users").document(mAuth.getUid());
+                    docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+
+                                    String userName = document.getString("username");
+                                    Intent intent = new Intent(PostSomething.this, ShowPostOnMapActivity.class);
+                                    if (!name.contains(" (UA User)")) {
+                                        ID = "";
+                                    } else {
+                                        name = name.replace(" (UA User)", "");
+                                    }
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("postedBy", userName);
+                                    intent.putExtra("comment", comment);
+                                    intent.putExtra("typeOfArt", typeOfArt);
+                                    intent.putExtra("live", live);
+                                    intent.putExtra("ID", ID);
+                                    if (filePath != null) {
+                                        intent.putExtra("filePath", filePath.toString());
+                                    }
+                                    startActivity(intent);
+                                }
+                            }
+                        }
+                    });
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "Field \"Art Genre\" is required.", Toast.LENGTH_LONG);
                     toast.show();

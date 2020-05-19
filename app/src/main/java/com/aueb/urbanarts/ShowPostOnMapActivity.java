@@ -51,7 +51,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -64,7 +66,7 @@ import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
+    Button b;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     GoogleMap map;
     Marker marker;
@@ -78,15 +80,16 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     double lat;
     double lon;
     boolean foundAnotherEvent = false;
-    String name, typeOfArt, liveStr, filePathStr,comment, ArtistID;
+    String name, typeOfArt, liveStr, filePathStr,comment="", ArtistID,postedBy;
     String anotherEventName, anotherEventType, anotherEventAddress;
     Boolean live;
     ArrayList<String> foundEvents = new ArrayList<>();
     Dialog currDialog;
-
+    private FirebaseAuth mAuth;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_post_on_map);
 
@@ -101,6 +104,10 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
         if (intent.getStringExtra("ID") != null) {
             ArtistID = intent.getStringExtra("ID");
+        }
+
+        if (intent.getStringExtra("postedBy") != null) {
+            postedBy = intent.getStringExtra("postedBy");
         }
 
         if (intent.getStringExtra("typeOfArt") != null) {
@@ -149,6 +156,8 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
         findViewById(R.id.post_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                b=findViewById(R.id.post_button);
+                b.setClickable(false);
                 getEventDetails();
             }
         });
@@ -203,14 +212,47 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         currDialog.show();
     }
 
-    private void mergePost(String s) {
+    private void mergePost(final String s) {
+        b.setClickable(true);
         if (currDialog != null) {
             currDialog.dismiss();
         }
+        DocumentReference docRef = fStore.collection("events").document(s);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("", "DocumentSnapshot data: " + document.getData());
+                        ArrayList<String> comments=(ArrayList) document.get("comments");
+                        if(!comment.isEmpty()) {
+                            comments.add(postedBy + "@token@" + comment);
+                            fStore.collection("events").document(s).update("comments", comments);
+                        }
+                        ArrayList<String> Images=(ArrayList) document.get("gallery");
+                       // if(!comment.isEmpty()) {
+                       //     comments.add(postedBy + "@token@" + comment);
+                       // }
+
+                        Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
+                        myIntent.putExtra("eventID", s);
+                        ShowPostOnMapActivity.this.startActivity(myIntent);
+                        finish();
+
+                    } else {
+                        Log.d("", "No such document");
+                    }
+                } else {
+                    Log.d("", "get failed with ", task.getException());
+                }
+            }
+        });
 //        Sixoneysi ton Events
     }
 
     private void makeNewPost() {
+        b.setClickable(true);
         if (currDialog != null) {
             currDialog.dismiss();
         }
@@ -218,8 +260,8 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         Map<String, Object> data = new HashMap<>();
         ArrayList<String> comments=new ArrayList<>();
         ArrayList<String> gallery=new ArrayList<>();
-        if(comment!="")
-            comments.add(comment);
+        if(!comment.isEmpty())
+            comments.add(postedBy+"@token@"+comment);
         data.put("gallery",gallery);
         data.put("comments",comments);
         data.put("Artist",name );
@@ -233,6 +275,10 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
+                        myIntent.putExtra("eventID", documentReference.getId());
+                        ShowPostOnMapActivity.this.startActivity(myIntent);
+                        finish();
                         Log.d("", "DocumentSnapshot written with ID: " + documentReference.getId());
                     }
                 })

@@ -68,6 +68,7 @@ public class SignUp extends AppCompatActivity {
                 final String email = tv_email.getText().toString().trim();
                 final String password = tv_password.getText().toString().trim();
 
+
                 if (TextUtils.isEmpty(username)) {
                     tv_username.setError("Username is required.");
                     correctInput = false;
