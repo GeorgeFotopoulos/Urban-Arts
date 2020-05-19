@@ -48,14 +48,19 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -73,7 +78,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     double lat;
     double lon;
     boolean foundAnotherEvent = false;
-    String name, typeOfArt, liveStr, filePathStr;
+    String name, typeOfArt, liveStr, filePathStr,comment, ArtistID;
     String anotherEventName, anotherEventType, anotherEventAddress;
     Boolean live;
     ArrayList<String> foundEvents = new ArrayList<>();
@@ -89,6 +94,14 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         Intent intent = getIntent();
         if (intent.getStringExtra("name") != null) {
             name = intent.getStringExtra("name");
+        }
+
+        if (intent.getStringExtra("comment") != null) {
+            comment = intent.getStringExtra("comment");
+        }
+
+        if (intent.getStringExtra("ID") != null) {
+            ArtistID = intent.getStringExtra("ID");
         }
 
         if (intent.getStringExtra("typeOfArt") != null) {
@@ -201,6 +214,36 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         if (currDialog != null) {
             foundEventDialogs.removeAll(foundEventDialogs);
         }
+        //String name, typeOfArt, liveStr, filePathStr,comment, ArtistID;
+        Map<String, Object> data = new HashMap<>();
+        ArrayList<String> comments=new ArrayList<>();
+        ArrayList<String> gallery=new ArrayList<>();
+        if(comment!="")
+            comments.add(comment);
+        data.put("gallery",gallery);
+        data.put("comments",comments);
+        data.put("Artist",name );
+        data.put("genre", typeOfArt);
+        data.put("Live", live);
+        data.put("likes", "0");
+        data.put("ArtistID", ArtistID);
+        data.put("location", showAddress.getText().toString());
+        fStore.collection("events")
+                .add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("", "DocumentSnapshot written with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("", "Error adding document", e);
+                    }
+                });
+
+
 //        Edo kane dhmiourgia tou event
     }
 
