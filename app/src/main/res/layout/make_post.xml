@@ -5,17 +5,15 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="visible"
     android:focusable="auto"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:visibility="visible"
     tools:context="com.aueb.urbanarts.PostSomething">
 
-
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,12 +25,12 @@
 
             <AutoCompleteTextView
                 android:id="@+id/actv"
-                android:layout_width="292dp"
-                android:layout_height="47dp"
+                android:layout_width="275dp"
+                android:layout_height="wrap_content"
                 android:completionThreshold="1"
                 android:hint="Type Artist's Name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tv_post_something"
+                app:layout_constraintStart_toStartOf="@+id/tv_post_something"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
             <Button
@@ -42,7 +40,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
                 android:text="Choose File"
                 android:textColor="#000000"
                 android:textSize="14sp"
@@ -67,27 +64,25 @@
 
             <EditText
                 android:id="@+id/comment"
-                android:layout_width="294dp"
-                android:layout_height="51dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Modern, Classy etc"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.541"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/genreSpinner"
+                app:layout_constraintStart_toStartOf="@+id/genreSpinner"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <Spinner
                 android:id="@+id/genreSpinner"
                 style="@style/FirebaseUI.CountrySpinner"
-                android:layout_width="290dp"
-                android:layout_height="48dp"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
                 android:hapticFeedbackEnabled="true"
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="@+id/tv_post_something"
-                app:layout_constraintHorizontal_bias="0.516"
-                app:layout_constraintStart_toStartOf="@+id/tv_post_something"
+                app:layout_constraintEnd_toEndOf="@+id/actv"
+                app:layout_constraintStart_toStartOf="@+id/actv"
                 app:layout_constraintTop_toBottomOf="@+id/tv_art_genre" />
 
             <Switch
@@ -103,7 +98,6 @@
                 android:textColorLink="#b71e42"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/comment" />
 
@@ -128,7 +122,6 @@
                 android:text="Art Genre"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/actv" />
 
@@ -136,11 +129,10 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="32dp"
                 android:text="Artist/Group Name"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_post_something" />
 
@@ -149,7 +141,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
                 android:text="Upload Media"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@+id/uploadFile"
@@ -163,28 +154,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Comment "
-                android:textSize="24dp"
+                android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.492"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/genreSpinner" />
 
             <TextView
                 android:id="@+id/filepath"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@+id/genreSpinner"
+                app:layout_constraintStart_toStartOf="@+id/genreSpinner"
                 app:layout_constraintTop_toBottomOf="@+id/uploadFile" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="*   "
+                android:layout_height="0dp"
+                android:layout_marginStart="4dp"
+                android:text="*"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/genreSpinner"
                 app:layout_constraintStart_toEndOf="@+id/tv_art_genre"
                 app:layout_constraintTop_toTopOf="@+id/tv_art_genre" />
 

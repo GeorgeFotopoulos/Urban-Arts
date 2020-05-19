@@ -144,6 +144,14 @@ public class ArtistProfileActivity extends AppCompatActivity {
                                                 text = "Unfollow";
                                                 follow.setText(text);
                                             }
+                                        } else {
+                                            followedUsersMap.put(artist_id, true);
+                                            showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
+                                            docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
+                                            followedUsersMap.put(artist_id, true);
+                                            docRef.update("followedUsers", followedUsersMap);
+                                            text = "Unfollow";
+                                            follow.setText(text);
                                         }
                                     }
                                 }
