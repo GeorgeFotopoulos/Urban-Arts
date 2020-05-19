@@ -2,6 +2,7 @@ package com.aueb.urbanarts;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Feed extends AppCompatActivity {
     String docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
@@ -40,12 +42,16 @@ public class Feed extends AppCompatActivity {
     private FirebaseAuth mAuth;
     Adapter adapter;
     Boolean live;
+    ArrayList<String> artistsList = new ArrayList<>();
+    ArrayList<String> artistsImages = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         adapter = new Adapter(Feed.this, mList);
+
 
         Intent intent = getIntent();
         if (intent.getStringExtra("location") != null) {
@@ -71,7 +77,6 @@ public class Feed extends AppCompatActivity {
             }
         }
 
-        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         ImageButton btn_map = findViewById(R.id.my_location);
         btn_map.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +107,53 @@ public class Feed extends AppCompatActivity {
             });
         }
 
-        final CollectionReference eventsReference = database.collection("events");
+        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        makeArtists(recyclerView);
+
+        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                final String eventID = eventsList.get(position);
+                DocumentReference docRef = database.collection("events").document(eventID);
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Intent intent = new Intent(Feed.this, Event.class);
+                                intent.putExtra("eventID", eventID);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
+    public void makeArtists(final RecyclerView recyclerView) {
+
+        database.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        artistsList.add(document.getId());
+                        artistsImages.add(document.getString("profile_image_url"));
+                    }
+                    connectThem(recyclerView);
+                } else {
+                    Log.w(TAG, "Error getting documents.", task.getException());
+                }
+            }
+        });
+    }
+
+    private void connectThem(final RecyclerView recyclerView) {
+        CollectionReference eventsReference = database.collection("events");
         eventsReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -154,62 +205,32 @@ public class Feed extends AppCompatActivity {
                                 toBeAdded = false;
                         }
 
-                        if (docArtistID.equals("")) docArtistID = "na";
-                        DocumentReference docRef = database.collection("artists").document(docArtistID);
-                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot documentSnapshot = task.getResult();
-                                    try {
-                                        if (documentSnapshot.exists()) {
-                                            docArtistProfilePicture = documentSnapshot.getString("profile_image_url");
-                                            addItem(docArtistProfilePicture, docArtist, document, recyclerView);
-                                        } else {
-                                            docArtistProfilePicture = "none";
-                                            docArtist = "none";
-                                            addItem(docArtistProfilePicture, docArtist, document, recyclerView);
-                                        }
-                                    } catch (Exception ignore) {
-
-                                    }
+                        if (artistsList.contains(docArtistID)) {
+                            for (int i = 0; i < artistsList.size(); i++) {
+                                if (artistsList.get(i).equals(docArtistID)) {
+                                    addItem(artistsImages.get(i), docArtist, document, recyclerView);
+                                    break;
                                 }
                             }
-                        });
+                        } else {
+                            addItem(docArtistProfilePicture, docArtist, document, recyclerView);
+                        }
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
                     }
 
                 }
+
             }
         });
-        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                final String eventID = eventsList.get(position);
-                DocumentReference docRef = database.collection("events").document(eventID);
-                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Intent intent = new Intent(Feed.this, Event.class);
-                                intent.putExtra("eventID", eventID);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                    }
-                });
-            }
-        });
+
     }
 
     public void addItem(String docArtistProfilePicture, String docArtist, QueryDocumentSnapshot document, RecyclerView recyclerView) {
         try {
             if (toBeAdded) {
                 mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked));
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+
                 eventsList.add(document.getId());
             }
         } catch (Exception ignore) {

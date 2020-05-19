@@ -53,6 +53,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         } catch (Exception ignore) {
 
         }
+
         if (!(mData.get(position).getEventPhoto()).equals("none")) {
             Glide.with(mContext.getApplicationContext()).load(mData.get(position).getEventPhoto()).into(holder.postImage);
         } else {
