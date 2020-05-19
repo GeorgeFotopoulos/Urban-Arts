@@ -122,6 +122,11 @@ public class SignUp extends AppCompatActivity {
                             user.put("username", username);
                             user.put("email", email);
                             user.put("is_artist", false);
+                            Map<String, Boolean> liked = new HashMap<>();
+                            user.put("UserLiked",liked);
+                            user.put("followedUsers",liked);
+
+
 
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override

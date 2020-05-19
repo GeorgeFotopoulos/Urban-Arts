@@ -23,18 +23,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
@@ -368,15 +373,22 @@ public class Event extends AppCompatActivity {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
             final ProgressBar loadGallery = findViewById(R.id.load_carousel);
-            Picasso.with(getApplicationContext()).load(Images.get(position)).into(imageView, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    loadGallery.setVisibility(View.INVISIBLE);
-                }
-                @Override
-                public void onError() {
-                }
-            });
+            Glide.with(getApplicationContext())
+                    .load(Images.get(position))
+                    .listener(new RequestListener() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                            loadGallery.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                            loadGallery.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
+                    })
+                    .into(imageView);
         }
     };
 }
