@@ -20,14 +20,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LogIn extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mLoginBtn;
     TextView mCreateBtn, forgotTextLink, tv_guest;
     FirebaseAuth fAuth;
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     String userID;
     boolean correctInput = true;
 
@@ -66,25 +64,21 @@ public class LogIn extends AppCompatActivity {
                 final String password = mPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required.");
+                    Toast.makeText(LogIn.this, "Email is required!", Toast.LENGTH_SHORT).show();
                     correctInput = false;
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is Required.");
+                    Toast.makeText(LogIn.this, "Password is required!", Toast.LENGTH_SHORT).show();
                     correctInput = false;
                     return;
                 }
 
                 if (password.length() < 8) {
-                    mPassword.setError("Password Must be >= 8 Characters");
+                    Toast.makeText(LogIn.this, "Password must be >= 8 characters!", Toast.LENGTH_SHORT).show();
                     correctInput = false;
                     return;
-                }
-
-                if (correctInput = true) {
-                    mLoginBtn.setEnabled(false);
                 }
 
                 // authenticate the user
@@ -92,12 +86,14 @@ public class LogIn extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            mLoginBtn.setEnabled(false);
                             userID = fAuth.getCurrentUser().getUid();
                             Toast.makeText(LogIn.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
                             finish();
                         } else {
-                            Toast.makeText(LogIn.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LogIn.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            mLoginBtn.setEnabled(true);
                         }
                     }
                 });

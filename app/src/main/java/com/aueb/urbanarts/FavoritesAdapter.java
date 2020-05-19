@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +45,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.myVi
     @Override
     public void onBindViewHolder(FavoritesAdapter.myViewHolder holder, int position) {
         if (!(mData.get(position).getProfilePhoto()).equals("none")) {
-            Picasso.with(mContext.getApplicationContext()).load(mData.get(position).getProfilePhoto()).into(holder.profilePhoto);
+            Glide.with(mContext.getApplicationContext()).load(mData.get(position).getProfilePhoto()).into(holder.profilePhoto);
         } else {
             holder.profilePhoto.setImageResource(R.drawable.profile);
         }

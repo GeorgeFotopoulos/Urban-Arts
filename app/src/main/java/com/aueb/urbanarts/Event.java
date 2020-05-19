@@ -274,7 +274,7 @@ public class Event extends AppCompatActivity {
                                                     } else {
                                                         check.setColorFilter(Color.parseColor("#b71e42"));
                                                         upvtext.setText("Upvoted");
-                                                        DocumentReference docRef3 = db.collection("events").document("pz56iXB5RWdPygrRaoBT");
+                                                        DocumentReference docRef3 = db.collection("events").document(document_id);
                                                         docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,19 +44,23 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
 
     @Override
     public void onBindViewHolder(myViewHolder holder, int position) {
-        if (!(mData.get(position).getProfilePhoto()).equals("none")) {
-            Picasso.with(mContext.getApplicationContext()).load(mData.get(position).getProfilePhoto()).into(holder.profilePhoto);
-        } else {
-            holder.profilePhoto.setImageResource(R.drawable.profile);
+        try {
+            if (!(mData.get(position).getProfilePhoto()).equals("none")) {
+                Glide.with(mContext.getApplicationContext()).load(mData.get(position).getProfilePhoto()).into(holder.profilePhoto);
+            } else {
+                holder.profilePhoto.setImageResource(R.drawable.profile);
+            }
+        } catch (Exception ignore) {
+
         }
         if (!(mData.get(position).getEventPhoto()).equals("none")) {
-            Picasso.with(mContext.getApplicationContext()).load(mData.get(position).getEventPhoto()).into(holder.postImage);
+            Glide.with(mContext.getApplicationContext()).load(mData.get(position).getEventPhoto()).into(holder.postImage);
         } else {
             holder.postImage.setImageResource(R.drawable.no_image_found);
         }
         holder.artistName.setText(mData.get(position).getArtistName());
         if (mData.get(position).getArtistName().equalsIgnoreCase("none")) {
-            holder.artistName.setText("Unknown");
+            holder.artistName.setText("Unknown Artist");
         }
         holder.eventType.setText(mData.get(position).getTypeOfArt());
         holder.address.setText(mData.get(position).getLocation());
