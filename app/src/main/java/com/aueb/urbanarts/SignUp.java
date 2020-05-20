@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,13 +29,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
-    public static final String TAG = "TAG";
-    TextView tv_username, tv_email, tv_password, tv_login;
-    private FirebaseAuth mAuth;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    Button btn_createAccount;
-    String userID;
+    TextView tv_username, tv_email, tv_password, tv_login;
+    public static final String TAG = "TAG";
     boolean correctInput = true;
+    private FirebaseAuth mAuth;
+    Button btn_createAccount;
+    ProgressBar progressBar;
+    CheckBox mCheckBox;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,33 +73,47 @@ public class SignUp extends AppCompatActivity {
                 final String username = tv_username.getText().toString().trim();
                 final String email = tv_email.getText().toString().trim();
                 final String password = tv_password.getText().toString().trim();
+                mCheckBox = findViewById(R.id.checkBox);
 
+                progressBar = findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.VISIBLE);
 
                 if (TextUtils.isEmpty(username)) {
-                    tv_username.setError("Username is required.");
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(SignUp.this, "Username is required!", Toast.LENGTH_SHORT).show();
                     correctInput = false;
                     return;
                 }
 
                 if (TextUtils.isEmpty(email)) {
-                    tv_email.setError("Email is required.");
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(SignUp.this, "Password is required!", Toast.LENGTH_SHORT).show();
                     correctInput = false;
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    tv_password.setError("Password is required.");
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(SignUp.this, "Password is required!", Toast.LENGTH_SHORT).show();
                     correctInput = false;
                     return;
                 }
 
                 if (password.length() < 8) {
-                    tv_password.setError("Password must be >= 8 characters.");
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(SignUp.this, "Password must be >= 8 characters!", Toast.LENGTH_SHORT).show();
                     correctInput = false;
                     return;
                 }
 
-                if(correctInput = true) {
+                if (!mCheckBox.isChecked()) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(SignUp.this, "To continue, you must agree to the Urban Arts Terms of Service!", Toast.LENGTH_SHORT).show();
+                    correctInput = false;
+                    return;
+                }
+
+                if (correctInput = true) {
                     btn_createAccount.setEnabled(false);
                 }
 
@@ -126,10 +144,8 @@ public class SignUp extends AppCompatActivity {
                             user.put("email", email);
                             user.put("is_artist", false);
                             Map<String, Boolean> liked = new HashMap<>();
-                            user.put("UserLiked",liked);
-                            user.put("followedUsers",liked);
-
-
+                            user.put("UserLiked", liked);
+                            user.put("followedUsers", liked);
 
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override

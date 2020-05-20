@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,12 +25,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogIn extends AppCompatActivity {
-    EditText mEmail, mPassword;
-    Button mLoginBtn;
     TextView mCreateBtn, forgotTextLink, tv_guest;
+    EditText mEmail, mPassword;
+    ProgressBar progressBar;
     FirebaseAuth fAuth;
+    Button mLoginBtn;
     String userID;
-    boolean correctInput = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,6 @@ public class LogIn extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
         mLoginBtn = findViewById(R.id.signIn);
@@ -65,22 +66,24 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View v) {
                 final String email = mEmail.getText().toString().trim();
                 final String password = mPassword.getText().toString().trim();
+                progressBar = findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.VISIBLE);
 
                 if (TextUtils.isEmpty(email)) {
+                    progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(LogIn.this, "Email is required!", Toast.LENGTH_SHORT).show();
-                    correctInput = false;
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
+                    progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(LogIn.this, "Password is required!", Toast.LENGTH_SHORT).show();
-                    correctInput = false;
                     return;
                 }
 
                 if (password.length() < 8) {
+                    progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(LogIn.this, "Password must be >= 8 characters!", Toast.LENGTH_SHORT).show();
-                    correctInput = false;
                     return;
                 }
 
@@ -91,12 +94,15 @@ public class LogIn extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             mLoginBtn.setEnabled(false);
                             userID = fAuth.getCurrentUser().getUid();
-                            Toast.makeText(LogIn.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
+                            progressBar = findViewById(R.id.progressBar);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(LogIn.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
                             Animatoo.animateZoom(LogIn.this);
                             finish();
                         } else {
                             Toast.makeText(LogIn.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.INVISIBLE);
                             mLoginBtn.setEnabled(true);
                         }
                     }
