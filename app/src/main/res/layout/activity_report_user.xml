@@ -22,6 +22,7 @@
                 style="@style/Widget.AppCompat.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/pink_button"
                 android:text="@string/send"
@@ -29,91 +30,38 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout1" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toTopOf="@+id/reportButton"
                 app:layout_constraintEnd_toEndOf="@+id/reportText"
-                app:layout_constraintStart_toStartOf="@+id/reportText">
+                app:layout_constraintStart_toStartOf="@+id/reportText"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <CheckBox
-                android:id="@+id/copyrightIssues"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Copyright Issues"
-                app:layout_constraintBottom_toTopOf="@+id/inappropriateUsername"
-                app:layout_constraintEnd_toEndOf="@+id/inappropriateUsername"
-                app:layout_constraintStart_toStartOf="@+id/inappropriateUsername" />
-
-            <CheckBox
-                android:id="@+id/inappropriateUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/inappropriate_username"
-                app:layout_constraintBottom_toTopOf="@+id/spam"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <CheckBox
-                android:id="@+id/misinformation"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/misinformation"
-                app:layout_constraintBottom_toTopOf="@+id/copyrightIssues"
-                app:layout_constraintEnd_toEndOf="@+id/inappropriateUsername"
-                app:layout_constraintStart_toStartOf="@+id/inappropriateUsername" />
-
-            <CheckBox
-                android:id="@+id/hateSpeech"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/hate_speech"
-                app:layout_constraintBottom_toTopOf="@+id/misinformation"
-                app:layout_constraintEnd_toEndOf="@+id/inappropriateUsername"
-                app:layout_constraintStart_toStartOf="@+id/inappropriateUsername" />
-
-            <CheckBox
-                android:id="@+id/spam"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/spam"
-                app:layout_constraintBottom_toTopOf="@+id/textInputLayout1"
-                app:layout_constraintEnd_toEndOf="@+id/inappropriateUsername"
-                app:layout_constraintStart_toStartOf="@+id/inappropriateUsername" />
 
             <TextView
                 android:id="@+id/reportText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="24dp"
                 android:gravity="center_horizontal"
                 android:text="@string/in_order_to_help_us_understand_the_reason_you_are_reporting_this_user_tick_one_or_more_options_of_those_mentioned_below_contact_information_is_required_in_case_we_need_further_information_regarding_this_report_if_you_feel_the_need_to_include_any_additional_information_please_fill_in_the_text_box_below"
-                app:layout_constraintBottom_toTopOf="@+id/hateSpeech"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fullNameLayout" />
 
             <TextView
                 android:id="@+id/header"
@@ -149,26 +97,46 @@
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailLayout"
-                android:layout_width="0dp"
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toTopOf="@+id/reportText"
-                app:layout_constraintEnd_toEndOf="@+id/fullNameLayout"
-                app:layout_constraintStart_toStartOf="@+id/fullNameLayout"
-                app:layout_constraintTop_toBottomOf="@+id/fullNameLayout"
-                app:startIconDrawable="@drawable/ic_email_small"
-                app:endIconMode="clear_text">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reportText">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/emailInput"
+                <RadioButton
+                    android:id="@+id/spam"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/email_address"
-                    android:textSize="16sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:checked="true"
+                    android:text="@string/spam" />
+
+                <RadioButton
+                    android:id="@+id/hateSpeech"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hate_speech" />
+
+                <RadioButton
+                    android:id="@+id/misinformation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/misinformation" />
+
+                <RadioButton
+                    android:id="@+id/copyrightIssues"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Copyright Issues" />
+
+                <RadioButton
+                    android:id="@+id/inappropriateUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inappropriate_username" />
+            </RadioGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

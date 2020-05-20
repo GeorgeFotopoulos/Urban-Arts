@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -107,6 +108,7 @@ public class Favorites extends AppCompatActivity {
                                                                         Intent intent = new Intent(Favorites.this, ArtistProfileActivity.class);
                                                                         intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
                                                                         startActivity(intent);
+                                                                        Animatoo.animateFade(Favorites.this);
                                                                         finish();
                                                                     } else {
                                                                         Log.d(TAG, "No such document");
@@ -129,6 +131,15 @@ public class Favorites extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(Favorites.this, HomePage.class);
+        startActivity(intent);
+        Animatoo.animateZoom(this);
+        finish();
     }
 
     private void showUserInfo(final ProgressBar loadingImage) {

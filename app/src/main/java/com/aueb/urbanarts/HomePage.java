@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -67,7 +68,9 @@ public class HomePage extends AppCompatActivity {
                 public void onClick(View v) {
                     mAuth.signOut();
                     Intent myIntent = new Intent(HomePage.this, HomePage.class);
-                    HomePage.this.startActivity(myIntent);
+                    startActivity(myIntent);
+                    Animatoo.animateZoom(HomePage.this);
+                    finish();
                 }
             });
         } else {
@@ -75,7 +78,9 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent myIntent = new Intent(HomePage.this, LogIn.class);
-                    HomePage.this.startActivity(myIntent);
+                    startActivity(myIntent);
+                    Animatoo.animateFade(HomePage.this);
+                    finish();
                 }
             });
         }
@@ -98,7 +103,9 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent myIntent = new Intent(HomePage.this, SignUp.class);
-                    HomePage.this.startActivity(myIntent);
+                    Animatoo.animateFade(HomePage.this);
+                    startActivity(myIntent);
+                    finish();
                 }
             });
         }
@@ -117,8 +124,8 @@ public class HomePage extends AppCompatActivity {
                                     if (document.getBoolean("is_artist")) {
                                         Intent myIntent = new Intent(HomePage.this, ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
-                                        HomePage.this.startActivity(myIntent);
-                                        Animatoo.animateInAndOut(HomePage.this);
+                                        startActivity(myIntent);
+                                        Animatoo.animateFade(HomePage.this);
                                         finish();
                                     }
                                 } else {
@@ -136,7 +143,9 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(HomePage.this, SearchFilters.class);
-                HomePage.this.startActivity(myIntent);
+                startActivity(myIntent);
+                Animatoo.animateFade(HomePage.this);
+                finish();
             }
         });
 
@@ -145,7 +154,9 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(HomePage.this, Feed.class);
-                HomePage.this.startActivity(myIntent);
+                startActivity(myIntent);
+                Animatoo.animateFade(HomePage.this);
+                finish();
             }
         });
 
@@ -155,7 +166,9 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 if (mAuth.getCurrentUser() != null) {
                     Intent myIntent = new Intent(HomePage.this, PostSomething.class);
-                    HomePage.this.startActivity(myIntent);
+                    startActivity(myIntent);
+                    Animatoo.animateFade(HomePage.this);
+                    finish();
                 } else {
                     openDialog();
                 }
@@ -166,9 +179,21 @@ public class HomePage extends AppCompatActivity {
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                goMapView();
                 Intent intent = new Intent(HomePage.this, Favorites.class);
                 startActivity(intent);
+                Animatoo.animateFade(HomePage.this);
+                finish();
+            }
+        });
+
+        ImageButton imageButton = findViewById(R.id.imageButton);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePage.this, ShowMapActivity.class);
+                startActivity(intent);
+                Animatoo.animateFade(HomePage.this);
+                finish();
             }
         });
     }
@@ -181,11 +206,9 @@ public class HomePage extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-
                         String userName = document.getString("username");
                         TextView displayName = findViewById(R.id.username_display);
                         final CircleImageView accountImage = findViewById(R.id.account);
-
                         displayName.setSelected(true);
                         displayName.setText(userName);
 
@@ -199,7 +222,6 @@ public class HomePage extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
-
                                             if (!document.getString("profile_image_url").equals("none")) {
                                                 Glide.with(getApplicationContext())
                                                         .load(document.getString("profile_image_url"))
@@ -266,7 +288,9 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 dialog.cancel();
                 Intent myIntent = new Intent(HomePage.this, LogIn.class);
-                HomePage.this.startActivity(myIntent);
+                startActivity(myIntent);
+                Animatoo.animateFade(HomePage.this);
+                finish();
             }
         });
 
@@ -275,7 +299,9 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 dialog.cancel();
                 Intent myIntent = new Intent(HomePage.this, SignUp.class);
-                HomePage.this.startActivity(myIntent);
+                startActivity(myIntent);
+                Animatoo.animateFade(HomePage.this);
+                finish();
             }
         });
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -286,13 +312,6 @@ public class HomePage extends AppCompatActivity {
     private void goEditAccount() {
         Intent intent = new Intent(this, EditAccountActivity.class);
         startActivity(intent);
-        Animatoo.animateInAndOut(this);
-        finish();
-    }
-
-    private void goMapView() {
-        Intent myIntent = new Intent(HomePage.this, ShowMapActivity.class);
-        HomePage.this.startActivity(myIntent);
         Animatoo.animateFade(this);
         finish();
     }

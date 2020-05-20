@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,6 +58,7 @@ public class SignUp extends AppCompatActivity {
             public void onClick(View v) {
                 Intent myIntent = new Intent(SignUp.this, LogIn.class);
                 SignUp.this.startActivity(myIntent);
+                Animatoo.animateFade(SignUp.this);
                 finish();
             }
         });
@@ -149,5 +151,14 @@ public class SignUp extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(SignUp.this, HomePage.class);
+        startActivity(intent);
+        Animatoo.animateZoom(this);
+        finish();
     }
 }
