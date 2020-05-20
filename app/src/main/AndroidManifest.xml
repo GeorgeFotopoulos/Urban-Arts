@@ -13,13 +13,16 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Feed" />
+        <activity
+            android:name=".Feed"
+            android:theme="@style/AppThemeNoLabel" />
         <activity android:name=".PostSomething" />
         <activity android:name=".item" />
         <activity android:name=".Adapter" />
         <activity android:name=".ArtistAccountRequestActivity" />
         <activity android:name=".EditAccountActivity" />
-        <activity android:name=".Favorites"
+        <activity
+            android:name=".Favorites"
             android:theme="@style/AppThemeNoLabel" />
         <activity
             android:name=".ShowMapActivity"

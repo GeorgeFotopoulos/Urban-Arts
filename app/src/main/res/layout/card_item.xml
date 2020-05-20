@@ -28,17 +28,20 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout4"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 app:layout_constraintBottom_toBottomOf="@+id/profilePhoto"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profilePhoto"
                 app:layout_constraintTop_toTopOf="@+id/profilePhoto">
 
                 <TextView
                     android:id="@+id/artistName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Artist Name"
                     android:textColor="#B71E42"
                     android:textSize="18sp"
@@ -50,6 +53,7 @@
                     android:id="@+id/address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Address"
                     android:textColor="#000000"
                     android:textSize="12sp"
@@ -61,6 +65,7 @@
                     android:id="@+id/eventType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Genre"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"

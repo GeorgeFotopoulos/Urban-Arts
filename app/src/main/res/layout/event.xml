@@ -185,41 +185,41 @@
 
         <Button
             android:id="@+id/btnComment"
-            android:layout_width="115dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
             android:background="@drawable/pink_button"
             android:text="Comment "
             android:textColor="#FFFFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textComment"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintBottom_toBottomOf="@+id/textComment"
+            app:layout_constraintEnd_toStartOf="@+id/addImage"
+            app:layout_constraintTop_toTopOf="@+id/textComment" />
 
         <EditText
             android:id="@+id/textComment"
-            android:layout_width="214dp"
-            android:layout_height="43dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="Add your comment here..."
+            android:hint="Add a comment..."
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnComment"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/addImage"
             android:layout_width="52dp"
-            android:layout_height="47dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
             android:clickable="true"
             app:layout_constraintBottom_toBottomOf="@+id/btnComment"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnComment"
             app:layout_constraintTop_toTopOf="@+id/btnComment"
             app:srcCompat="@drawable/addphoto"
             tools:ignore="VectorDrawableCompat" />

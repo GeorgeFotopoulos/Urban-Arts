@@ -1,6 +1,7 @@
 package com.aueb.urbanarts;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -40,12 +41,10 @@ public class ReportUser extends AppCompatActivity {
                 textInput = findViewById(R.id.textInput);
                 text = "Name: " + fullName + "\nArtist ID: " + artistID + "\n\n" + textInput.getText().toString();
 
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"giorgos.fotopoulos7@gmail.com"});
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto","giorgos.fotopoulos7@gmail.com", null));
                 intent.putExtra(Intent.EXTRA_SUBJECT, rg_value);
                 intent.putExtra(Intent.EXTRA_TEXT, text);
-                intent.setType("message/rfc822");
-                startActivity(Intent.createChooser(intent, "Sending the email..."));
+                startActivity(intent);
             }
         });
     }

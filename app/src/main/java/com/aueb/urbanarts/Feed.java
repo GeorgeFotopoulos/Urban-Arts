@@ -8,13 +8,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Feed extends AppCompatActivity {
     String docArtist, docGenre, docLocation, docArtistID, docGalleryImage;
@@ -83,14 +93,38 @@ public class Feed extends AppCompatActivity {
             }
         }
 
-        ImageButton btn_map = findViewById(R.id.my_location);
-        btn_map.setOnClickListener(new View.OnClickListener() {
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            final ProgressBar loadingImage = findViewById(R.id.loading_image);
+            loadingImage.setVisibility(View.VISIBLE);
+            showUserInfo(loadingImage);
+        }
+
+        findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Feed.this, ShowMapActivity.class);
-                intent.putStringArrayListExtra("events", (ArrayList<String>) eventsList);
-                startActivity(intent);
-                finish();
+                if (mAuth.getCurrentUser() != null) {
+                    DocumentReference docUser = database.collection("users").document(mAuth.getUid());
+                    docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    if (document.getBoolean("is_artist")) {
+                                        Intent myIntent = new Intent(Feed.this, ArtistProfileActivity.class);
+                                        myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
+                                        startActivity(myIntent);
+                                        Animatoo.animateFade(Feed.this);
+                                        finish();
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -122,7 +156,6 @@ public class Feed extends AppCompatActivity {
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            mAuth = FirebaseAuth.getInstance();
                             if (mAuth.getCurrentUser() != null) {
                                 final DocumentReference userLikedReference = database.collection("users").document(mAuth.getCurrentUser().getUid());
                                 userLikedReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -298,6 +331,71 @@ public class Feed extends AppCompatActivity {
 
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
+    }
+
+    private void showUserInfo(final ProgressBar loadingImage) {
+        DocumentReference docUser = database.collection("users").document(mAuth.getUid());
+        docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String userName = document.getString("username");
+                        TextView displayName = findViewById(R.id.username_display);
+                        final CircleImageView accountImage = findViewById(R.id.account);
+                        displayName.setSelected(true);
+                        displayName.setText(userName);
+                        if (document.getBoolean("is_artist")) {
+                            loadingImage.setVisibility(View.VISIBLE);
+                            DocumentReference docArtist = database.collection("artists").document(mAuth.getUid());
+                            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            if (!document.getString("profile_image_url").equals("none")) {
+                                                Glide.with(getApplicationContext())
+                                                        .load(document.getString("profile_image_url"))
+                                                        .listener(new RequestListener() {
+                                                            @Override
+                                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                                                                loadingImage.setVisibility(View.INVISIBLE);
+                                                                return false;
+                                                            }
+
+                                                            @Override
+                                                            public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                                                                loadingImage.setVisibility(View.INVISIBLE);
+                                                                return false;
+                                                            }
+                                                        })
+                                                        .into(accountImage);
+                                            } else {
+                                                accountImage.setImageResource(R.drawable.profile);
+                                                loadingImage.setVisibility(View.INVISIBLE);
+                                            }
+                                        } else {
+                                            Log.d(TAG, "No such document");
+                                        }
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+                        } else {
+                            accountImage.setImageResource(R.drawable.profile);
+                            loadingImage.setVisibility(View.INVISIBLE);
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
 }

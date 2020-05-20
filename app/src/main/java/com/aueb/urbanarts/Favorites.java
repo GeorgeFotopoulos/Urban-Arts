@@ -60,6 +60,34 @@ public class Favorites extends AppCompatActivity {
             showUserInfo(loadingImage);
         }
 
+        findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAuth.getCurrentUser() != null) {
+                    DocumentReference docUser = database.collection("users").document(mAuth.getUid());
+                    docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    if (document.getBoolean("is_artist")) {
+                                        Intent myIntent = new Intent(Favorites.this, ArtistProfileActivity.class);
+                                        myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
+                                        startActivity(myIntent);
+                                        Animatoo.animateFade(Favorites.this);
+                                        finish();
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
         if (mAuth.getCurrentUser() != null) {
             final DocumentReference docRef = database.collection("users").document(mAuth.getCurrentUser().getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
