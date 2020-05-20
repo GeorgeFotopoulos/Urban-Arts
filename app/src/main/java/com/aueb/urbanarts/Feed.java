@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Feed extends AppCompatActivity {
-    String docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docArtistProfilePicture;
+    String docArtist, docGenre, docLocation, docArtistID, docGalleryImage;
     String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "";
     boolean locationExists = false, nameExists = false, typeOfArtExists = false;
     boolean docLive, liked, toBeAdded = true;
@@ -51,8 +51,6 @@ public class Feed extends AppCompatActivity {
     Boolean live;
     ArrayList<String> artistsList = new ArrayList<>();
     ArrayList<String> artistsImages = new ArrayList<>();
-    private FusedLocationProviderClient fusedLocationClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,7 @@ public class Feed extends AppCompatActivity {
         setContentView(R.layout.activity_feed);
         adapter = new Adapter(Feed.this, mList);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         Intent intent = getIntent();
         if (intent.getStringExtra("location") != null) {
             location = intent.getStringExtra("location");
@@ -84,7 +82,6 @@ public class Feed extends AppCompatActivity {
                 live = false;
             }
         }
-
 
         ImageButton btn_map = findViewById(R.id.my_location);
         btn_map.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +122,6 @@ public class Feed extends AppCompatActivity {
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-
                             mAuth = FirebaseAuth.getInstance();
                             if (mAuth.getCurrentUser() != null) {
                                 final DocumentReference userLikedReference = database.collection("users").document(mAuth.getCurrentUser().getUid());
@@ -143,19 +139,15 @@ public class Feed extends AppCompatActivity {
                                     }
                                 });
                             }
-
                             final RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
                             double lat = location.getLatitude();
                             double lng = location.getLongitude();
 
                             makeArtists(recyclerView, lat, lng);
-
-
                         }
                     }
                 });
-
     }
 
     @Override
@@ -202,7 +194,6 @@ public class Feed extends AppCompatActivity {
                             double eventLat = correctAddress.getLatitude();
                             double eventLng = correctAddress.getLongitude();
 
-
                             try {
                                 if (likedEvents.get(document.getId())) {
                                     liked = true;
@@ -235,7 +226,7 @@ public class Feed extends AppCompatActivity {
                                     toBeAdded = false;
                             }
                             if (nameExists) {
-                                if (!name.equals(docArtist))
+                                if (!docArtist.toLowerCase().contains(name.toLowerCase()))
                                     toBeAdded = false;
                             }
                             if (typeOfArtExists) {
@@ -247,7 +238,7 @@ public class Feed extends AppCompatActivity {
                                     toBeAdded = false;
                             }
 
-                            if (calculateDistance(eventLat, eventLng, lat, lng) < 5) {
+                            if (calculateDistance(eventLat, eventLng, lat, lng) < 15) {
 
                                 if (artistsList.contains(docArtistID)) {
                                     for (int i = 0; i < artistsList.size(); i++) {
@@ -272,7 +263,6 @@ public class Feed extends AppCompatActivity {
                     }
 
                 }
-
             }
         });
     }

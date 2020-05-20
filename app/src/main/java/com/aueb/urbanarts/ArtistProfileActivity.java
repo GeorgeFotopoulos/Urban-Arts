@@ -70,7 +70,6 @@ public class ArtistProfileActivity extends AppCompatActivity {
         whoIsIt(artist_id);
         getArtistInformation(artist_id);
 
-
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(artistGallery.size());
         carouselView.setImageListener(imageListener);
@@ -80,7 +79,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
                 if (artist_id.equals(user.getUid())) {
                     goEditAccount();
                 } else {
-                    goReportUser();
+                    goReportUser(artist_id);
                 }
             }
         });
@@ -342,8 +341,10 @@ public class ArtistProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    private void goReportUser() {
-        startActivity(new Intent(this, ReportUser.class));
+    private void goReportUser(String artist_id) {
+        Intent intent = new Intent(ArtistProfileActivity.this, ReportUser.class);
+        intent.putExtra("artist_id", artist_id);
+        startActivity(intent);
         Animatoo.animateFade(this);
         finish();
     }
