@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -73,15 +72,16 @@ public class Event extends AppCompatActivity {
     ArrayList<String> UsersAndComments;
     CommentAdapter CommentAdapter;
     private static final int PICK_IMAGE_REQUEST = 22;
-    private String filePathStr="";
+    private String filePathStr = "";
     String ID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         final String document_id = intent.getStringExtra("eventID");
-        ID=document_id;
+        ID = document_id;
         setContentView(R.layout.event);
         carouselView = findViewById(R.id.gallery);
         no_image_view = findViewById(R.id.no_image_view);
@@ -94,28 +94,28 @@ public class Event extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     final DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        ImageView LiveImg=findViewById(R.id.live);
-                        Boolean liveEvent=document.getBoolean("Live");
-                        if(liveEvent){
+                        ImageView LiveImg = findViewById(R.id.live);
+                        Boolean liveEvent = document.getBoolean("Live");
+                        if (liveEvent) {
                             LiveImg.setVisibility(View.VISIBLE);
                         }
                         ArtistID = document.getString("ArtistID");
                         Artist = document.getString("Artist");
                         Location = document.getString("location");
                         genre = document.getString("genre");
-                        LocationTV = findViewById(R.id.location);
-                        ArtistTV = findViewById(R.id.ArtistName);
-                        GenreTV = findViewById(R.id.genre);
-                        final ConstraintLayout CL = findViewById(R.id.upvotebtn);
+                        LocationTV = findViewById(R.id.eventAddress);
+                        ArtistTV = findViewById(R.id.eventArtist);
+                        GenreTV = findViewById(R.id.eventGenre);
+                        final ConstraintLayout CL = findViewById(R.id.upvoteLayout);
                         final Button CommentBtn = findViewById(R.id.btnComment);
-                        final ImageView addImage=findViewById(R.id.addImage);
+                        final ImageView addImage = findViewById(R.id.addImage);
                         addImage.setOnClickListener(new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View v) {
-                                                            showFileChooser();
+                            @Override
+                            public void onClick(View v) {
+                                showFileChooser();
 
-                                                        }
-                                                    });
+                            }
+                        });
 
 
                         upvtext = findViewById(R.id.upvtext);
@@ -129,23 +129,20 @@ public class Event extends AppCompatActivity {
                                 Users.add(result[0]);
                                 Comments.add(result[1]);
                             }
-                        }
-                        catch(Exception ignored){
+                        } catch (Exception ignored) {
                         }
                         final RecyclerView recyclerView = findViewById(R.id.CommentRecycler);
-                        if(Users.size()==0){
+                        if (Users.size() == 0) {
                             Users.add(" ");
                             Comments.add("No comments yet.\nBe the first one to comment!");
                             CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
-                        }
-                        else {
+                        } else {
                             CommentAdapter = new CommentAdapter(Event.this, Users, Comments);
                         }
                         recyclerView.setAdapter(CommentAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(Event.this));
                         if (ArtistID != "") {
                             SpannableString content = new SpannableString(Artist);
-                            content.setSpan(new UnderlineSpan(), 0, Artist.length(), 0);
                             ArtistTV.setText(content);
                             ArtistTV.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -160,8 +157,8 @@ public class Event extends AppCompatActivity {
                             });
                             GenreTV.setText(genre);
                             LocationTV.setText(Location);
-                        } else if (Artist == "") {
-                            ArtistTV.setText("");
+                        } else if (Artist.equals("")) {
+                            ArtistTV.setText("Unknown Artist");
                             GenreTV.setText(genre);
                             LocationTV.setText(Location);
                         } else {
@@ -193,7 +190,7 @@ public class Event extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(View v) {
                                                     if (!TextUtils.isEmpty(comment.getText())) {
-                                                        if(Users.size()!=UsersAndComments.size()&Comments.contains("No comments yet.\nBe the first one to comment!")){
+                                                        if (Users.size() != UsersAndComments.size() & Comments.contains("No comments yet.\nBe the first one to comment!")) {
                                                             Users.remove(0);
                                                             Comments.remove(0);
                                                             recyclerView.removeViewAt(0);
@@ -237,8 +234,8 @@ public class Event extends AppCompatActivity {
                                                 }
                                             });
                                             liked = (Map<String, Boolean>) document2.get("UserLiked");
-                                            if(liked==null){
-                                                liked=new HashMap<>();
+                                            if (liked == null) {
+                                                liked = new HashMap<>();
                                                 db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
                                             }
                                             try {
@@ -248,8 +245,7 @@ public class Event extends AppCompatActivity {
                                                         upvtext.setText("Upvoted");
                                                     }
                                                 }
-                                            }
-                                            catch(Exception ignored){
+                                            } catch (Exception ignored) {
                                             }
                                             CL.setOnClickListener(new View.OnClickListener() {
                                                 @Override
@@ -359,8 +355,8 @@ public class Event extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-            filePathStr=filePath.toString();
-            if(!filePathStr.isEmpty()) {
+            filePathStr = filePath.toString();
+            if (!filePathStr.isEmpty()) {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 ProgressDialog dialog = ProgressDialog.show(Event.this, "",
                         "Uploading photo and loading your post. Please wait...", true);
@@ -368,7 +364,7 @@ public class Event extends AppCompatActivity {
                 // Create a storage reference from our app
                 StorageReference storageRef = storage.getReference();
                 Uri file = Uri.parse(filePathStr);
-                final StorageReference riversRef = storageRef.child("galleries/"+file.getLastPathSegment());
+                final StorageReference riversRef = storageRef.child("galleries/" + file.getLastPathSegment());
                 UploadTask uploadTask = riversRef.putFile(file);
 
 // Register observers to listen for when the download is done or if it fails
@@ -384,7 +380,7 @@ public class Event extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
                                 Uri downloadUrl = uri;
-                                String url=downloadUrl.toString();
+                                String url = downloadUrl.toString();
                                 Images.add(url);
                                 DocumentReference washingtonRef = db.collection("events").document(ID);
 
@@ -413,12 +409,11 @@ public class Event extends AppCompatActivity {
                         });
 
 
-
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                         // ...
                     }
                 });
-            }else {
+            } else {
                 Intent myIntent = new Intent(Event.this, Event.class);
                 myIntent.putExtra("eventID", ID);
                 Event.this.startActivity(myIntent);

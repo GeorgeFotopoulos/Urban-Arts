@@ -16,11 +16,17 @@
         <activity
             android:name=".Feed"
             android:theme="@style/AppThemeNoLabel" />
-        <activity android:name=".PostSomething" />
+        <activity
+            android:name=".PostSomething"
+            android:theme="@style/AppThemeNoLabel" />
         <activity android:name=".item" />
         <activity android:name=".Adapter" />
-        <activity android:name=".ArtistAccountRequestActivity" />
-        <activity android:name=".EditAccountActivity" />
+        <activity
+            android:name=".ArtistAccountRequestActivity"
+            android:theme="@style/AppThemeNoLabel" />
+        <activity
+            android:name=".EditAccountActivity"
+            android:theme="@style/AppThemeNoLabel" />
         <activity
             android:name=".Favorites"
             android:theme="@style/AppThemeNoLabel" />
@@ -29,27 +35,37 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoLabel"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ReportUser" />
-        <activity android:name=".SearchFilters" />
+        <activity
+            android:name=".ReportUser"
+            android:theme="@style/AppThemeNoLabel" />
+        <activity
+            android:name=".SearchFilters"
+            android:theme="@style/AppThemeNoLabel" />
         <activity
             android:name=".HomePage"
             android:theme="@style/AppThemeNoLabel" />
-        <activity android:name=".Event" />
-        <activity android:name=".ArtistProfileActivity" />
+        <activity
+            android:name=".Event"
+            android:theme="@style/AppThemeNoLabel" />
+        <activity
+            android:name=".ArtistProfileActivity"
+            android:theme="@style/AppThemeNoLabel" />
         <activity
             android:name=".ShowPostOnMapActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoLabel"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".LogIn"
             android:theme="@style/AppThemeNoLabel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUp" />
+        <activity
+            android:name=".SignUp"
+            android:theme="@style/AppThemeNoLabel" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

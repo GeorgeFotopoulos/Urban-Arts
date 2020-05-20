@@ -1,19 +1,22 @@
 package com.aueb.urbanarts;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,6 +54,8 @@ public class Feed extends AppCompatActivity {
     boolean docLive, liked, toBeAdded = true;
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     Map<String, Boolean> likedEvents = new HashMap<>();
+    ArrayList<String> artistsImages = new ArrayList<>();
+    ArrayList<String> artistsList = new ArrayList<>();
     List<String> docCommentCount = new ArrayList<>();
     List<String> eventsList = new ArrayList<>();
     List<String> docGallery = new ArrayList<>();
@@ -59,13 +64,14 @@ public class Feed extends AppCompatActivity {
     private FirebaseAuth mAuth;
     Adapter adapter;
     Boolean live;
-    ArrayList<String> artistsList = new ArrayList<>();
-    ArrayList<String> artistsImages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+        checkPermission();
+
         adapter = new Adapter(Feed.this, mList);
 
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -106,6 +112,9 @@ public class Feed extends AppCompatActivity {
             final ProgressBar loadingImage = findViewById(R.id.loading_image);
             loadingImage.setVisibility(View.VISIBLE);
             showUserInfo(loadingImage);
+        } else {
+            final ProgressBar loadingImage = findViewById(R.id.loading_image);
+            loadingImage.setVisibility(View.INVISIBLE);
         }
 
         findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {
@@ -181,10 +190,8 @@ public class Feed extends AppCompatActivity {
                                 });
                             }
                             final RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
                             double lat = location.getLatitude();
                             double lng = location.getLongitude();
-
                             makeArtists(recyclerView, lat, lng);
                         }
                     }
@@ -226,11 +233,9 @@ public class Feed extends AppCompatActivity {
                     for (final QueryDocumentSnapshot document : task.getResult()) {
                         toBeAdded = true;
                         liked = false;
-
                         Geocoder geocoder = new Geocoder(Feed.this);
                         try {
                             List<Address> address = geocoder.getFromLocationName(document.getString("location"), 1);
-
                             Address correctAddress = address.get(0);
                             double eventLat = correctAddress.getLatitude();
                             double eventLng = correctAddress.getLongitude();
@@ -242,11 +247,8 @@ public class Feed extends AppCompatActivity {
                             } catch (Exception ignore) {
 
                             }
-
-
                             docArtist = document.getString("Artist");
                             docArtistID = document.getString("ArtistID");
-
                             docLive = document.getBoolean("Live");
                             docCommentCount = (List<String>) document.get("comments");
                             docComments = docCommentCount.size();
@@ -324,7 +326,6 @@ public class Feed extends AppCompatActivity {
         try {
             if (toBeAdded) {
                 mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked));
-
                 eventsList.add(document.getId());
             }
         } catch (Exception ignore) {
@@ -416,6 +417,12 @@ public class Feed extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+        }
     }
 
 }

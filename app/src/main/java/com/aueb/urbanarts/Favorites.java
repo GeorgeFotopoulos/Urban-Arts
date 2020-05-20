@@ -58,6 +58,9 @@ public class Favorites extends AppCompatActivity {
             final ProgressBar loadingImage = findViewById(R.id.loading_image);
             loadingImage.setVisibility(View.VISIBLE);
             showUserInfo(loadingImage);
+        } else {
+            final ProgressBar loadingImage = findViewById(R.id.loading_image);
+            loadingImage.setVisibility(View.INVISIBLE);
         }
 
         findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {

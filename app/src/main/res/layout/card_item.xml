@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/feedCard"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="310dp"
         android:layout_margin="5dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="3dp"
@@ -30,12 +30,12 @@
                 android:id="@+id/constraintLayout4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                app:layout_constraintBottom_toBottomOf="@+id/profilePhoto"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="60dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-                app:layout_constraintTop_toTopOf="@+id/profilePhoto">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/artistName"
@@ -75,10 +75,9 @@
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profilePhoto"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -91,10 +90,10 @@
                 android:layout_height="25dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginLeft="32dp"
+                android:src="@drawable/comment"
                 app:layout_constraintBottom_toBottomOf="@+id/upvoteImage"
                 app:layout_constraintStart_toEndOf="@+id/likeCount"
-                app:layout_constraintTop_toTopOf="@+id/upvoteImage"
-                android:src="@drawable/comment" />
+                app:layout_constraintTop_toTopOf="@+id/upvoteImage" />
 
             <ImageView
                 android:id="@+id/upvoteImage"
@@ -113,11 +112,11 @@
                 android:layout_marginStart="32dp"
                 android:layout_marginLeft="32dp"
                 android:scaleType="fitStart"
+                android:src="@drawable/live_event_yes"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/commentImage"
                 app:layout_constraintStart_toEndOf="@+id/commentCount"
-                app:layout_constraintTop_toTopOf="@+id/commentImage"
-                android:src="@drawable/live_event_yes" />
+                app:layout_constraintTop_toTopOf="@+id/commentImage" />
 
             <TextView
                 android:id="@+id/likeCount"

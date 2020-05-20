@@ -34,7 +34,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomePage extends AppCompatActivity {
@@ -54,6 +53,9 @@ public class HomePage extends AppCompatActivity {
             final ProgressBar loadingImage = findViewById(R.id.loading_image);
             loadingImage.setVisibility(View.VISIBLE);
             showUserInfo(loadingImage);
+        } else {
+            final ProgressBar loadingImage = findViewById(R.id.loading_image);
+            loadingImage.setVisibility(View.INVISIBLE);
         }
 
         ImageView loginImg = findViewById(R.id.logIn);
