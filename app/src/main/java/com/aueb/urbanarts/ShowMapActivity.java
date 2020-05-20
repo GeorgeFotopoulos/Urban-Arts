@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.camera2.CaptureRequest;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -53,12 +55,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
+
     GoogleMap map;
     Marker marker;
     LocationManager locationManager;
@@ -78,6 +82,8 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     ArrayList<Marker> markersList = new ArrayList<>();
     ArrayList<String> eventsList = new ArrayList<>();
     ArrayList<String> currEventsList = new ArrayList<>();
+    ConstraintLayout mapConst;
+    ConstraintLayout loadingConst;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,13 +91,18 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         setContentView(R.layout.show_map);
         checkPermission();
 
+        mapConst = findViewById(R.id.map_constraint);
+        loadingConst = findViewById(R.id.loading_constraint);
+        mapConst.setBackgroundColor(Color.parseColor("#CC808080"));
+        loadingConst.setVisibility(View.VISIBLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         getAllEvents();
 
+
         getLocation();
-        showAddress = findViewById(R.id.address_text);
+        showAddress = (EditText) findViewById(R.id.address_text);
         showAddress.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         showAddress.requestFocus();
 
@@ -152,6 +163,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                 createCircle(distanceInMeters);
             }
         });
+
     }
 
     private void getAllEvents() {
@@ -226,7 +238,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         boolean hideStores = googleMap.setMapStyle(new MapStyleOptions(getResources()
                 .getString(R.string.hide_stores)));
 
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
         map = googleMap;
         map.setOnMarkerClickListener(this);
         map.setOnInfoWindowClickListener(this);
@@ -299,7 +311,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
                             int height = 120;
                             int width = 120;
-                            BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker_new);
+                            BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker);
                             Bitmap b = markerImage.getBitmap();
                             Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
@@ -323,8 +335,8 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                             marker = map.addMarker(
                                     new MarkerOptions()
                                             .position(position)
-                                            .icon(BitmapDescriptorFactory.defaultMarker(343.0f)));
-//                                            .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
+//                                            .icon(BitmapDescriptorFactory.defaultMarker(343.0f)));
+                                            .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
                             deleteEvents();
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoomCamera), new GoogleMap.CancelableCallback() {
                                 @Override
@@ -364,7 +376,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
         int height = 120;
         int width = 120;
-        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker_new);
+        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.marker);
         Bitmap b = markerImage.getBitmap();
         Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
@@ -393,13 +405,17 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         marker = map.addMarker(
                 new MarkerOptions()
                         .position(position)
-                        .icon(BitmapDescriptorFactory.defaultMarker(343.0f)));
-//                        .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
+//                        .icon(BitmapDescriptorFactory.defaultMarker(343.0f)));
+                        .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
 
 //        map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 14.8f));
 
         createCircle(distanceInMeters);
         deleteEvents();
+
+        mapConst.setBackgroundColor(Color.TRANSPARENT);
+        loadingConst.setVisibility(View.INVISIBLE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoomCamera), new GoogleMap.CancelableCallback() {
             @Override
@@ -453,10 +469,12 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
         Intent myIntent = new Intent(ShowMapActivity.this, HomePage.class);
         startActivity(myIntent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateShrink(this);
         finish();
+
     }
 
     private void deleteEvents() {
@@ -467,26 +485,25 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
             currEventsList.removeAll(currEventsList);
             markersList.removeAll(markersList);
         }
+
     }
 
     private void showEvents() {
+
         deleteEvents();
+
         String.valueOf(calculateDistance(lat, lon, 37.955250, 23.738130));
-        int height = 100;
-        int width = 80;
-        BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.event_marker_green);
-        markerImage.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#6600cc"), PorterDuff.Mode.MULTIPLY));
-        Bitmap b = markerImage.getBitmap();
-        Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
         if (!eventsList.isEmpty()) {
             for (int i = 0; i < eventsList.size(); i++) {
-                getEventLocation(eventsList.get(i), smallerMarker);
+                getEventLocation(eventsList.get(i));
             }
+
         }
     }
 
-    private void getEventLocation(final String event_id, final Bitmap smallerMarker) {
+    private void getEventLocation(final String event_id) {
+
         DocumentReference docArtist = db.collection("events").document(event_id);
         docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -494,7 +511,21 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+
                         try {
+
+                            int height = 70;
+                            int width = 70;
+                            BitmapDrawable markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.event_marker_green);
+//                            markerImage.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#6600cc"), PorterDuff.Mode.MULTIPLY));
+                            Bitmap b = markerImage.getBitmap();
+                            Bitmap smallerMarker = Bitmap.createScaledBitmap(b, width, height, false);
+
+                            markerImage = (BitmapDrawable) getResources().getDrawable(R.drawable.live_marker);
+//                            markerImage.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#6600cc"), PorterDuff.Mode.MULTIPLY));
+                            b = markerImage.getBitmap();
+                            Bitmap smallerMarkerLive = Bitmap.createScaledBitmap(b, width, height, false);
+
                             List<Address> address = geocoder.getFromLocationName(String.valueOf(document.getString("location")), 1);
 
                             if (!address.isEmpty()) {
@@ -510,15 +541,30 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                                         artist = document.getString("Artist");
                                     }
 
-                                    Marker eventMarker = map.addMarker(
-                                            new MarkerOptions()
-                                                    .position(new LatLng(eventLat, eventLon))
-                                                    .zIndex(1)
-                                                    .title(document.getString("genre"))
-                                                    .snippet(artist)
-                                                    .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
-                                    markersList.add(eventMarker);
-                                    currEventsList.add(document.getId());
+                                    if (document.getBoolean("Live")) {
+                                        Marker eventMarker = map.addMarker(
+                                                new MarkerOptions()
+                                                        .position(new LatLng(eventLat, eventLon))
+                                                        .zIndex(1)
+                                                        .title(document.getString("genre"))
+                                                        .snippet(artist)
+//                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                                        .icon(BitmapDescriptorFactory.fromBitmap(smallerMarkerLive)));
+                                        markersList.add(eventMarker);
+                                        currEventsList.add(document.getId());
+                                    } else {
+                                        Marker eventMarker = map.addMarker(
+                                                new MarkerOptions()
+                                                        .position(new LatLng(eventLat, eventLon))
+                                                        .zIndex(1)
+                                                        .title(document.getString("genre"))
+                                                        .snippet(artist)
+//                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                                                        .icon(BitmapDescriptorFactory.fromBitmap(smallerMarker)));
+                                        markersList.add(eventMarker);
+                                        currEventsList.add(document.getId());
+                                    }
+
                                 }
                             }
                         } catch (IOException e) {
@@ -543,6 +589,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
                 if (String.valueOf(currMarker.getPosition()).equals(String.valueOf(markersList.get(i).getPosition())))
                     markersList.get(i).showInfoWindow();
             }
+
         }
         return false;
     }
@@ -560,7 +607,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         Intent intent = new Intent(ShowMapActivity.this, Event.class);
         intent.putExtra("eventID", eventID);
         startActivity(intent);
-        Animatoo.animateFade(this);
+        Animatoo.animateInAndOut(this);
         finish();
     }
 
