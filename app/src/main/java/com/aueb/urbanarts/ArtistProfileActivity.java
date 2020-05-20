@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,7 +73,6 @@ public class ArtistProfileActivity extends AppCompatActivity {
         whoIsIt(artist_id);
         getArtistInformation(artist_id);
 
-
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(artistGallery.size());
         carouselView.setImageListener(imageListener);
@@ -99,52 +99,69 @@ public class ArtistProfileActivity extends AppCompatActivity {
             }
         });
 
-        final ToggleButton follow = findViewById(R.id.follow_button);
-        DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    final DocumentSnapshot document = task.getResult();
-                    followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
-                    try {
-                        if (followedUsersMap.get(artist_id)) {
-                            text = "Unfollow";
-                            follow.setText(text);
-                        } else {
-                            text = "Follow";
-                            follow.setText(text);
+        final Button follow = findViewById(R.id.follow_button);
+
+        if (user != null) {
+            DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        final DocumentSnapshot document = task.getResult();
+                        followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
+                        try {
+                            if (followedUsersMap.get(artist_id)) {
+                                text = "Unfollow";
+                                follow.setText(text);
+                            } else {
+                                text = "Follow";
+                                follow.setText(text);
+                            }
+                        } catch (Exception ignore) {
                         }
-                    } catch (Exception ignore) {
                     }
                 }
-            }
-        });
+            });
+        } else {
+            follow.setClickable(false);
+        }
 
         follow.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                final DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
-                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            final DocumentSnapshot document = task.getResult();
-                            followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
-                            final DocumentReference docRef2 = db.collection("artists").document(artist_id);
-                            docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        final DocumentSnapshot documentSnapshot = task.getResult();
-                                        if (followedUsersMap.containsKey(artist_id)) {
-                                            if (followedUsersMap.get(artist_id)) {
-                                                showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) - 1));
-                                                docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) - 1));
-                                                followedUsersMap.put(artist_id, false);
-                                                docRef.update("followedUsers", followedUsersMap);
-                                                text = "Follow";
-                                                follow.setText(text);
+                if (user == null) {
+                    Toast.makeText(ArtistProfileActivity.this, "You have to create an account in order to follow an artist!", Toast.LENGTH_SHORT).show();
+                } else {
+                    final DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                final DocumentSnapshot document = task.getResult();
+                                followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
+                                final DocumentReference docRef2 = db.collection("artists").document(artist_id);
+                                docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            final DocumentSnapshot documentSnapshot = task.getResult();
+                                            if (followedUsersMap.containsKey(artist_id)) {
+                                                if (followedUsersMap.get(artist_id)) {
+                                                    showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) - 1));
+                                                    docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) - 1));
+                                                    followedUsersMap.put(artist_id, false);
+                                                    docRef.update("followedUsers", followedUsersMap);
+                                                    text = "Follow";
+                                                    follow.setText(text);
+                                                } else {
+                                                    showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
+                                                    docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
+                                                    followedUsersMap.put(artist_id, true);
+                                                    docRef.update("followedUsers", followedUsersMap);
+                                                    text = "Unfollow";
+                                                    follow.setText(text);
+                                                }
                                             } else {
+                                                followedUsersMap.put(artist_id, true);
                                                 showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
                                                 docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
                                                 followedUsersMap.put(artist_id, true);
@@ -152,21 +169,13 @@ public class ArtistProfileActivity extends AppCompatActivity {
                                                 text = "Unfollow";
                                                 follow.setText(text);
                                             }
-                                        } else {
-                                            followedUsersMap.put(artist_id, true);
-                                            showFollowers(followersNumDisplay, String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
-                                            docRef2.update("followers", String.valueOf(Integer.parseInt(documentSnapshot.getString("followers")) + 1));
-                                            followedUsersMap.put(artist_id, true);
-                                            docRef.update("followedUsers", followedUsersMap);
-                                            text = "Unfollow";
-                                            follow.setText(text);
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }

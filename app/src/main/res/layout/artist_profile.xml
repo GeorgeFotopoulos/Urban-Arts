@@ -135,7 +135,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ToggleButton
+            <Button
                 android:id="@+id/follow_button"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
@@ -143,10 +143,8 @@
                 android:background="@drawable/pink_button"
                 android:checked="false"
                 android:padding="10dp"
-                android:text="Unfollow"
+                android:text="Follow"
                 android:textColor="#FFFFFF"
-                android:textOff="Follow"
-                android:textOn="Unfollow"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
