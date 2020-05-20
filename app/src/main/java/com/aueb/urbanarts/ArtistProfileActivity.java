@@ -27,6 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
@@ -70,6 +72,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
         whoIsIt(artist_id);
         getArtistInformation(artist_id);
 
+
         carouselView = findViewById(R.id.gallery);
         carouselView.setPageCount(artistGallery.size());
         carouselView.setImageListener(imageListener);
@@ -87,6 +90,12 @@ public class ArtistProfileActivity extends AppCompatActivity {
         findViewById(R.id.home_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 goHomePage();
+            }
+        });
+
+        findViewById(R.id.go_feed).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                goFeed(artist_id, artistName, artistImage);
             }
         });
 
@@ -173,7 +182,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void getArtistInformation(String artist_id) {
+    private void getArtistInformation(final String artist_id) {
         final CircleImageView profileImage = findViewById(R.id.artist_profile_photo);
         final TextView artistNameDisplay = findViewById(R.id.artist_name);
         final TextView genreDisplay = findViewById(R.id.artist_genre);
@@ -190,6 +199,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        getArtistEvents(artist_id);
                         artistName = document.getString("display_name");
                         artistType = document.getString("artist_type");
                         artistGenre = document.getString("genre");
@@ -231,6 +241,38 @@ public class ArtistProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void getArtistEvents(final String artist_id) {
+        final ImageView goFeedDisplay = findViewById(R.id.go_feed);
+        final TextView eventsNumDisplay = findViewById(R.id.events_num);
+        final int[] counter = {0};
+        db.collection("events")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.getString("ArtistID").equals(artist_id)) {
+                                    counter[0]++;
+                                }
+                            }
+
+                            if (counter[0] == 0) {
+                                eventsNumDisplay.setText("No events.");
+                            } else if (counter[0] == 1) {
+                                goFeedDisplay.setVisibility(View.VISIBLE);
+                                eventsNumDisplay.setText("1 event.");
+                            } else {
+                                goFeedDisplay.setVisibility(View.VISIBLE);
+                                eventsNumDisplay.setText(counter[0] + " events.");
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
     private void showFollowers(final TextView followersNumDisplay, final String followers) {
@@ -337,6 +379,17 @@ public class ArtistProfileActivity extends AppCompatActivity {
 
     private void goEditAccount() {
         startActivity(new Intent(this, EditAccountActivity.class));
+        Animatoo.animateFade(this);
+        finish();
+    }
+
+    private void goFeed(String artist_id, String artist_name, String artist_image) {
+        Intent intent = new Intent(ArtistProfileActivity.this, Feed.class);
+        intent.putExtra("artist_id", artist_id);
+        intent.putExtra("artist_name", artist_name);
+        intent.putExtra("artist_image", artist_image);
+        intent.putExtra("FROM_ARTIST", "FROM_ARTIST");
+        startActivity(intent);
         Animatoo.animateFade(this);
         finish();
     }

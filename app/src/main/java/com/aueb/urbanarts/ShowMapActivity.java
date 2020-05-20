@@ -596,9 +596,22 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onInfoWindowClick(Marker currMarker) {
+        int counter = 0;
+        int position = 0;
         for (int i = 0; i < markersList.size(); i++) {
             if ((String.valueOf(currMarker.getPosition())).equals(String.valueOf(markersList.get(i).getPosition()))) {
-                goEvent(currEventsList.get(i));
+                counter++;
+                position = i;
+
+            }
+        }
+        if (counter == 1) {
+            goEvent(currEventsList.get(position));
+        } else {
+            for (int i = 0; i < markersList.size(); i++) {
+                if (currMarker.getTitle().equals(markersList.get(i).getTitle()) && currMarker.getSnippet().equals(markersList.get(i).getSnippet())) {
+                    goEvent(currEventsList.get(i));
+                }
             }
         }
     }

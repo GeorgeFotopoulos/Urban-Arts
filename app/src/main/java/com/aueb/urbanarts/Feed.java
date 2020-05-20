@@ -46,8 +46,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Feed extends AppCompatActivity {
     String docArtist, docGenre, docLocation, docArtistID, docGalleryImage;
-    String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "";
-    boolean locationExists = false, nameExists = false, typeOfArtExists = false;
+    String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "", artist_id, artist_name, artist_image;
+    boolean locationExists = false, nameExists = false, typeOfArtExists = false, fromArtist = false;
     boolean docLive, liked, toBeAdded = true;
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     Map<String, Boolean> likedEvents = new HashMap<>();
@@ -70,6 +70,14 @@ public class Feed extends AppCompatActivity {
 
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         Intent intent = getIntent();
+
+        if (intent.getStringExtra("FROM_ARTIST") != null) {
+            artist_id = intent.getStringExtra("artist_id");
+            artist_name = intent.getStringExtra("artist_name");
+            artist_image = intent.getStringExtra("artist_image");
+            fromArtist = true;
+        }
+
         if (intent.getStringExtra("location") != null) {
             location = intent.getStringExtra("location");
             locationExists = true;
@@ -234,6 +242,8 @@ public class Feed extends AppCompatActivity {
                             } catch (Exception ignore) {
 
                             }
+
+
                             docArtist = document.getString("Artist");
                             docArtistID = document.getString("ArtistID");
 
@@ -271,24 +281,34 @@ public class Feed extends AppCompatActivity {
                                     toBeAdded = false;
                             }
 
-                            if (calculateDistance(eventLat, eventLng, lat, lng) < 15) {
+                            if (fromArtist) {
 
-                                if (artistsList.contains(docArtistID)) {
-                                    for (int i = 0; i < artistsList.size(); i++) {
-                                        if (artistsList.get(i).equals(docArtistID)) {
-                                            addItem(artistsImages.get(i), docArtist, document, recyclerView);
-                                            break;
+                                if (artist_id.equals(docArtistID)) {
+                                    addItem(artist_image, artist_name, document, recyclerView);
+                                    recyclerView.setAdapter(adapter);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
+                                }
+
+                            } else {
+                                if (calculateDistance(eventLat, eventLng, lat, lng) < 15) {
+
+                                    if (artistsList.contains(docArtistID)) {
+                                        for (int i = 0; i < artistsList.size(); i++) {
+                                            if (artistsList.get(i).equals(docArtistID)) {
+                                                addItem(artistsImages.get(i), docArtist, document, recyclerView);
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        if (docArtist.equals("")) {
+                                            addItem("none", "none", document, recyclerView);
+                                        } else {
+                                            addItem("none", docArtist, document, recyclerView);
                                         }
                                     }
-                                } else {
-                                    if (docArtist.equals("")) {
-                                        addItem("none", "none", document, recyclerView);
-                                    } else {
-                                        addItem("none", docArtist, document, recyclerView);
-                                    }
+                                    recyclerView.setAdapter(adapter);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
                                 }
-                                recyclerView.setAdapter(adapter);
-                                recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
