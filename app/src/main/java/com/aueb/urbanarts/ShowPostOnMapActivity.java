@@ -174,69 +174,72 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     public void uploadImage() {
-        if(!filePathStr.isEmpty()) {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            ProgressDialog dialog = ProgressDialog.show(ShowPostOnMapActivity.this, "",
-                    "Uploading photo and loading your post. Please wait...", true);
-            // [START upload_create_reference]
-            // Create a storage reference from our app
-            StorageReference storageRef = storage.getReference();
-            Uri file = Uri.parse(filePathStr);
-            final StorageReference riversRef = storageRef.child("galleries/"+file.getLastPathSegment());
-            UploadTask uploadTask = riversRef.putFile(file);
+        try {
+            if (!filePathStr.isEmpty()) {
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                ProgressDialog dialog = ProgressDialog.show(ShowPostOnMapActivity.this, "",
+                        "Uploading photo and loading your post. Please wait...", true);
+                // [START upload_create_reference]
+                // Create a storage reference from our app
+                StorageReference storageRef = storage.getReference();
+                Uri file = Uri.parse(filePathStr);
+                final StorageReference riversRef = storageRef.child("galleries/" + file.getLastPathSegment());
+                UploadTask uploadTask = riversRef.putFile(file);
 
 // Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                                        @Override
-                                                                        public void onSuccess(Uri uri) {
-                                                                            Uri downloadUrl = uri;
-                                                                            url=downloadUrl.toString();
-                                                                            gallery.add(url);
-                                                                            DocumentReference washingtonRef = fStore.collection("events").document(ID);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Uri downloadUrl = uri;
+                                url = downloadUrl.toString();
+                                gallery.add(url);
+                                DocumentReference washingtonRef = fStore.collection("events").document(ID);
 
 // Set the "isCapital" field of the city 'DC'
-                                                                            washingtonRef
-                                                                                    .update("gallery", gallery)
-                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                        @Override
-                                                                                        public void onSuccess(Void aVoid) {
+                                washingtonRef
+                                        .update("gallery", gallery)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 
-                                                                                            Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
-                                                                                            myIntent.putExtra("eventID", ID);
-                                                                                            ShowPostOnMapActivity.this.startActivity(myIntent);
-                                                                                            finish();
-                                                                                            Log.d("TAG", "DocumentSnapshot successfully updated!");
-                                                                                        }
-                                                                                    })
-                                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                                        @Override
-                                                                                        public void onFailure(@NonNull Exception e) {
-                                                                                            Log.w("TAG", "Error updating document", e);
-                                                                                        }
-                                                                                    });
-                                                                                                                                          }
-                                                                    });
+                                                Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
+                                                myIntent.putExtra("eventID", ID);
+                                                ShowPostOnMapActivity.this.startActivity(myIntent);
+                                                finish();
+                                                Log.d("TAG", "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("TAG", "Error updating document", e);
+                                            }
+                                        });
+                            }
+                        });
 
 
-
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                    // ...
-                }
-            });
-        }else {
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                        // ...
+                    }
+                });
+            }
+        }catch(Exception e){
             Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
             myIntent.putExtra("eventID", ID);
             ShowPostOnMapActivity.this.startActivity(myIntent);
             finish();
+
         }
+
     }
 
     protected void confirmNewPost() {
