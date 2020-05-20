@@ -113,7 +113,7 @@ public class Event extends AppCompatActivity {
                                                         @Override
                                                         public void onClick(View v) {
                                                             showFileChooser();
-                                                            uploadImage();
+
                                                         }
                                                     });
 
@@ -432,10 +432,7 @@ public class Event extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
-    public void uploadImage() {
 
-
-    }
 
     protected void openDialog() {
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
