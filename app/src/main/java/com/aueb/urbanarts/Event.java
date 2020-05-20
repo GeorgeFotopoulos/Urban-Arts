@@ -398,6 +398,7 @@ public class Event extends AppCompatActivity {
                                                 Intent myIntent = new Intent(Event.this, Event.class);
                                                 myIntent.putExtra("eventID", ID);
                                                 Event.this.startActivity(myIntent);
+                                                Animatoo.animateFade(Event.this);
                                                 finish();
                                                 Log.d("TAG", "DocumentSnapshot successfully updated!");
                                             }
@@ -421,6 +422,7 @@ public class Event extends AppCompatActivity {
                 Intent myIntent = new Intent(Event.this, Event.class);
                 myIntent.putExtra("eventID", ID);
                 Event.this.startActivity(myIntent);
+                Animatoo.animateFade(Event.this);
                 finish();
             }
         }

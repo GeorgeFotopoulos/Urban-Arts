@@ -119,7 +119,7 @@ public class PostSomething extends AppCompatActivity {
                     live = "false";
                 }
 
-                if (yesFilter) {
+                if (!typeOfArt.contains("Choose")) {
                     DocumentReference docUser = fStore.collection("users").document(mAuth.getUid());
                     docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override

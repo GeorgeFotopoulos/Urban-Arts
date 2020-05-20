@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +15,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchAdapter extends ArrayAdapter<ExampleItem> {
     private List<ExampleItem> countryListFull;
@@ -38,7 +39,7 @@ public class SearchAdapter extends ArrayAdapter<ExampleItem> {
             }
 
         TextView textViewName = convertView.findViewById(R.id.text_view1);
-        ImageView imageViewFlag = convertView.findViewById(R.id.image_view);
+        CircleImageView imageViewFlag = convertView.findViewById(R.id.image_view);
         ExampleItem countryItem = getItem(position);
         if (countryItem != null) {
             textViewName.setText(countryItem.getText1()+" ("+countryItem.getText2()+")");
