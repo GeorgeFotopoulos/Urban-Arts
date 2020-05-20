@@ -362,8 +362,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                     }
                 });
 
-
-//        Edo kane dhmiourgia tou event
     }
 
     private void getEventDetails() {
