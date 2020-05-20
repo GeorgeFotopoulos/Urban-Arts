@@ -4,6 +4,7 @@ package com.aueb.urbanarts;
 import android.Manifest;
 import android.app.ActionBar;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -174,7 +175,8 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     public void uploadImage() {
         if(!filePathStr.isEmpty()) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
-
+            ProgressDialog dialog = ProgressDialog.show(ShowPostOnMapActivity.this, "",
+                    "Uploading photo and loading your post. Please wait...", true);
             // [START upload_create_reference]
             // Create a storage reference from our app
             StorageReference storageRef = storage.getReference();
@@ -305,6 +307,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                             fStore.collection("events").document(s).update("comments", comments);
                         }
                         Images=(ArrayList) document.get("gallery");
+                        gallery=Images;
                         uploadImage();
 
 

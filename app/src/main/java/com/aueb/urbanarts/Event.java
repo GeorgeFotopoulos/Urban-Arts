@@ -2,10 +2,12 @@ package com.aueb.urbanarts;
 
 import android.app.ActionBar;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -35,11 +37,16 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
@@ -49,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Event extends AppCompatActivity {
+    private Uri filePath;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     ImageView no_image_view;
@@ -63,13 +71,16 @@ public class Event extends AppCompatActivity {
     List<String> Users = new ArrayList<>();
     ArrayList<String> UsersAndComments;
     CommentAdapter CommentAdapter;
-
+    private static final int PICK_IMAGE_REQUEST = 22;
+    private String filePathStr="";
+    String ID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         final String document_id = intent.getStringExtra("eventID");
+        ID=document_id;
         setContentView(R.layout.event);
         carouselView = findViewById(R.id.gallery);
         no_image_view = findViewById(R.id.no_image_view);
@@ -96,6 +107,16 @@ public class Event extends AppCompatActivity {
                         GenreTV = findViewById(R.id.genre);
                         final ConstraintLayout CL = findViewById(R.id.upvotebtn);
                         final Button CommentBtn = findViewById(R.id.btnComment);
+                        final ImageView addImage=findViewById(R.id.addImage);
+                        addImage.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            showFileChooser();
+                                                            uploadImage();
+                                                        }
+                                                    });
+
+
                         upvtext = findViewById(R.id.upvtext);
                         check = findViewById(R.id.check);
                         Images = (List<String>) document.get("gallery");
@@ -320,6 +341,89 @@ public class Event extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+            filePathStr=filePath.toString();
+            if(!filePathStr.isEmpty()) {
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                ProgressDialog dialog = ProgressDialog.show(Event.this, "",
+                        "Uploading photo and loading your post. Please wait...", true);
+                // [START upload_create_reference]
+                // Create a storage reference from our app
+                StorageReference storageRef = storage.getReference();
+                Uri file = Uri.parse(filePathStr);
+                final StorageReference riversRef = storageRef.child("galleries/"+file.getLastPathSegment());
+                UploadTask uploadTask = riversRef.putFile(file);
+
+// Register observers to listen for when the download is done or if it fails
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Uri downloadUrl = uri;
+                                String url=downloadUrl.toString();
+                                Images.add(url);
+                                DocumentReference washingtonRef = db.collection("events").document(ID);
+
+// Set the "isCapital" field of the city 'DC'
+                                washingtonRef
+                                        .update("gallery", Images)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                                Intent myIntent = new Intent(Event.this, Event.class);
+                                                myIntent.putExtra("eventID", ID);
+                                                Event.this.startActivity(myIntent);
+                                                finish();
+                                                Log.d("TAG", "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("TAG", "Error updating document", e);
+                                            }
+                                        });
+                            }
+                        });
+
+
+
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                        // ...
+                    }
+                });
+            }else {
+                Intent myIntent = new Intent(Event.this, Event.class);
+                myIntent.putExtra("eventID", ID);
+                Event.this.startActivity(myIntent);
+                finish();
+            }
+        }
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+    }
+    public void uploadImage() {
+
 
     }
 
