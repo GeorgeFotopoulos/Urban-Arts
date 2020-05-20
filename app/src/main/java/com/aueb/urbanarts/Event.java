@@ -72,7 +72,6 @@ public class Event extends AppCompatActivity {
     ArrayList<String> UsersAndComments;
     CommentAdapter CommentAdapter;
     private static final int PICK_IMAGE_REQUEST = 22;
-    private String filePathStr = "";
     String ID;
 
     @Override
@@ -116,7 +115,6 @@ public class Event extends AppCompatActivity {
 
                             }
                         });
-
 
                         upvtext = findViewById(R.id.upvtext);
                         check = findViewById(R.id.check);
@@ -174,6 +172,7 @@ public class Event extends AppCompatActivity {
                             carouselView.setVisibility(View.VISIBLE);
                         } else {
                             no_image_view.setVisibility(View.VISIBLE);
+                            findViewById(R.id.load_carousel).setVisibility(View.INVISIBLE);
                         }
 
                         if (mAuth.getCurrentUser() != null) {
@@ -355,7 +354,7 @@ public class Event extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-            filePathStr = filePath.toString();
+            String filePathStr = filePath.toString();
             if (!filePathStr.isEmpty()) {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 ProgressDialog dialog = ProgressDialog.show(Event.this, "",
@@ -479,7 +478,6 @@ public class Event extends AppCompatActivity {
         carouselView.setPageCount(Images.size());
         carouselView.setImageListener(imageListener);
     }
-
 
     ImageListener imageListener = new ImageListener() {
         @Override

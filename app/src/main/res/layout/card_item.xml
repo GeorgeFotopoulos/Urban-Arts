@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Artist Name"
-                    android:textColor="#B71E42"
+                    android:textColor="#000000"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -55,11 +55,11 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Address"
-                    android:textColor="#000000"
                     android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/artistName" />
+                    app:layout_constraintTop_toBottomOf="@+id/eventType" />
 
                 <TextView
                     android:id="@+id/eventType"
@@ -67,10 +67,10 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Genre"
-                    android:textSize="16sp"
+                    android:textColor="#B71E42"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/address" />
+                    app:layout_constraintTop_toBottomOf="@+id/artistName" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.mikhaellopez.circularimageview.CircularImageView
