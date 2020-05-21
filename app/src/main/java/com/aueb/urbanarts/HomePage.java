@@ -37,11 +37,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomePage extends AppCompatActivity {
+    final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
+    final String TAG = "123";
     String tempStr = "";
     TextView temp;
-    final String TAG = "123";
-    final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +105,8 @@ public class HomePage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent myIntent = new Intent(HomePage.this, SignUp.class);
-                    Animatoo.animateFade(HomePage.this);
                     startActivity(myIntent);
+                    Animatoo.animateFade(HomePage.this);
                     finish();
                 }
             });

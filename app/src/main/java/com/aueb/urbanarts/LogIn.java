@@ -55,7 +55,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(LogIn.this, HomePage.class);
-                LogIn.this.startActivity(myIntent);
+                startActivity(myIntent);
                 Animatoo.animateZoom(LogIn.this);
                 finish();
             }

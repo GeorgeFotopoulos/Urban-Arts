@@ -159,6 +159,7 @@ public class Feed extends AppCompatActivity {
                                 Intent intent = new Intent(Feed.this, Event.class);
                                 intent.putExtra("eventID", eventID);
                                 startActivity(intent);
+                                Animatoo.animateFade(Feed.this);
                                 finish();
                             }
                         }
