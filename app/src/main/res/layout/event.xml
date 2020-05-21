@@ -16,6 +16,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/view_artist_profile"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="1dp"
+            android:clickable="false"
+            android:src="@drawable/view_profile"
+            android:tint="#b71e42"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/eventArtist"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/eventArtist"
             android:layout_width="wrap_content"
