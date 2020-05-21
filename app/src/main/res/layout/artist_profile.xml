@@ -61,7 +61,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="24dp"
                 android:adjustViewBounds="true"
                 android:background="@null"
                 android:maxWidth="40dp"
@@ -155,12 +155,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
                 android:text="Description:"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/follow_button" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
             <TextView
                 android:id="@+id/gallery_text"
@@ -257,30 +256,17 @@
                 app:layout_constraintStart_toStartOf="@+id/artist_profile_photo"
                 app:layout_constraintTop_toTopOf="@+id/artist_profile_photo" />
 
-            <TextView
-                android:id="@+id/num_follows"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:padding="10dp"
-                android:text="0"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/follow_button"
-                app:layout_constraintStart_toEndOf="@+id/follow_button"
-                app:layout_constraintTop_toTopOf="@+id/follow_button"
-                app:srcCompat="@drawable/pink_button" />
-
             <Button
                 android:id="@+id/button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/pink_button"
                 android:text="$/€"
                 android:textColor="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="@+id/follow_button"
-                app:layout_constraintEnd_toStartOf="@+id/follow_button"
-                app:layout_constraintTop_toTopOf="@+id/follow_button" />
+                app:layout_constraintEnd_toEndOf="@+id/home_button"
+                app:layout_constraintStart_toStartOf="@+id/home_button"
+                app:layout_constraintTop_toBottomOf="@+id/home_button" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -315,6 +301,41 @@
                 app:layout_constraintStart_toEndOf="@+id/events_num"
                 app:layout_constraintTop_toBottomOf="@+id/artist_description"
                 app:srcCompat="@drawable/feed" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/follow_button">
+
+                <TextView
+
+
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="Followers"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/num_follows"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/num_follows"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:text="0"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/pink_button" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
