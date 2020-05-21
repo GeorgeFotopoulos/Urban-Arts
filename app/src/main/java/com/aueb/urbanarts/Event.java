@@ -121,7 +121,7 @@ public class Event extends AppCompatActivity {
                         LocationTV = findViewById(R.id.eventAddress);
                         ArtistTV = findViewById(R.id.eventArtist);
                         GenreTV = findViewById(R.id.eventGenre);
-                        final ConstraintLayout CL = findViewById(R.id.upvoteLayout);
+                        final ConstraintLayout CL = findViewById(R.id.upvotebtn);
                         final Button CommentBtn = findViewById(R.id.btnComment);
                         final ImageView addImage = findViewById(R.id.addImage);
                         addImage.setOnClickListener(new View.OnClickListener() {
