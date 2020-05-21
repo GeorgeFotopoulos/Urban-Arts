@@ -217,7 +217,7 @@ public class EditAccountActivity extends AppCompatActivity {
 // USER
                             } else {
                                 setContentView(R.layout.edit_user_account);
-                                scrollView = findViewById(R.id.scrollView4);
+                                scrollView = findViewById(R.id.scrollView5);
                                 scrollView.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -618,8 +618,9 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void deleteUser() {
-        final TextView percentage = findViewById(R.id.perc);
 
+
+        final TextView percentage = findViewById(R.id.perc);
         final ConstraintLayout dialogBox = findViewById(R.id.dialog);
         final RelativeLayout wholeLayout = findViewById(R.id.constraint);
         percentage.setText("Just a moment...");

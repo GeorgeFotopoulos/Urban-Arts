@@ -291,7 +291,6 @@ public class Feed extends AppCompatActivity {
                                     recyclerView.setAdapter(adapter);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
                                 }
-
                             } else {
                                 if (calculateDistance(eventLat, eventLng, lat, lng) < 15) {
 
