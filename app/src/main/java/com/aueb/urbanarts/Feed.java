@@ -1,8 +1,6 @@
 package com.aueb.urbanarts;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,8 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -135,7 +131,6 @@ public class Feed extends AppCompatActivity {
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(Feed.this);
-                                        finish();
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -162,7 +157,6 @@ public class Feed extends AppCompatActivity {
                                 intent.putExtra("eventID", eventID);
                                 startActivity(intent);
                                 Animatoo.animateFade(Feed.this);
-                                finish();
                             }
                         }
                     }
@@ -204,9 +198,7 @@ public class Feed extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(Feed.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 

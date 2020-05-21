@@ -76,7 +76,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     GoogleMap map;
     Marker marker;
-    String url="";
+    String url = "";
     LocationManager locationManager;
     GoogleApiClient mGoogleApiClient;
     Location currLocation;
@@ -87,15 +87,16 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     double lat;
     double lon;
     boolean foundAnotherEvent = false;
-    String name, typeOfArt, liveStr, filePathStr,comment="", ArtistID,postedBy;
+    String name, typeOfArt, liveStr, filePathStr, comment = "", ArtistID, postedBy;
     String anotherEventName, anotherEventType, anotherEventAddress;
     Boolean live;
     ArrayList<String> foundEvents = new ArrayList<>();
     Dialog currDialog;
     private FirebaseAuth mAuth;
-    ArrayList<String> gallery=new ArrayList<>();
-    ArrayList<String> Images=new ArrayList<>();
+    ArrayList<String> gallery = new ArrayList<>();
+    ArrayList<String> Images = new ArrayList<>();
     String ID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -165,7 +166,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
         findViewById(R.id.post_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                b=findViewById(R.id.post_button);
+                b = findViewById(R.id.post_button);
                 b.setClickable(false);
                 getEventDetails();
 
@@ -186,7 +187,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                 final StorageReference riversRef = storageRef.child("galleries/" + file.getLastPathSegment());
                 UploadTask uploadTask = riversRef.putFile(file);
 
-// Register observers to listen for when the download is done or if it fails
+                // Register observers to listen for when the download is done or if it fails
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
@@ -203,17 +204,16 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                                 gallery.add(url);
                                 DocumentReference washingtonRef = fStore.collection("events").document(ID);
 
-// Set the "isCapital" field of the city 'DC'
+                                // Set the "isCapital" field of the city 'DC'
                                 washingtonRef
                                         .update("gallery", gallery)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-
                                                 Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
                                                 myIntent.putExtra("eventID", ID);
-                                                ShowPostOnMapActivity.this.startActivity(myIntent);
-                                                finish();
+                                                startActivity(myIntent);
+                                                Animatoo.animateFade(ShowPostOnMapActivity.this);
                                                 Log.d("TAG", "DocumentSnapshot successfully updated!");
                                             }
                                         })
@@ -232,14 +232,12 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                     }
                 });
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
             myIntent.putExtra("eventID", ID);
-            ShowPostOnMapActivity.this.startActivity(myIntent);
-            finish();
-
+            startActivity(myIntent);
+            Animatoo.animateFade(ShowPostOnMapActivity.this);
         }
-
     }
 
     protected void confirmNewPost() {
@@ -292,7 +290,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     private void mergePost(final String s) {
-        ID=s;
+        ID = s;
         b.setClickable(true);
         if (currDialog != null) {
             currDialog.dismiss();
@@ -305,15 +303,14 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("", "DocumentSnapshot data: " + document.getData());
-                        ArrayList<String> comments=(ArrayList) document.get("comments");
-                        if(!comment.isEmpty()) {
+                        ArrayList<String> comments = (ArrayList) document.get("comments");
+                        if (!comment.isEmpty()) {
                             comments.add(postedBy + "@token@" + comment);
                             fStore.collection("events").document(s).update("comments", comments);
                         }
-                        Images=(ArrayList) document.get("gallery");
-                        gallery=Images;
+                        Images = (ArrayList) document.get("gallery");
+                        gallery = Images;
                         uploadImage();
-
 
 
                     } else {
@@ -324,7 +321,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                 }
             }
         });
-//        Sixoneysi ton Events
     }
 
     private void makeNewPost() {
@@ -334,26 +330,26 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         }
         //String name, typeOfArt, liveStr, filePathStr,comment, ArtistID;
         Map<String, Object> data = new HashMap<>();
-        ArrayList<String> comments=new ArrayList<>();
-        ArrayList<String> gallery=new ArrayList<>();
-        if(!comment.isEmpty())
-            comments.add(postedBy+"@token@"+comment);
+        ArrayList<String> comments = new ArrayList<>();
+        ArrayList<String> gallery = new ArrayList<>();
+        if (!comment.isEmpty())
+            comments.add(postedBy + "@token@" + comment);
 
-        data.put("gallery",gallery);
-        data.put("comments",comments);
-        data.put("Artist",name );
+        data.put("gallery", gallery);
+        data.put("comments", comments);
+        data.put("Artist", name);
         data.put("genre", typeOfArt);
         data.put("Live", live);
         data.put("likes", "0");
         data.put("ArtistID", ArtistID);
         data.put("location", showAddress.getText().toString());
-        data.put("gallery",gallery);
+        data.put("gallery", gallery);
         fStore.collection("events")
                 .add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        ID=documentReference.getId();
+                        ID = documentReference.getId();
                         uploadImage();
                         Log.d("", "DocumentSnapshot written with ID: " + documentReference.getId());
                     }
@@ -364,7 +360,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                         Log.w("", "Error adding document", e);
                     }
                 });
-
     }
 
     private void getEventDetails() {
@@ -374,7 +369,6 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 double currEventLat = getLat(document.getString("location"));
                                 double currEventLon = getLon(document.getString("location"));
@@ -605,21 +599,15 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     private double getLat(String addresName) {
         geocoder = new Geocoder(ShowPostOnMapActivity.this);
         try {
-
             addressList = geocoder.getFromLocationName(addresName, 1);
-
             if (!addressList.isEmpty()) {
                 double currlat = 0;
                 for (int i = 0; i < addressList.size(); i++) {
-
                     Address correctAddress = addressList.get(i);
-
                     currlat = correctAddress.getLatitude();
-
                 }
                 return currlat;
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
@@ -630,9 +618,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     private double getLon(String addresName) {
         geocoder = new Geocoder(ShowPostOnMapActivity.this);
         try {
-
             addressList = geocoder.getFromLocationName(addresName, 1);
-
             if (!addressList.isEmpty()) {
                 double currlon = 0;
                 for (int i = 0; i < addressList.size(); i++) {
@@ -640,11 +626,9 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                     Address correctAddress = addressList.get(i);
 
                     currlon = correctAddress.getLongitude();
-
                 }
                 return currlon;
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
@@ -676,9 +660,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(ShowPostOnMapActivity.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 }

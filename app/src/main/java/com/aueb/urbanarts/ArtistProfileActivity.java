@@ -377,7 +377,8 @@ public class ArtistProfileActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        goHomePage();
+        Animatoo.animateFade(this);
+        finish();
     }
 
     public void goHomePage() {
@@ -400,7 +401,6 @@ public class ArtistProfileActivity extends AppCompatActivity {
         intent.putExtra("FROM_ARTIST", "FROM_ARTIST");
         startActivity(intent);
         Animatoo.animateFade(this);
-        finish();
     }
 
     private void goReportUser(String artist_id) {
@@ -408,6 +408,5 @@ public class ArtistProfileActivity extends AppCompatActivity {
         intent.putExtra("artist_id", artist_id);
         startActivity(intent);
         Animatoo.animateFade(this);
-        finish();
     }
 }

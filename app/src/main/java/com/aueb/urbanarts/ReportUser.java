@@ -77,7 +77,6 @@ public class ReportUser extends AppCompatActivity {
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(ReportUser.this);
-                                        finish();
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -103,6 +102,7 @@ public class ReportUser extends AppCompatActivity {
                 intent.putExtra(Intent.EXTRA_SUBJECT, rg_value);
                 intent.putExtra(Intent.EXTRA_TEXT, text);
                 startActivity(intent);
+                Animatoo.animateFade(ReportUser.this);
             }
         });
     }
@@ -110,9 +110,7 @@ public class ReportUser extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(ReportUser.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 
