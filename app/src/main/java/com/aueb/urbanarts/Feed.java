@@ -71,8 +71,6 @@ public class Feed extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        checkPermission();
-
         adapter = new Adapter(Feed.this, mList);
 
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -422,11 +420,4 @@ public class Feed extends AppCompatActivity {
             }
         });
     }
-
-    public void checkPermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
-        }
-    }
-
 }

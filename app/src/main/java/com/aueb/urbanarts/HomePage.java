@@ -1,8 +1,10 @@
 package com.aueb.urbanarts;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -20,6 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
@@ -151,14 +155,24 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        CardView live = findViewById(R.id.cardView4);
+        final CardView live = findViewById(R.id.cardView4);
         live.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(HomePage.this, Feed.class);
-                startActivity(myIntent);
-                Animatoo.animateFade(HomePage.this);
-                finish();
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(HomePage.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 101);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    live.performClick();
+                } else {
+                    Intent myIntent = new Intent(HomePage.this, Feed.class);
+                    startActivity(myIntent);
+                    Animatoo.animateFade(HomePage.this);
+                    finish();
+                }
             }
         });
 
