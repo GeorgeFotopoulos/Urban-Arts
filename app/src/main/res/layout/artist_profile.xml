@@ -311,8 +311,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/follow_button">
 
                 <TextView
-
-
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:id="@+id/textView5"
@@ -327,7 +325,7 @@
                 <TextView
                     android:id="@+id/num_follows"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:text="0"
                     android:textSize="18sp"
