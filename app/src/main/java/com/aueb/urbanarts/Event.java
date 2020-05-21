@@ -161,12 +161,23 @@ public class Event extends AppCompatActivity {
                             ArtistTV.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent intent = new Intent(Event.this, ArtistProfileActivity.class);
-                                    intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
-                                    Log.d("", ArtistID);
-                                    startActivity(intent);
-                                    Animatoo.animateFade(Event.this);
-                                    finish();
+                                    DocumentReference docRef2 = db.collection("artists").document(ArtistID);
+                                    docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                final DocumentSnapshot documentArt = task.getResult();
+                                                if (documentArt.exists()) {
+                                                    Intent intent = new Intent(Event.this, ArtistProfileActivity.class);
+                                                    intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
+                                                    Log.d("", ArtistID);
+                                                    startActivity(intent);
+                                                    Animatoo.animateFade(Event.this);
+                                                    finish();
+                                                }
+                                            }
+                                        }});
+
                                 }
                             });
                             GenreTV.setText(genre);
