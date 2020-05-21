@@ -54,8 +54,13 @@
             android:name=".ArtistProfileActivity"
             android:theme="@style/AppThemeNoLabel" />
         <activity
-            android:name=".SearchArtists"
+            android:name=".SearchArtistsResult"
             android:theme="@style/AppThemeNoLabel" />
+        <activity
+            android:name=".SearchArtists"
+            android:theme="@style/AppThemeNoLabel">
+
+        </activity>
         <activity
             android:name=".ShowPostOnMapActivity"
             android:screenOrientation="portrait"

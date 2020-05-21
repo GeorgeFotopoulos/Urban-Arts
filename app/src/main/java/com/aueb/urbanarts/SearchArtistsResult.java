@@ -36,7 +36,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Favorites extends AppCompatActivity {
+public class SearchArtistsResult extends AppCompatActivity {
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     Map<String, Boolean> followedUsersMap = new HashMap<>();
     String docArtist, docDescription, docProfileImage, docGenre, docYear, docArtistType, TAG;
@@ -46,17 +46,18 @@ public class Favorites extends AppCompatActivity {
     FavoritesAdapter adapter;
     ProgressBar progressBar;
     TextView empty;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites_feed);
+        Intent intent = getIntent();
+        final String name = intent.getStringExtra("name");
+        final String typeOfArt = intent.getStringExtra("typeOfArt");
         empty=findViewById(R.id.empty);
-        empty.setText("You don't follow any artists yet.");
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
-        adapter = new FavoritesAdapter(Favorites.this, mList);
+        adapter = new FavoritesAdapter(SearchArtistsResult.this, mList);
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         mAuth = FirebaseAuth.getInstance();
@@ -69,117 +70,82 @@ public class Favorites extends AppCompatActivity {
             loadingImage.setVisibility(View.INVISIBLE);
         }
 
-        findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {
+        final CollectionReference artistCollection = database.collection("artists");
+        artistCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onClick(View v) {
-                if (mAuth.getCurrentUser() != null) {
-                    DocumentReference docUser = database.collection("users").document(mAuth.getUid());
-                    docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(Favorites.this, ArtistProfileActivity.class);
-                                        myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
-                                        startActivity(myIntent);
-                                        Animatoo.animateFade(Favorites.this);
-                                        finish();
-                                    }
-                                } else {
-                                    Log.d(TAG, "get failed with ", task.getException());
-                                }
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    boolean tobeadded;
+                    for (final QueryDocumentSnapshot document : task.getResult()) {
+                        tobeadded=true;
+                        docArtist = document.getString("display_name");
+                        if(!((docArtist.toLowerCase()).contains(name.toLowerCase())||name.isEmpty()))
+                            tobeadded=false;
+                        docGenre = document.getString("genre");
+                        if(!(docGenre.equals(typeOfArt)||typeOfArt.isEmpty()))
+                            tobeadded=false;
+                        docDescription = document.getString("description");
+                        try {
+                            if (document.getString("profile_image_url").equals("")) {
+                                docProfileImage = "none";
+                            } else {
+                                docProfileImage = document.getString("profile_image_url");
                             }
+                        } catch (Exception e) {
+                            Log.d(TAG, "Error!");
                         }
-                    });
+
+                        docYear = document.getString("year");
+                        docArtistType = document.getString("artist_type");
+                        if(tobeadded) {
+                            mList.add(new item(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
+                            addedArtists.add(document.getId());
+                        }
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(SearchArtistsResult.this));
+                        adapter.setOnItemClickListener(new FavoritesAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(int position) {
+                                final String artistID = addedArtists.get(position);
+                                DocumentReference docRef = database.collection("artists").document(artistID);
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                Intent intent = new Intent(SearchArtistsResult.this, ArtistProfileActivity.class);
+                                                intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
+                                                startActivity(intent);
+                                                Animatoo.animateFade(SearchArtistsResult.this);
+                                                finish();
+                                            } else {
+                                                Log.d(TAG, "No such document");
+                                            }
+                                        } else {
+                                            Log.d(TAG, "get failed with ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                    if(addedArtists.size()==0){
+                        empty.setVisibility(View.VISIBLE);
+                    }
                 }
+
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
-        if (mAuth.getCurrentUser() != null) {
-            final DocumentReference docRef = database.collection("users").document(mAuth.getCurrentUser().getUid());
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        final DocumentSnapshot document = task.getResult();
-                        followedUsersMap = (Map<String, Boolean>) document.get("followedUsers");
-                        final CollectionReference artistCollection = database.collection("artists");
-                        artistCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (final QueryDocumentSnapshot document : task.getResult()) {
-                                        try {
-                                            if (followedUsersMap.get(document.getId())) {
-                                                docArtist = document.getString("display_name");
-                                                docDescription = document.getString("description");
-                                                try {
-                                                    if (document.getString("profile_image_url").equals("")) {
-                                                        docProfileImage = "none";
-                                                    } else {
-                                                        docProfileImage = document.getString("profile_image_url");
-                                                    }
-                                                } catch (Exception e) {
-                                                    Log.d(TAG, "Error!");
-                                                }
-                                                docGenre = document.getString("genre");
-                                                docYear = document.getString("year");
-                                                docArtistType = document.getString("artist_type");
-                                                mList.add(new item(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
-
-                                                addedArtists.add(document.getId());
-                                                recyclerView.setAdapter(adapter);
-                                                recyclerView.setLayoutManager(new LinearLayoutManager(Favorites.this));
-                                                adapter.setOnItemClickListener(new FavoritesAdapter.OnItemClickListener() {
-                                                    @Override
-                                                    public void onItemClick(int position) {
-                                                        final String artistID = addedArtists.get(position);
-                                                        DocumentReference docRef = database.collection("artists").document(artistID);
-                                                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    DocumentSnapshot document = task.getResult();
-                                                                    if (document.exists()) {
-                                                                        Intent intent = new Intent(Favorites.this, ArtistProfileActivity.class);
-                                                                        intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
-                                                                        startActivity(intent);
-                                                                        Animatoo.animateFade(Favorites.this);
-                                                                        finish();
-                                                                    } else {
-                                                                        Log.d(TAG, "No such document");
-                                                                    }
-                                                                } else {
-                                                                    Log.d(TAG, "get failed with ", task.getException());
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        } catch (Exception ignore) {
-                                        }
-                                    }
-                                    if(addedArtists.size()==0){
-                                        empty.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-                        });
-                    }
-
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-            });
-        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(Favorites.this, HomePage.class);
+        Intent intent = new Intent(SearchArtistsResult.this, SearchArtists.class);
         startActivity(intent);
         Animatoo.animateZoom(this);
         finish();
