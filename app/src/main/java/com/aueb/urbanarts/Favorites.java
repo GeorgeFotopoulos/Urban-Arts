@@ -44,11 +44,15 @@ public class Favorites extends AppCompatActivity {
     List<item> mList = new ArrayList<>();
     private FirebaseAuth mAuth;
     FavoritesAdapter adapter;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites_feed);
+
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
 
         adapter = new FavoritesAdapter(Favorites.this, mList);
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -159,6 +163,7 @@ public class Favorites extends AppCompatActivity {
                             }
                         });
                     }
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
             });
         }

@@ -62,6 +62,7 @@ public class Feed extends AppCompatActivity {
     List<item> mList = new ArrayList<>();
     int docLikes = 0, docComments = 0;
     private FirebaseAuth mAuth;
+    ProgressBar progressBar;
     Adapter adapter;
     Boolean live;
 
@@ -76,6 +77,9 @@ public class Feed extends AppCompatActivity {
 
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         Intent intent = getIntent();
+
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
 
         if (intent.getStringExtra("FROM_ARTIST") != null) {
             artist_id = intent.getStringExtra("artist_id");
@@ -287,7 +291,7 @@ public class Feed extends AppCompatActivity {
                             if (fromArtist) {
 
                                 if (artist_id.equals(docArtistID)) {
-                                    addItem(artist_image, artist_name, document, recyclerView);
+                                    addItem(artist_image, artist_name, document);
                                     recyclerView.setAdapter(adapter);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(Feed.this));
                                 }
@@ -297,15 +301,15 @@ public class Feed extends AppCompatActivity {
                                     if (artistsList.contains(docArtistID)) {
                                         for (int i = 0; i < artistsList.size(); i++) {
                                             if (artistsList.get(i).equals(docArtistID)) {
-                                                addItem(artistsImages.get(i), docArtist, document, recyclerView);
+                                                addItem(artistsImages.get(i), docArtist, document);
                                                 break;
                                             }
                                         }
                                     } else {
                                         if (docArtist.equals("")) {
-                                            addItem("none", "none", document, recyclerView);
+                                            addItem("none", "none", document);
                                         } else {
-                                            addItem("none", docArtist, document, recyclerView);
+                                            addItem("none", docArtist, document);
                                         }
                                     }
                                     recyclerView.setAdapter(adapter);
@@ -316,13 +320,13 @@ public class Feed extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-
                 }
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
     }
 
-    public void addItem(String docArtistProfilePicture, String docArtist, QueryDocumentSnapshot document, RecyclerView recyclerView) {
+    public void addItem(String docArtistProfilePicture, String docArtist, QueryDocumentSnapshot document) {
         try {
             if (toBeAdded) {
                 mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked));
