@@ -155,13 +155,7 @@ public class Event extends AppCompatActivity {
                         final ConstraintLayout CL = findViewById(R.id.upvotebtn);
                         final Button CommentBtn = findViewById(R.id.btnComment);
                         final ImageView addImage = findViewById(R.id.addImage);
-                        addImage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                showFileChooser();
 
-                            }
-                        });
 
                         upvtext = findViewById(R.id.upvtext);
                         check = findViewById(R.id.check);
@@ -234,6 +228,13 @@ public class Event extends AppCompatActivity {
                         }
 
                         if (mAuth.getCurrentUser() != null) {
+                            addImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    showFileChooser();
+
+                                }
+                            });
                             DocumentReference docRef2 = db.collection("users").document(mAuth.getCurrentUser().getUid());
                             docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
@@ -374,6 +375,14 @@ public class Event extends AppCompatActivity {
                                 }
                             });
                         } else {
+                            addImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    openDialog();
+
+                                }
+                            });
+
                             CL.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

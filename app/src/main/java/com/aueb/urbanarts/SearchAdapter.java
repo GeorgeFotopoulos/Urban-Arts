@@ -74,6 +74,7 @@ public class SearchAdapter extends ArrayAdapter<ExampleItem> {
         }
         @Override
         public CharSequence convertResultToString(Object resultValue) {
+            SearchArtists.ID=((ExampleItem) resultValue).getID();
             PostSomething.ID=((ExampleItem) resultValue).getID();
             return (((ExampleItem) resultValue).getText1()+" (UA User)");
         }
