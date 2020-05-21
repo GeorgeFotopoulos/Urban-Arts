@@ -101,6 +101,17 @@ public class Event extends AppCompatActivity {
             });
         }
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Event.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(Event.this);
+                finish();
+            }
+        });
+
         DocumentReference docRef = db.collection("events").document(document_id);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -120,7 +131,7 @@ public class Event extends AppCompatActivity {
                         LocationTV = findViewById(R.id.eventAddress);
                         ArtistTV = findViewById(R.id.eventArtist);
                         GenreTV = findViewById(R.id.eventGenre);
-                        final ImageView Icon=findViewById(R.id.view_artist_profile);
+                        final ImageView Icon = findViewById(R.id.view_artist_profile);
                         try {
                             DocumentReference docRefART = db.collection("artists").document(ArtistID);
                             docRefART.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -145,7 +156,7 @@ public class Event extends AppCompatActivity {
                                     }
                                 }
                             });
-                        }catch(Exception e){
+                        } catch (Exception e) {
 
                         }
                         final ConstraintLayout CL = findViewById(R.id.upvotebtn);
@@ -196,7 +207,8 @@ public class Event extends AppCompatActivity {
                                                     Animatoo.animateFade(Event.this);
                                                 }
                                             }
-                                        }});
+                                        }
+                                    });
 
                                 }
                             });

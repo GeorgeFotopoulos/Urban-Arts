@@ -69,6 +69,17 @@ public class SignUp extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignUp.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(SignUp.this);
+                finish();
+            }
+        });
+
         btn_createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

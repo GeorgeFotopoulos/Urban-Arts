@@ -142,6 +142,17 @@ public class Feed extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Feed.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(Feed.this);
+                finish();
+            }
+        });
+
         adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -164,35 +175,34 @@ public class Feed extends AppCompatActivity {
             }
         });
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            if (mAuth.getCurrentUser() != null) {
-                                final DocumentReference userLikedReference = database.collection("users").document(mAuth.getCurrentUser().getUid());
-                                userLikedReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            final DocumentSnapshot document = task.getResult();
-                                            try {
-                                                likedEvents = (Map<String, Boolean>) document.get("UserLiked");
-                                            } catch (Exception ignore) {
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    if (mAuth.getCurrentUser() != null) {
+                        final DocumentReference userLikedReference = database.collection("users").document(mAuth.getCurrentUser().getUid());
+                        userLikedReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    final DocumentSnapshot document = task.getResult();
+                                    try {
+                                        likedEvents = (Map<String, Boolean>) document.get("UserLiked");
+                                    } catch (Exception ignore) {
 
-                                            }
-                                        }
                                     }
-                                });
+                                }
                             }
-                            final RecyclerView recyclerView = findViewById(R.id.recyclerView);
-                            double lat = location.getLatitude();
-                            double lng = location.getLongitude();
-                            makeArtists(recyclerView, lat, lng);
-                        }
+                        });
                     }
-                });
+                    final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    double lat = location.getLatitude();
+                    double lng = location.getLongitude();
+                    makeArtists(recyclerView, lat, lng);
+                }
+            }
+        });
     }
 
     @Override

@@ -4,6 +4,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/app_name"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/account"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="false"
+            app:layout_constraintBottom_toBottomOf="@+id/appName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/appName" />
+
+        <ProgressBar
+            android:id="@+id/loading_image"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="@+id/account"
+            app:layout_constraintEnd_toEndOf="@+id/account"
+            app:layout_constraintStart_toStartOf="@+id/account"
+            app:layout_constraintTop_toTopOf="@+id/account" />
+
+        <TextView
+            android:id="@+id/username_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="@+id/appName"
+            app:layout_constraintEnd_toStartOf="@+id/account"
+            app:layout_constraintStart_toEndOf="@+id/appName"
+            app:layout_constraintTop_toTopOf="@+id/appName" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ScrollView
         android:id="@+id/scrollView4"
         android:layout_width="match_parent"
@@ -11,7 +71,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/topBar">
 
         <RelativeLayout
             android:id="@+id/constraint"
@@ -38,10 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/circleImageView"
                     android:layout_alignStart="@+id/circleImageView"
-                    android:layout_alignLeft="@+id/circleImageView"
-                    android:layout_alignEnd="@+id/circleImageView"
-                    android:layout_alignRight="@+id/circleImageView"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="32dp"
                     android:ems="10"
                     android:hint="Username"
                     android:inputType="textPersonName"
@@ -54,7 +111,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/username"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:ems="10"
                     android:hint="Old Password"
                     android:inputType="textPassword"
@@ -67,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/old_password"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:ems="10"
                     android:hint="New Password"
                     android:inputType="textPassword"
@@ -79,7 +136,6 @@
                     android:id="@+id/textView15"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
                     android:text="Request for an Artist's Account!"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -90,10 +146,9 @@
                     android:id="@+id/update"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_below="@+id/textView12"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/pink_button"
                     android:text="UPDATE"
                     android:textColor="#fff"
@@ -119,7 +174,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginLeft="24dp"
                     android:layout_marginTop="24dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -142,7 +196,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scrollView5">
+        app:layout_constraintTop_toTopOf="@+id/scrollView4">
 
         <ProgressBar
             android:id="@+id/progressBar"

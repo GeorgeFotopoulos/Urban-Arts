@@ -96,6 +96,17 @@ public class Favorites extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Favorites.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(Favorites.this);
+                finish();
+            }
+        });
+
         if (mAuth.getCurrentUser() != null) {
             final DocumentReference docRef = database.collection("users").document(mAuth.getCurrentUser().getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

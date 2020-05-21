@@ -60,6 +60,17 @@ public class LogIn extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LogIn.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(LogIn.this);
+                finish();
+            }
+        });
+
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +97,6 @@ public class LogIn extends AppCompatActivity {
                     return;
                 }
 
-                // authenticate the user
                 fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {

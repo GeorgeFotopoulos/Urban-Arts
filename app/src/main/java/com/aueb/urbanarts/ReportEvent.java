@@ -89,6 +89,17 @@ public class ReportEvent extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ReportEvent.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(ReportEvent.this);
+                finish();
+            }
+        });
+
         Button reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override

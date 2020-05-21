@@ -13,7 +13,7 @@
         android:layout_height="60dp">
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/appName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -61,7 +61,7 @@
             android:text=""
             app:layout_constraintBottom_toBottomOf="@+id/account"
             app:layout_constraintEnd_toStartOf="@+id/account"
-            app:layout_constraintStart_toEndOf="@+id/textView18"
+            app:layout_constraintStart_toEndOf="@+id/appName"
             app:layout_constraintTop_toTopOf="@+id/account" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

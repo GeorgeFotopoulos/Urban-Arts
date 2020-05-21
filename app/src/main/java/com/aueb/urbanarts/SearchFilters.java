@@ -91,6 +91,17 @@ public class SearchFilters extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchFilters.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(SearchFilters.this);
+                finish();
+            }
+        });
+
         final List<String> genres = new ArrayList<>();
         fStore.collection("genre")
                 .get()

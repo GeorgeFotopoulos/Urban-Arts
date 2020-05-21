@@ -122,7 +122,6 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 showProfileImage(profileImage, imageProg);
 
-
                                 findViewById(R.id.artist_image).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
                                         try {
@@ -132,6 +131,17 @@ public class EditAccountActivity extends AppCompatActivity {
                                             Toast.makeText(getApplicationContext(), "Please, try later!", Toast.LENGTH_LONG).show();
                                             goHomePage();
                                         }
+                                    }
+                                });
+
+                                TextView appName = findViewById(R.id.appName);
+                                appName.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(EditAccountActivity.this, HomePage.class);
+                                        startActivity(intent);
+                                        Animatoo.animateZoom(EditAccountActivity.this);
+                                        finish();
                                     }
                                 });
 
@@ -156,17 +166,15 @@ public class EditAccountActivity extends AppCompatActivity {
                                             Toast.makeText(getApplicationContext(), "Please, try later!", Toast.LENGTH_LONG).show();
                                             goHomePage();
                                         }
-
                                     }
                                 });
 
-                                GridView galleryToDelete = (GridView) findViewById(R.id.delete_gallery);
+                                GridView galleryToDelete = findViewById(R.id.delete_gallery);
                                 galleryToDelete.setOnItemClickListener(new GridView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         deleteImageFromGallery(position);
                                     }
-
                                 });
 
                                 findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
@@ -174,7 +182,6 @@ public class EditAccountActivity extends AppCompatActivity {
                                         if (sItems != null) {
                                             EditText oldPassword = findViewById(R.id.old_password);
                                             final EditText newPassword = findViewById(R.id.new_password);
-
                                             try {
                                                 if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
                                                     updateEverything(oldPassword, newPassword);
@@ -191,39 +198,43 @@ public class EditAccountActivity extends AppCompatActivity {
 
                                 findViewById(R.id.view_artist_profile).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-
-                                        db.collection("artists")
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                                                if (document.getString("user_id").equals(user.getUid())) {
-
-                                                                    goArtistProfile();
-
-                                                                }
-
-                                                            }
-                                                        } else {
-                                                            Log.w("123", "Error getting documents.", task.getException());
+                                        db.collection("artists").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        if (document.getString("user_id").equals(user.getUid())) {
+                                                            goArtistProfile();
                                                         }
                                                     }
-                                                });
+                                                } else {
+                                                    Log.w("123", "Error getting documents.", task.getException());
+                                                }
+                                            }
+                                        });
                                     }
                                 });
 // USER
                             } else {
                                 setContentView(R.layout.edit_user_account);
-                                scrollView = findViewById(R.id.scrollView5);
+                                scrollView = findViewById(R.id.scrollView4);
                                 scrollView.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         scrollView.scrollTo(0, 0);
                                         scrollView.pageScroll(View.FOCUS_UP);
                                         scrollView.smoothScrollTo(0, 0);
+                                    }
+                                });
+
+                                TextView appName = findViewById(R.id.appName);
+                                appName.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(EditAccountActivity.this, HomePage.class);
+                                        startActivity(intent);
+                                        Animatoo.animateZoom(EditAccountActivity.this);
+                                        finish();
                                     }
                                 });
 
@@ -238,6 +249,16 @@ public class EditAccountActivity extends AppCompatActivity {
                                         terminateAccount(document);
                                     }
                                 });
+
+                                mAuth = FirebaseAuth.getInstance();
+                                if (mAuth.getCurrentUser() != null) {
+                                    final ProgressBar loadingImage = findViewById(R.id.loading_image);
+                                    loadingImage.setVisibility(View.VISIBLE);
+                                    showUserInfo(loadingImage);
+                                } else {
+                                    final ProgressBar loadingImage = findViewById(R.id.loading_image);
+                                    loadingImage.setVisibility(View.INVISIBLE);
+                                }
 
                                 findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
@@ -1104,6 +1125,73 @@ public class EditAccountActivity extends AppCompatActivity {
         }
     }
 
+    private void showUserInfo(final ProgressBar loadingImage) {
+        DocumentReference docUser = db.collection("users").document(mAuth.getUid());
+        docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String userName = document.getString("username");
+                        TextView displayName = findViewById(R.id.username_display);
+                        final CircleImageView accountImage = findViewById(R.id.account);
+                        displayName.setSelected(true);
+                        displayName.setText(userName);
+
+                        if (document.getBoolean("is_artist")) {
+                            loadingImage.setVisibility(View.VISIBLE);
+
+                            DocumentReference docArtist = db.collection("artists").document(mAuth.getUid());
+                            docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            if (!document.getString("profile_image_url").equals("none")) {
+                                                Glide.with(getApplicationContext())
+                                                        .load(document.getString("profile_image_url"))
+                                                        .listener(new RequestListener() {
+                                                            @Override
+                                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                                                                loadingImage.setVisibility(View.INVISIBLE);
+                                                                return false;
+                                                            }
+
+                                                            @Override
+                                                            public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                                                                loadingImage.setVisibility(View.INVISIBLE);
+                                                                return false;
+                                                            }
+                                                        })
+                                                        .into(accountImage);
+                                            } else {
+                                                accountImage.setImageResource(R.drawable.profile);
+                                                loadingImage.setVisibility(View.INVISIBLE);
+                                            }
+                                        } else {
+                                            Log.d(TAG, "No such document");
+                                        }
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+                        } else {
+                            accountImage.setImageResource(R.drawable.profile);
+                            loadingImage.setVisibility(View.INVISIBLE);
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
     private void showFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -1129,7 +1217,6 @@ public class EditAccountActivity extends AppCompatActivity {
         Intent intent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.class);
         startActivity(intent);
         Animatoo.animateFade(this);
-        finish();
     }
 
     @Override

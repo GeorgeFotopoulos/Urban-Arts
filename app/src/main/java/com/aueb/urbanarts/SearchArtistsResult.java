@@ -96,6 +96,17 @@ public class SearchArtistsResult extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchArtistsResult.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(SearchArtistsResult.this);
+                finish();
+            }
+        });
+
         final CollectionReference artistCollection = database.collection("artists");
         artistCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

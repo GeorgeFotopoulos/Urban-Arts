@@ -102,6 +102,17 @@ public class PostSomething extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PostSomething.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(PostSomething.this);
+                finish();
+            }
+        });
+
         fStore.collection("genre")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
