@@ -124,29 +124,34 @@ public class Event extends AppCompatActivity {
                         ArtistTV = findViewById(R.id.eventArtist);
                         GenreTV = findViewById(R.id.eventGenre);
                         final ImageView Icon=findViewById(R.id.view_artist_profile);
-                        DocumentReference docRefART = db.collection("artists").document(ArtistID);
-                        docRefART.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    final DocumentSnapshot documentArt2 = task.getResult();
-                                    if (documentArt2.exists()) {
-                                        Icon.setVisibility(View.VISIBLE);
-                                        Icon.setClickable(true);
-                                        Icon.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                Intent intent = new Intent(Event.this, ArtistProfileActivity.class);
-                                                intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
-                                                Log.d("", ArtistID);
-                                                startActivity(intent);
-                                                Animatoo.animateFade(Event.this);
-                                                finish();
-                                            }
-                                        });
+                        try {
+                            DocumentReference docRefART = db.collection("artists").document(ArtistID);
+                            docRefART.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        final DocumentSnapshot documentArt2 = task.getResult();
+                                        if (documentArt2.exists()) {
+                                            Icon.setVisibility(View.VISIBLE);
+                                            Icon.setClickable(true);
+                                            Icon.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Intent intent = new Intent(Event.this, ArtistProfileActivity.class);
+                                                    intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
+                                                    Log.d("", ArtistID);
+                                                    startActivity(intent);
+                                                    Animatoo.animateFade(Event.this);
+                                                    finish();
+                                                }
+                                            });
+                                        }
                                     }
                                 }
-                            }});
+                            });
+                        }catch(Exception e){
+
+                        }
                         final ConstraintLayout CL = findViewById(R.id.upvotebtn);
                         final Button CommentBtn = findViewById(R.id.btnComment);
                         final ImageView addImage = findViewById(R.id.addImage);
