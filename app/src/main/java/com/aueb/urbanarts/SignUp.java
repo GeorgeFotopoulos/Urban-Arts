@@ -142,6 +142,7 @@ public class SignUp extends AppCompatActivity {
                             user.put("user_id", userID);
                             user.put("username", username);
                             user.put("email", email);
+                            user.put("followers", "0");
                             user.put("is_artist", false);
                             Map<String, Boolean> liked = new HashMap<>();
                             user.put("UserLiked", liked);

@@ -105,7 +105,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                     public void run() {
                                         scrollView.scrollTo(0, 0);
                                         scrollView.pageScroll(View.FOCUS_UP);
-                                        scrollView.smoothScrollTo(0,0);
+                                        scrollView.smoothScrollTo(0, 0);
                                     }
                                 });
 
@@ -223,7 +223,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                     public void run() {
                                         scrollView.scrollTo(0, 0);
                                         scrollView.pageScroll(View.FOCUS_UP);
-                                        scrollView.smoothScrollTo(0,0);
+                                        scrollView.smoothScrollTo(0, 0);
                                     }
                                 });
 
@@ -700,6 +700,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             DocumentSnapshot document = task.getResult();
                                             if (document.exists()) {
+                                                userMap.put("followers", document.getString("followers"));
                                                 if (document.getString("profile_image_url").equals("none")) {
                                                     deleteArtist_NOTImage(userMap);
                                                 } else {

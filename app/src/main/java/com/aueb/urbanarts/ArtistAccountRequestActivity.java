@@ -162,6 +162,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
 
         artistMap.put("user_id", user.getUid());
 
+
         DocumentReference docRef = db.collection("users").document(user.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -174,7 +175,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                     artistMap.put("display_name", document.getString("username"));
                     artistMap.put("genre", artistType);
                     artistMap.put("year", year);
-                    artistMap.put("followers", "0");
+                    artistMap.put("followers", document.getString("followers"));
                     artistMap.put("artist_type", groupType);
                     artistMap.put("profile_image_url", imageURL);
                     artistMap.put("gallery", galleryList);
