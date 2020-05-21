@@ -39,6 +39,9 @@
             android:name=".ReportUser"
             android:theme="@style/AppThemeNoLabel" />
         <activity
+            android:name=".ReportEvent"
+            android:theme="@style/AppThemeNoLabel" />
+        <activity
             android:name=".SearchFilters"
             android:theme="@style/AppThemeNoLabel" />
         <activity

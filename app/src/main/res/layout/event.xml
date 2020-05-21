@@ -21,14 +21,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
             android:text="Artist Name"
             android:textColor="#000000"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:focusable="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/eventGenre"
@@ -53,6 +53,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/eventGenre" />
+
+        <ImageView
+            android:id="@+id/reportEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/report"
+            android:tint="#b71e42"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
@@ -123,9 +137,7 @@
                     app:radius="6dp"
                     app:slideInterval="6000"
                     app:strokeColor="#FF777777"
-                    app:strokeWidth="1dp">
-
-                </com.synnapps.carouselview.CarouselView>
+                    app:strokeWidth="1dp"></com.synnapps.carouselview.CarouselView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -136,10 +148,10 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageLayout"
-                android:focusable="true">
+                app:layout_constraintTop_toBottomOf="@+id/imageLayout">
 
                 <ImageView
                     android:id="@+id/check"
@@ -197,7 +209,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/upvoteLayout" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
@@ -248,12 +259,12 @@
             android:layout_height="0dp"
             android:layout_marginEnd="4dp"
             android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="@+id/btnComment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btnComment"
             app:srcCompat="@drawable/addphoto"
-            tools:ignore="VectorDrawableCompat"
-            android:focusable="true" />
+            tools:ignore="VectorDrawableCompat" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

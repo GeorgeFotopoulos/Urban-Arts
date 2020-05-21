@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Event extends AppCompatActivity {
-    private Uri filePath;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     ImageView no_image_view;
@@ -86,6 +85,23 @@ public class Event extends AppCompatActivity {
         no_image_view = findViewById(R.id.no_image_view);
         carouselView.setPageCount(Images.size());
         carouselView.setImageListener(imageListener);
+
+        if (mAuth.getCurrentUser() != null) {
+            ImageView reportEvent = findViewById(R.id.reportEvent);
+            reportEvent.setVisibility(View.VISIBLE);
+            reportEvent.setClickable(true);
+            reportEvent.setFocusable(true);
+            reportEvent.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(Event.this, ReportEvent.class);
+                    intent.putExtra("event_id", document_id);
+                    startActivity(intent);
+                    Animatoo.animateFade(Event.this);
+                    finish();
+                }
+            });
+        }
+
         DocumentReference docRef = db.collection("events").document(document_id);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -139,7 +155,7 @@ public class Event extends AppCompatActivity {
                         }
                         recyclerView.setAdapter(CommentAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(Event.this));
-                        if (ArtistID != "") {
+                        if (!ArtistID.equals("")) {
                             SpannableString content = new SpannableString(Artist);
                             ArtistTV.setText(content);
                             ArtistTV.setOnClickListener(new View.OnClickListener() {
@@ -239,7 +255,7 @@ public class Event extends AppCompatActivity {
                                             }
                                             try {
                                                 if (liked.containsKey(document_id)) {
-                                                    if (liked.get(document_id) == true) {
+                                                    if (liked.get(document_id)) {
                                                         check.setColorFilter(Color.parseColor("#b71e42"));
                                                         upvtext.setText("Upvoted");
                                                     }
@@ -353,7 +369,7 @@ public class Event extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
+            Uri filePath = data.getData();
             String filePathStr = filePath.toString();
             if (!filePathStr.isEmpty()) {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
