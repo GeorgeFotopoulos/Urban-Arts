@@ -86,8 +86,6 @@ public class Event extends AppCompatActivity {
         carouselView.setPageCount(Images.size());
         carouselView.setImageListener(imageListener);
 
-
-
         if (mAuth.getCurrentUser() != null) {
             ImageView reportEvent = findViewById(R.id.reportEvent);
             reportEvent.setVisibility(View.VISIBLE);
@@ -99,7 +97,6 @@ public class Event extends AppCompatActivity {
                     intent.putExtra("event_id", document_id);
                     startActivity(intent);
                     Animatoo.animateFade(Event.this);
-                    finish();
                 }
             });
         }
@@ -142,7 +139,6 @@ public class Event extends AppCompatActivity {
                                                     Log.d("", ArtistID);
                                                     startActivity(intent);
                                                     Animatoo.animateFade(Event.this);
-                                                    finish();
                                                 }
                                             });
                                         }
@@ -198,7 +194,6 @@ public class Event extends AppCompatActivity {
                                                     Log.d("", ArtistID);
                                                     startActivity(intent);
                                                     Animatoo.animateFade(Event.this);
-                                                    finish();
                                                 }
                                             }
                                         }});
@@ -410,9 +405,7 @@ public class Event extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(Event.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 
@@ -433,7 +426,7 @@ public class Event extends AppCompatActivity {
                 final StorageReference riversRef = storageRef.child("galleries/" + file.getLastPathSegment());
                 UploadTask uploadTask = riversRef.putFile(file);
 
-// Register observers to listen for when the download is done or if it fails
+                // Register observers to listen for when the download is done or if it fails
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
@@ -450,7 +443,7 @@ public class Event extends AppCompatActivity {
                                 Images.add(url);
                                 DocumentReference washingtonRef = db.collection("events").document(ID);
 
-// Set the "isCapital" field of the city 'DC'
+                                // Set the "isCapital" field of the city 'DC'
                                 washingtonRef
                                         .update("gallery", Images)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -473,10 +466,6 @@ public class Event extends AppCompatActivity {
                                         });
                             }
                         });
-
-
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                        // ...
                     }
                 });
             } else {
@@ -495,7 +484,6 @@ public class Event extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
-
 
     protected void openDialog() {
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);

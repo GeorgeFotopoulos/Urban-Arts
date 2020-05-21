@@ -85,7 +85,6 @@ public class Favorites extends AppCompatActivity {
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(Favorites.this);
-                                        finish();
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -147,7 +146,6 @@ public class Favorites extends AppCompatActivity {
                                                                         intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
                                                                         startActivity(intent);
                                                                         Animatoo.animateFade(Favorites.this);
-                                                                        finish();
                                                                     } else {
                                                                         Log.d(TAG, "No such document");
                                                                     }
@@ -179,9 +177,7 @@ public class Favorites extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(Favorites.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 

@@ -53,15 +53,17 @@ public class SignUp extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), HomePage.class));
+            Intent intent = new Intent(SignUp.this, HomePage.class);
+            startActivity(intent);
+            Animatoo.animateZoom(SignUp.this);
             finish();
         }
 
         tv_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(SignUp.this, LogIn.class);
-                SignUp.this.startActivity(myIntent);
+                Intent intent = new Intent(SignUp.this, LogIn.class);
+                startActivity(intent);
                 Animatoo.animateFade(SignUp.this);
                 finish();
             }
@@ -160,6 +162,7 @@ public class SignUp extends AppCompatActivity {
                                 }
                             });
                             startActivity(new Intent(getApplicationContext(), HomePage.class));
+                            Animatoo.animateZoom(SignUp.this);
                             finish();
                         } else {
                             Toast.makeText(SignUp.this, "Error! Could not log in." + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -173,9 +176,7 @@ public class SignUp extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(SignUp.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 }

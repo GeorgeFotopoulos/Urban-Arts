@@ -469,12 +469,8 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        Intent myIntent = new Intent(ShowMapActivity.this, HomePage.class);
-        startActivity(myIntent);
-        Animatoo.animateShrink(this);
+        Animatoo.animateFade(this);
         finish();
-
     }
 
     private void deleteEvents() {
@@ -485,20 +481,15 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
             currEventsList.removeAll(currEventsList);
             markersList.removeAll(markersList);
         }
-
     }
 
     private void showEvents() {
-
         deleteEvents();
-
         String.valueOf(calculateDistance(lat, lon, 37.955250, 23.738130));
-
         if (!eventsList.isEmpty()) {
             for (int i = 0; i < eventsList.size(); i++) {
                 getEventLocation(eventsList.get(i));
             }
-
         }
     }
 
@@ -583,13 +574,11 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public boolean onMarkerClick(Marker currMarker) {
-
         if (!String.valueOf(currMarker.getPosition()).equals(String.valueOf(marker.getPosition()))) {
             for (int i = 0; i < markersList.size(); i++) {
                 if (String.valueOf(currMarker.getPosition()).equals(String.valueOf(markersList.get(i).getPosition())))
                     markersList.get(i).showInfoWindow();
             }
-
         }
         return false;
     }
@@ -620,8 +609,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         Intent intent = new Intent(ShowMapActivity.this, Event.class);
         intent.putExtra("eventID", eventID);
         startActivity(intent);
-        Animatoo.animateInAndOut(this);
-        finish();
+        Animatoo.animateFade(this);
     }
 
 }

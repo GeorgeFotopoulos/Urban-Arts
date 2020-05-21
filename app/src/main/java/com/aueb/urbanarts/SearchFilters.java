@@ -76,11 +76,10 @@ public class SearchFilters extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(SearchFilters.this, ArtistProfileActivity.class);
-                                        myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
-                                        startActivity(myIntent);
+                                        Intent intent = new Intent(SearchFilters.this, ArtistProfileActivity.class);
+                                        intent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
+                                        startActivity(intent);
                                         Animatoo.animateFade(SearchFilters.this);
-                                        finish();
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -166,9 +165,7 @@ public class SearchFilters extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(SearchFilters.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 

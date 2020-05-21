@@ -76,7 +76,6 @@ public class HomePage extends AppCompatActivity {
                     Intent myIntent = new Intent(HomePage.this, HomePage.class);
                     startActivity(myIntent);
                     Animatoo.animateZoom(HomePage.this);
-                    finish();
                 }
             });
         } else {
@@ -86,7 +85,6 @@ public class HomePage extends AppCompatActivity {
                     Intent myIntent = new Intent(HomePage.this, LogIn.class);
                     startActivity(myIntent);
                     Animatoo.animateFade(HomePage.this);
-                    finish();
                 }
             });
         }
@@ -111,7 +109,6 @@ public class HomePage extends AppCompatActivity {
                     Intent myIntent = new Intent(HomePage.this, SignUp.class);
                     startActivity(myIntent);
                     Animatoo.animateFade(HomePage.this);
-                    finish();
                 }
             });
         }
@@ -132,7 +129,6 @@ public class HomePage extends AppCompatActivity {
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(HomePage.this);
-                                        finish();
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -151,7 +147,6 @@ public class HomePage extends AppCompatActivity {
                 Intent myIntent = new Intent(HomePage.this, SearchFilters.class);
                 startActivity(myIntent);
                 Animatoo.animateFade(HomePage.this);
-                finish();
             }
         });
 
@@ -171,7 +166,6 @@ public class HomePage extends AppCompatActivity {
                     Intent myIntent = new Intent(HomePage.this, Feed.class);
                     startActivity(myIntent);
                     Animatoo.animateFade(HomePage.this);
-                    finish();
                 }
             }
         });
@@ -184,7 +178,6 @@ public class HomePage extends AppCompatActivity {
                     Intent myIntent = new Intent(HomePage.this, PostSomething.class);
                     startActivity(myIntent);
                     Animatoo.animateFade(HomePage.this);
-                    finish();
                 } else {
                     openDialog();
                 }
@@ -199,7 +192,6 @@ public class HomePage extends AppCompatActivity {
                     Intent intent = new Intent(HomePage.this, Favorites.class);
                     startActivity(intent);
                     Animatoo.animateFade(HomePage.this);
-                    finish();
                 } else {
                     openDialog();
                 }
@@ -213,7 +205,6 @@ public class HomePage extends AppCompatActivity {
                 Intent intent = new Intent(HomePage.this, ShowMapActivity.class);
                 startActivity(intent);
                 Animatoo.animateFade(HomePage.this);
-                finish();
             }
         });
     }
@@ -310,7 +301,6 @@ public class HomePage extends AppCompatActivity {
                 Intent myIntent = new Intent(HomePage.this, LogIn.class);
                 startActivity(myIntent);
                 Animatoo.animateFade(HomePage.this);
-                finish();
             }
         });
 
@@ -321,7 +311,6 @@ public class HomePage extends AppCompatActivity {
                 Intent myIntent = new Intent(HomePage.this, SignUp.class);
                 startActivity(myIntent);
                 Animatoo.animateFade(HomePage.this);
-                finish();
             }
         });
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -333,6 +322,5 @@ public class HomePage extends AppCompatActivity {
         Intent intent = new Intent(this, EditAccountActivity.class);
         startActivity(intent);
         Animatoo.animateFade(this);
-        finish();
     }
 }

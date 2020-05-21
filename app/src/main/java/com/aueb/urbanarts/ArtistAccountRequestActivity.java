@@ -380,9 +380,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 

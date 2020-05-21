@@ -1114,7 +1114,7 @@ public class EditAccountActivity extends AppCompatActivity {
     public void goHomePage() {
         Intent myIntent = new Intent(EditAccountActivity.this, HomePage.class);
         startActivity(myIntent);
-        Animatoo.animateZoom(this);
+        Animatoo.animateFade(this);
         finish();
     }
 
@@ -1123,7 +1123,6 @@ public class EditAccountActivity extends AppCompatActivity {
         intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
         startActivity(intent);
         Animatoo.animateFade(this);
-        finish();
     }
 
     private void goArtistAccountRequest() {
