@@ -63,7 +63,7 @@ public class HomePage extends AppCompatActivity {
         }
 
         ImageView loginImg = findViewById(R.id.logIn);
-        CardView login = findViewById(R.id.cardView1);
+        CardView login = findViewById(R.id.cardView_login);
         if (mAuth.getCurrentUser() != null) {
             loginImg.setImageResource(R.drawable.log_out);
             tempStr = "Log Out";
@@ -90,7 +90,7 @@ public class HomePage extends AppCompatActivity {
         }
 
         ImageView registerImg = findViewById(R.id.register);
-        CardView register = findViewById(R.id.cardView2);
+        CardView register = findViewById(R.id.cardView_register);
         if (mAuth.getCurrentUser() != null) {
             registerImg.setImageResource(R.drawable.edit_account);
             tempStr = "Edit Account";
@@ -140,8 +140,8 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        CardView filters = findViewById(R.id.cardView3);
-        filters.setOnClickListener(new View.OnClickListener() {
+        CardView searchEvents = findViewById(R.id.cardView_events);
+        searchEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(HomePage.this, SearchFilters.class);
@@ -150,8 +150,18 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        final CardView live = findViewById(R.id.cardView4);
-        live.setOnClickListener(new View.OnClickListener() {
+        CardView searchArtists = findViewById(R.id.cardView_artists);
+        searchArtists.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(HomePage.this, SearchArtists.class);
+                startActivity(intent);
+                Animatoo.animateFade(HomePage.this);
+            }
+        });
+
+        final CardView eventFeed = findViewById(R.id.cardView_feed);
+        eventFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -161,7 +171,7 @@ public class HomePage extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    live.performClick();
+                    eventFeed.performClick();
                 } else {
                     Intent myIntent = new Intent(HomePage.this, Feed.class);
                     startActivity(myIntent);
@@ -170,21 +180,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        CardView createPost = findViewById(R.id.cardView5);
-        createPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAuth.getCurrentUser() != null) {
-                    Intent myIntent = new Intent(HomePage.this, PostSomething.class);
-                    startActivity(myIntent);
-                    Animatoo.animateFade(HomePage.this);
-                } else {
-                    openDialog();
-                }
-            }
-        });
-
-        CardView favorites = findViewById(R.id.cardView6);
+        CardView favorites = findViewById(R.id.cardView_following);
         favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,8 +194,22 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        ImageButton imageButton = findViewById(R.id.imageButton);
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        CardView createPost = findViewById(R.id.cardView_post);
+        createPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAuth.getCurrentUser() != null) {
+                    Intent myIntent = new Intent(HomePage.this, PostSomething.class);
+                    startActivity(myIntent);
+                    Animatoo.animateFade(HomePage.this);
+                } else {
+                    openDialog();
+                }
+            }
+        });
+
+        CardView mapActivity = findViewById(R.id.cardView_map);
+        mapActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomePage.this, ShowMapActivity.class);

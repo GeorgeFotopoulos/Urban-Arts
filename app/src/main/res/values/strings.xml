@@ -36,7 +36,6 @@
     <string name="log_in">Log In</string>
     <string name="filters">Filters</string>
     <string name="live_feed">Live Feed</string>
-    <string name="create_post">Create Post</string>
     <string name="favorites">Favorites</string>
     <string name="register">Register</string>
     <string name="i_accept_the_terms_of_service">I accept the Terms of Service</string>
@@ -71,6 +70,13 @@
     <string name="in_order_to_help_us_understand_the_reason_you_are_reporting_this_user_tick_one_of_those_mentioned_below_contact_information_is_required_in_case_we_need_further_information_regarding_this_report_if_you_feel_the_need_to_include_any_additional_information_please_fill_in_the_text_box_below">In order to help us understand the reason you are reporting this user, tick one of those mentioned below. Contact information is required, in case we need further information regarding this report. If you feel the need to include any additional information, please fill in the text box below.</string>
     <string name="in_order_to_help_us_understand_the_reason_you_are_reporting_this_event_tick_one_of_those_mentioned_below_contact_information_is_required_in_case_we_need_further_information_regarding_this_report_if_you_feel_the_need_to_include_any_additional_information_please_fill_in_the_text_box_below">In order to help us understand the reason you are reporting this event, tick one of those mentioned below. Contact information is required, in case we need further information regarding this report. If you feel the need to include any additional information, please fill in the text box below.</string>
     <string name="copyright_issues">Copyright Issues</string>
-    <string name="write_a_comment">Write a comment...</string>
+    <string name="write_a_comment">Write a comment…</string>
     <string name="inappropriate_input">Inappropriate Input</string>
+    <string name="event_map">Event Map</string>
+    <string name="create_post">Create Post</string>
+    <string name="following">Following</string>
+    <string name="event_feed">Event Feed</string>
+    <string name="explore_artists">Explore Artists</string>
+    <string name="explore_events">Explore Events</string>
+    <string name="urban_arts">Urban Arts</string>
 </resources>

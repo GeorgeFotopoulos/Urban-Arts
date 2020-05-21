@@ -17,9 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:fontFamily="sans-serif-light"
-            android:text="Urban Arts"
+            android:text="@string/urban_arts"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -32,7 +31,6 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
             android:clickable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -74,10 +72,10 @@
         android:layout_weight="3"
         android:padding="10dp"
         app:columnCount="2"
-        app:rowCount="3">
+        app:rowCount="4">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView1"
+            android:id="@+id/cardView_login"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="7dp"
@@ -110,7 +108,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView2"
+            android:id="@+id/cardView_register"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="7dp"
@@ -143,7 +141,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView3"
+            android:id="@+id/cardView_events"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="7dp"
@@ -170,13 +168,46 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/filters"
+                    android:text="@string/explore_events"
                     android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView4"
+            android:id="@+id/cardView_artists"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="7dp"
+            app:cardCornerRadius="15dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="9">
+
+                <ImageView
+                    android:id="@+id/explore"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="7dp"
+                    android:layout_weight="7"
+                    android:src="@drawable/filter" />
+
+                <TextView
+                    android:id="@+id/tv_feed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/explore_artists"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_feed"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="7dp"
@@ -199,50 +230,17 @@
                     android:src="@drawable/feed" />
 
                 <TextView
-                    android:id="@+id/tv_feed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Feed"
-                    android:textSize="20sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView5"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="7dp"
-            app:cardCornerRadius="15dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:weightSum="9">
-
-                <ImageView
-                    android:id="@+id/createPost"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_margin="7dp"
-                    android:layout_weight="7"
-                    android:src="@drawable/create_post" />
-
-                <TextView
                     android:id="@+id/tv_createPost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/create_post"
+                    android:text="@string/event_feed"
                     android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView6"
+            android:id="@+id/cardView_following"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="7dp"
@@ -269,41 +267,76 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/favorites"
+                    android:text="@string/following"
                     android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_post"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="7dp"
+            app:cardCornerRadius="15dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="9">
+
+                <ImageView
+                    android:id="@+id/createPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="7dp"
+                    android:layout_weight="7"
+                    android:src="@drawable/create_post" />
+
+                <TextView
+                    android:id="@+id/tv_post"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/create_post"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_map"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="7dp"
+            app:cardCornerRadius="15dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="9">
+
+                <ImageView
+                    android:id="@+id/maps"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="7dp"
+                    android:layout_weight="7"
+                    android:src="@drawable/marker_new" />
+
+                <TextView
+                    android:id="@+id/tv_maps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/event_map"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </androidx.gridlayout.widget.GridLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@null"
-                android:scaleType="fitXY"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/marker_new" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

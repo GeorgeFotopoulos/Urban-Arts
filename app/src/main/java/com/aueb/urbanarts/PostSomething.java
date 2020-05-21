@@ -261,9 +261,7 @@ public class PostSomething extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(PostSomething.this, HomePage.class);
-        startActivity(intent);
-        Animatoo.animateZoom(PostSomething.this);
+        Animatoo.animateFade(this);
         finish();
     }
 
