@@ -61,7 +61,7 @@ public class Feed extends AppCompatActivity {
     ProgressBar progressBar;
     Adapter adapter;
     Boolean live;
-
+    int lastchoise=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +118,7 @@ public class Feed extends AppCompatActivity {
         findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (mAuth.getCurrentUser() != null) {
                     DocumentReference docUser = database.collection("users").document(mAuth.getUid());
                     docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -150,28 +151,37 @@ public class Feed extends AppCompatActivity {
                 startActivity(intent);
                 Animatoo.animateZoom(Feed.this);
                 finish();
+
             }
         });
 
         adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                final String eventID = eventsList.get(position);
-                DocumentReference docRef = database.collection("events").document(eventID);
-                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Intent intent = new Intent(Feed.this, Event.class);
-                                intent.putExtra("eventID", eventID);
-                                startActivity(intent);
-                                Animatoo.animateFade(Feed.this);
+                if (lastchoise != position) {
+                    lastchoise=position;
+                    final String eventID = eventsList.get(position);
+                    DocumentReference docRef = database.collection("events").document(eventID);
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Intent intent = new Intent(Feed.this, Event.class);
+                                    intent.putExtra("eventID", eventID);
+                                    startActivity(intent);
+                                    Animatoo.animateFade(Feed.this);
+                                    lastchoise=-1;
+                                }
+                            }
+                            else
+                            {
+                                lastchoise=-1;
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 
