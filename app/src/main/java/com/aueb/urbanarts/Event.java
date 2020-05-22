@@ -101,17 +101,6 @@ public class Event extends AppCompatActivity {
             });
         }
 
-        TextView appName = findViewById(R.id.appName);
-        appName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Event.this, HomePage.class);
-                startActivity(intent);
-                Animatoo.animateZoom(Event.this);
-                finish();
-            }
-        });
-
         DocumentReference docRef = db.collection("events").document(document_id);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
