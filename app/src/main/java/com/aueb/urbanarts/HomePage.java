@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 public class HomePage extends AppCompatActivity {
     final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
@@ -51,6 +53,12 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        Intent intent=getIntent();
+        if (intent.getStringExtra("NoEvent") != null) {
+            Toast toast=Toast.makeText(HomePage.this,"Event is no longer Available",LENGTH_LONG);
+            toast.show();
+        }
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {

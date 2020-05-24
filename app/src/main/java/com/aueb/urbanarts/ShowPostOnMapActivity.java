@@ -65,10 +65,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 @SuppressWarnings("deprecation")
 public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -312,6 +316,14 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                         gallery = Images;
                         uploadImage();
 
+                        TimeZone tz = TimeZone.getTimeZone("UTC");
+                        DateFormat df = new SimpleDateFormat("HHmm"); // Quoted "Z" to indicate UTC, no timezone offset
+                        df.setTimeZone(tz);
+                        String nowAsISO = df.format(new Date());
+                        System.out.println(nowAsISO);
+                        if(live)
+                            fStore.collection("events").document(s).update("livetime", nowAsISO);
+
 
                     } else {
                         Log.d("", "No such document");
@@ -335,6 +347,13 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         if (!comment.isEmpty())
             comments.add(postedBy + "@token@" + comment);
 
+
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("HHmm"); // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(tz);
+        String nowAsISO = df.format(new Date());
+        if(live)
+            data.put("livetime",nowAsISO);
         data.put("gallery", gallery);
         data.put("comments", comments);
         data.put("Artist", name);

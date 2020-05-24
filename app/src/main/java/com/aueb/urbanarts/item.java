@@ -1,11 +1,11 @@
 package com.aueb.urbanarts;
 
 public class item {
-    private String artistName, typeOfArt, location, eventPhoto, profilePhoto, artistDescription, year, artistType;
+    private String artistName, typeOfArt, location, eventPhoto, profilePhoto, artistDescription, year, artistType, livetime;
     private int likeCount, commentCount;
     private boolean liveEvent, liked;
 
-    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount, boolean liked) {
+    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount, boolean liked, String livetime) {
         this.profilePhoto = profilePhoto;
         this.eventPhoto = eventPhoto;
         this.artistName = artistName;
@@ -15,6 +15,7 @@ public class item {
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.liked = liked;
+        this.livetime = livetime;
     }
 
     public item(String profilePhoto, String artistName, String artistDescription, String typeOfArt, String year, String artistType) {
@@ -24,6 +25,14 @@ public class item {
         this.typeOfArt = typeOfArt;
         this.year = year;
         this.artistType = artistType;
+    }
+
+    public String getLivetime() {
+        return livetime;
+    }
+
+    public void setLivetime(String livetime) {
+        this.livetime = livetime;
     }
 
     public String getArtistType() {

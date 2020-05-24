@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,8 +44,10 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 public class Feed extends AppCompatActivity {
-    String docArtist, docGenre, docLocation, docArtistID, docGalleryImage;
+    String docArtist, docGenre, docLocation, docArtistID, docGalleryImage, docTime;
     String location = "", name = "", typeOfArt = "", liveStr = "", TAG = "", artist_id, artist_name, artist_image;
     boolean locationExists = false, nameExists = false, typeOfArtExists = false, fromArtist = false;
     boolean docLive, liked, toBeAdded = true;
@@ -61,7 +64,8 @@ public class Feed extends AppCompatActivity {
     ProgressBar progressBar;
     Adapter adapter;
     Boolean live;
-    int lastchoise=-1;
+    int lastChoice = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +78,9 @@ public class Feed extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+
+
+
 
         if (intent.getStringExtra("FROM_ARTIST") != null) {
             artist_id = intent.getStringExtra("artist_id");
@@ -118,7 +125,6 @@ public class Feed extends AppCompatActivity {
         findViewById(R.id.account).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (mAuth.getCurrentUser() != null) {
                     DocumentReference docUser = database.collection("users").document(mAuth.getUid());
                     docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -151,15 +157,14 @@ public class Feed extends AppCompatActivity {
                 startActivity(intent);
                 Animatoo.animateZoom(Feed.this);
                 finish();
-
             }
         });
 
         adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (lastchoise != position) {
-                    lastchoise=position;
+                if (lastChoice != position) {
+                    lastChoice = position;
                     final String eventID = eventsList.get(position);
                     DocumentReference docRef = database.collection("events").document(eventID);
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -172,12 +177,11 @@ public class Feed extends AppCompatActivity {
                                     intent.putExtra("eventID", eventID);
                                     startActivity(intent);
                                     Animatoo.animateFade(Feed.this);
-                                    lastchoise=-1;
+                                    lastChoice = -1;
                                 }
-                            }
-                            else
-                            {
-                                lastchoise=-1;
+                            } else {
+                                Toast.makeText(Feed.this,"Event is no longer available",LENGTH_LONG);
+                                lastChoice = -1;
                             }
                         }
                     });
@@ -265,6 +269,7 @@ public class Feed extends AppCompatActivity {
                             docArtist = document.getString("Artist");
                             docArtistID = document.getString("ArtistID");
                             docLive = document.getBoolean("Live");
+                            docTime = document.getString("livetime");
                             docCommentCount = (List<String>) document.get("comments");
                             docComments = docCommentCount.size();
                             try {
@@ -294,12 +299,13 @@ public class Feed extends AppCompatActivity {
                                     toBeAdded = false;
                             }
                             if (live != null) {
-                                if (!(live == docLive))
+                                if (!(live == docLive)) {
                                     toBeAdded = false;
+                                    return;
+                                }
                             }
 
                             if (fromArtist) {
-
                                 if (artist_id.equals(docArtistID)) {
                                     addItem(artist_image, artist_name, document);
                                     recyclerView.setAdapter(adapter);
@@ -339,7 +345,7 @@ public class Feed extends AppCompatActivity {
     public void addItem(String docArtistProfilePicture, String docArtist, QueryDocumentSnapshot document) {
         try {
             if (toBeAdded) {
-                mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked));
+                mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked, docTime));
                 eventsList.add(document.getId());
             }
         } catch (Exception ignore) {

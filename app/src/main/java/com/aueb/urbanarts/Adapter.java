@@ -14,7 +14,11 @@ import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
     private Context mContext;
@@ -69,6 +73,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         holder.commentCount.setText(String.valueOf(mData.get(position).getCommentCount()));
         if (mData.get(position).isLiveEvent()) {
             holder.liveImage.setVisibility(View.VISIBLE);
+            TimeZone tz = TimeZone.getTimeZone("UTC");
+            DateFormat df = new SimpleDateFormat("HHmm"); // Quoted "Z" to indicate UTC, no timezone offset
+            df.setTimeZone(tz);
+            int currentTime = Integer.parseInt(df.format(new Date()));
+            int eventTime = Integer.parseInt(mData.get(position).getLivetime());
+            if ((currentTime - eventTime) < 0) {
+                currentTime += 2400;
+            }
+            int timeDifference = currentTime - eventTime;
+            if (timeDifference >= 100) {
+                timeDifference -= 40;
+            }
+            String timeText = timeDifference + " minutes ago";
+            holder.timeText.setText(timeText);
+            holder.timeText.setVisibility(View.VISIBLE);
         }
         if (mData.get(position).isLiked()) {
             holder.likeImage.setColorFilter(Color.parseColor("#b71e42"));
@@ -82,7 +101,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
 
     static class myViewHolder extends RecyclerView.ViewHolder {
         ImageView profilePhoto, likeImage, commentImage, liveImage, postImage;
-        TextView artistName, eventType, address, likeCount, commentCount;
+        TextView artistName, eventType, address, likeCount, commentCount, timeText;
 
         myViewHolder(View itemView, final OnItemClickListener mListener) {
             super(itemView);
@@ -96,6 +115,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
             commentCount = itemView.findViewById(R.id.commentCount);
             liveImage = itemView.findViewById(R.id.liveImage);
             postImage = itemView.findViewById(R.id.postImage);
+            timeText = itemView.findViewById(R.id.timeText);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

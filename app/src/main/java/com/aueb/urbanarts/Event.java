@@ -50,16 +50,20 @@ import com.google.firebase.storage.UploadTask;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class Event extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     ImageView no_image_view;
-    String ArtistID, Artist, Location, genre;
+    String ArtistID, Artist, Location, genre, timeText;
     String likes;
     Map<String, Boolean> liked = new HashMap<>();
     CarouselView carouselView;
@@ -75,6 +79,7 @@ public class Event extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
@@ -101,16 +106,34 @@ public class Event extends AppCompatActivity {
             });
         }
 
+
         DocumentReference docRef = db.collection("events").document(document_id);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     final DocumentSnapshot document = task.getResult();
+                    documentExists(document);
                     if (document.exists()) {
                         ImageView LiveImg = findViewById(R.id.live);
+                        TimeZone tz = TimeZone.getTimeZone("UTC");
+                        DateFormat df = new SimpleDateFormat("HHmm"); // Quoted "Z" to indicate UTC, no timezone offset
+                        df.setTimeZone(tz);
+                        int currentTime = Integer.parseInt(df.format(new Date()));
                         Boolean liveEvent = document.getBoolean("Live");
                         if (liveEvent) {
+                            int eventTime = Integer.parseInt(document.getString("livetime"));
+                            if ((currentTime - eventTime) < 0) {
+                                currentTime += 2400;
+                            }
+                            int timeDifference = currentTime - eventTime;
+                            if (timeDifference >= 100) {
+                                timeDifference -= 40;
+                            }
+                            timeText = timeDifference + " minutes ago";
+                            TextView timeTextView = findViewById(R.id.timeText);
+                            timeTextView.setText(timeText);
+                            timeTextView.setVisibility(View.VISIBLE);
                             LiveImg.setVisibility(View.VISIBLE);
                         }
                         ArtistID = document.getString("ArtistID");
@@ -227,7 +250,10 @@ public class Event extends AppCompatActivity {
                             addImage.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    showFileChooser();
+
+                                    documentExists(document);
+                                    if(document.exists())
+                                        showFileChooser();
 
                                 }
                             });
@@ -237,6 +263,7 @@ public class Event extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
                                         final DocumentSnapshot document2 = task.getResult();
+                                        documentExists(document2);
                                         if (document2.exists()) {
                                             final EditText comment = findViewById(R.id.textComment);
                                             CommentBtn.setOnClickListener(new View.OnClickListener() {
@@ -263,6 +290,7 @@ public class Event extends AppCompatActivity {
                                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                 if (task.isSuccessful()) {
                                                                     final DocumentSnapshot document4 = task.getResult();
+                                                                    documentExists(document4);
                                                                     if (document4.exists()) {
                                                                         UsersAndComments = (ArrayList<String>) document4.get("comments");
                                                                         UsersAndComments.add(document2.get("username") + "@token@" + Comments.get(Comments.size() - 1));
@@ -314,6 +342,8 @@ public class Event extends AppCompatActivity {
                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                     if (task.isSuccessful()) {
                                                                         final DocumentSnapshot document3 = task.getResult();
+                                                                        documentExists(document3);
+                                                                        if(document3.exists()){
                                                                         int templikes = Integer.parseInt(document3.getString("likes"));
                                                                         templikes--;
 
@@ -321,7 +351,7 @@ public class Event extends AppCompatActivity {
                                                                         upvotes.setText(templikes + " upvotes");
                                                                         db.collection("events").document(document_id).update("likes", templikes + "");
                                                                         db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
-                                                                    }
+                                                                    }}
                                                                 }
                                                             });
                                                         } else {
@@ -333,6 +363,7 @@ public class Event extends AppCompatActivity {
                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                     if (task.isSuccessful()) {
                                                                         final DocumentSnapshot document3 = task.getResult();
+                                                                        documentExists(document3);
                                                                         int templikes = Integer.parseInt(document3.getString("likes"));
                                                                         templikes++;
 
@@ -348,11 +379,13 @@ public class Event extends AppCompatActivity {
                                                         check.setColorFilter(Color.parseColor("#b71e42"));
                                                         upvtext.setText("Upvoted");
                                                         DocumentReference docRef3 = db.collection("events").document(document_id);
+
                                                         docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                 if (task.isSuccessful()) {
                                                                     final DocumentSnapshot document3 = task.getResult();
+                                                                    documentExists(document3);
                                                                     int templikes = Integer.parseInt(document3.getString("likes"));
                                                                     templikes++;
 
@@ -360,9 +393,11 @@ public class Event extends AppCompatActivity {
                                                                     upvotes.setText(templikes + " upvotes");
                                                                     db.collection("events").document(document_id).update("likes", templikes + "");
                                                                     db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
+
                                                                 }
                                                             }
                                                         });
+
                                                     }
                                                 }
                                             });
@@ -401,6 +436,18 @@ public class Event extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    void documentExists(DocumentSnapshot document3){
+        if (!document3.exists()) {
+
+            Intent myIntent = new Intent(Event.this, HomePage.class);
+            myIntent.putExtra("NoEvent", "noevent");
+            Event.this.startActivity(myIntent);
+            Animatoo.animateFade(Event.this);
+            finish();
+        }
     }
 
     @Override
@@ -416,6 +463,7 @@ public class Event extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             String filePathStr = filePath.toString();
+
             if (!filePathStr.isEmpty()) {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 ProgressDialog dialog = ProgressDialog.show(Event.this, "",
@@ -444,7 +492,6 @@ public class Event extends AppCompatActivity {
                                 Images.add(url);
                                 DocumentReference washingtonRef = db.collection("events").document(ID);
 
-                                // Set the "isCapital" field of the city 'DC'
                                 washingtonRef
                                         .update("gallery", Images)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -476,6 +523,7 @@ public class Event extends AppCompatActivity {
                 Animatoo.animateFade(Event.this);
                 finish();
             }
+
         }
     }
 
