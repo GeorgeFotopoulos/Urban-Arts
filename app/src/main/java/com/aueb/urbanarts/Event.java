@@ -251,9 +251,19 @@ public class Event extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
 
-                                    documentExists(document);
-                                    if(document.exists())
-                                        showFileChooser();
+                                    DocumentReference docRef = db.collection("events").document(document_id);
+                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                final DocumentSnapshot documenttocheck = task.getResult();
+
+                                                    documentExists(documenttocheck);
+                                                    showFileChooser(documenttocheck.exists());
+                                            }
+                                        }
+                                    });
+
 
                                 }
                             });
@@ -527,11 +537,14 @@ public class Event extends AppCompatActivity {
         }
     }
 
-    private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+
+    private void showFileChooser(boolean flag) {
+        if(flag) {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+        }
     }
 
     protected void openDialog() {
