@@ -2,7 +2,9 @@ package com.aueb.urbanarts;
 
 import android.Manifest;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -54,9 +56,9 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         if (intent.getStringExtra("NoEvent") != null) {
-            Toast toast=Toast.makeText(HomePage.this,"Event is no longer Available",LENGTH_LONG);
+            Toast toast = Toast.makeText(HomePage.this, "Event is no longer Available", LENGTH_LONG);
             toast.show();
         }
 
@@ -159,9 +161,9 @@ public class HomePage extends AppCompatActivity {
         });
 
         CardView searchArtists = findViewById(R.id.cardView_artists);
-        searchArtists.setOnClickListener(new View.OnClickListener(){
+        searchArtists.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Intent intent = new Intent(HomePage.this, SearchArtists.class);
                 startActivity(intent);
                 Animatoo.animateFade(HomePage.this);
@@ -336,9 +338,23 @@ public class HomePage extends AppCompatActivity {
         dialog.show();
     }
 
-    public void onBackPressed(){
-        finishAffinity();
-     }
+
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Closing Application")
+                .setMessage("Do you wish to close Urban Arts?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishAffinity();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+
 
     private void goEditAccount() {
         Intent intent = new Intent(this, EditAccountActivity.class);
