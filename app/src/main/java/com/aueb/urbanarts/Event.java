@@ -127,7 +127,7 @@ public class Event extends AppCompatActivity {
                                 currentTime += 2400;
                             }
                             int timeDifference = currentTime - eventTime;
-                            if (timeDifference >= 100) {
+                            if (timeDifference >= 60) {
                                 timeDifference -= 40;
                             }
                             timeText = timeDifference + " minutes ago";
