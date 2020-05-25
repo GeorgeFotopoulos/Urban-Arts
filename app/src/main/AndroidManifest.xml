@@ -12,75 +12,91 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppThemeNoLabel">
         <activity
             android:name=".Feed"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".PostSomething"
-            android:theme="@style/AppThemeNoLabel" />
-        <activity android:name=".item" />
-        <activity android:name=".Adapter" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".item"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".Adapter"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ArtistAccountRequestActivity"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".EditAccountActivity"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Favorites"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ShowMapActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoLabel"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ReportUser"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ReportEvent"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".SearchFilters"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".HomePage"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Event"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ArtistProfileActivity"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".SearchArtistsResult"
-            android:theme="@style/AppThemeNoLabel" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".SearchArtists"
-            android:theme="@style/AppThemeNoLabel">
-
-        </activity>
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ShowPostOnMapActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoLabel"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".SignUp"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".LogIn"
-            android:theme="@style/AppThemeNoLabel">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SignUp"
-            android:theme="@style/AppThemeNoLabel" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
     </application>
-
 </manifest>

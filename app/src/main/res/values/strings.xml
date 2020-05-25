@@ -79,4 +79,7 @@
     <string name="explore_artists">Explore Artists</string>
     <string name="explore_events">Explore Events</string>
     <string name="urban_arts">Urban Arts</string>
+    <string name="artist_name">Artist Name</string>
+    <string name="address">Address</string>
+    <string name="genre">Genre</string>
 </resources>
