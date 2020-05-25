@@ -44,10 +44,13 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.myVi
 
     @Override
     public void onBindViewHolder(FavoritesAdapter.myViewHolder holder, int position) {
-        if (!(mData.get(position).getProfilePhoto()).equals("none")) {
-            Glide.with(mContext.getApplicationContext()).load(mData.get(position).getProfilePhoto()).into(holder.profilePhoto);
-        } else {
-            holder.profilePhoto.setImageResource(R.drawable.profile);
+        try {
+            if (!(mData.get(position).getProfilePhoto()).equals("none")) {
+                Glide.with(mContext.getApplicationContext()).load(mData.get(position).getProfilePhoto()).into(holder.profilePhoto);
+            } else {
+                holder.profilePhoto.setImageResource(R.drawable.profile);
+            }
+        } catch (Exception ignore) {
         }
         holder.artistName.setText(mData.get(position).getArtistName());
         if (mData.get(position).getArtistName().equalsIgnoreCase("none")) {

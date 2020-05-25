@@ -176,7 +176,6 @@ public class SearchArtists extends AppCompatActivity {
                                         Log.d("", ID);
                                         startActivity(intent);
                                         Animatoo.animateFade(SearchArtists.this);
-                                        finish();
                                     } else {
                                         Toast toast = Toast.makeText(getApplicationContext(), "Oops. Seems that the Artist is no longer using our App", Toast.LENGTH_SHORT);
                                         toast.show();
