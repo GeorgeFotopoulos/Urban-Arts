@@ -258,8 +258,8 @@ public class Event extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 final DocumentSnapshot documenttocheck = task.getResult();
 
-                                                    documentExists(documenttocheck);
-                                                    showFileChooser(documenttocheck.exists());
+                                                documentExists(documenttocheck);
+                                                showFileChooser(documenttocheck.exists());
                                             }
                                         }
                                     });
@@ -353,15 +353,16 @@ public class Event extends AppCompatActivity {
                                                                     if (task.isSuccessful()) {
                                                                         final DocumentSnapshot document3 = task.getResult();
                                                                         documentExists(document3);
-                                                                        if(document3.exists()){
-                                                                        int templikes = Integer.parseInt(document3.getString("likes"));
-                                                                        templikes--;
+                                                                        if (document3.exists()) {
+                                                                            int templikes = Integer.parseInt(document3.getString("likes"));
+                                                                            templikes--;
 
-                                                                        liked.put(document_id, false);
-                                                                        upvotes.setText(templikes + " upvotes");
-                                                                        db.collection("events").document(document_id).update("likes", templikes + "");
-                                                                        db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
-                                                                    }}
+                                                                            liked.put(document_id, false);
+                                                                            upvotes.setText(templikes + " upvotes");
+                                                                            db.collection("events").document(document_id).update("likes", templikes + "");
+                                                                            db.collection("users").document(mAuth.getCurrentUser().getUid()).update("UserLiked", liked);
+                                                                        }
+                                                                    }
                                                                 }
                                                             });
                                                         } else {
@@ -449,7 +450,7 @@ public class Event extends AppCompatActivity {
 
     }
 
-    void documentExists(DocumentSnapshot document3){
+    void documentExists(DocumentSnapshot document3) {
         if (!document3.exists()) {
 
             Intent myIntent = new Intent(Event.this, HomePage.class);
@@ -462,8 +463,8 @@ public class Event extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent= getIntent();
-        if(  intent.getStringExtra("fromCreate")!=null){
+        Intent intent = getIntent();
+        if (intent.getStringExtra("fromCreate") != null) {
             Intent intent2 = new Intent(Event.this, HomePage.class);
             startActivity(intent2);
             Animatoo.animateFade(Event.this);
@@ -479,6 +480,26 @@ public class Event extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            DocumentReference docRef3 = db.collection("events").document(ID);
+            docRef3.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        final DocumentSnapshot document3 = task.getResult();
+                        boolean live=document3.getBoolean("Live");
+                        if(live) {
+                            TimeZone tz = TimeZone.getTimeZone("UTC");
+                            DateFormat df = new SimpleDateFormat("HHmm");
+                            df.setTimeZone(tz);
+                            String nowAsISO = df.format(new Date());
+                            System.out.println(nowAsISO);
+                            db.collection("events").document(ID).update("livetime", nowAsISO);
+                        }
+                    }
+                }
+            });
+
             Uri filePath = data.getData();
             String filePathStr = filePath.toString();
 
@@ -547,7 +568,7 @@ public class Event extends AppCompatActivity {
 
 
     private void showFileChooser(boolean flag) {
-        if(flag) {
+        if (flag) {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
