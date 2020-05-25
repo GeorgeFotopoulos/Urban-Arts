@@ -37,10 +37,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -244,7 +248,7 @@ public class Feed extends AppCompatActivity {
     }
 
     private void connectThem(final RecyclerView recyclerView, final double lat, final double lng) {
-        CollectionReference eventsReference = database.collection("events");
+        final CollectionReference eventsReference = database.collection("events");
         eventsReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -272,6 +276,30 @@ public class Feed extends AppCompatActivity {
                             docTime = document.getString("livetime");
                             docCommentCount = (List<String>) document.get("comments");
                             docComments = docCommentCount.size();
+
+                            if(docTime!=null){
+                                if(docLive){
+                                    TimeZone tz = TimeZone.getTimeZone("UTC");
+                                    DateFormat df = new SimpleDateFormat("HHmm"); // Quoted "Z" to indicate UTC, no timezone offset
+                                    df.setTimeZone(tz);
+                                    int currentTime = Integer.parseInt(df.format(new Date()));
+                                    int documentTime=Integer.parseInt(docTime);
+                                    if ((currentTime - documentTime) < 0) {
+                                        currentTime += 2400;
+                                    }
+                                    if(currentTime-documentTime>=100){
+                                        eventsReference.document(document.getId()).update("Live", false);
+                                        if(getIntent().getStringExtra("FROM_ARTIST") == null)
+                                            toBeAdded = false;
+                                    }
+                                }
+
+                            }
+
+                            if(docTime!=null & docLive==false)
+                                if(getIntent().getStringExtra("FROM_ARTIST") == null)
+                                    toBeAdded = false;
+
                             try {
                                 docLikes = Integer.parseInt(document.getString("likes"));
                             } catch (Exception ignore) {

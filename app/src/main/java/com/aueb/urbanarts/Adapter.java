@@ -82,7 +82,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
                 currentTime += 2400;
             }
             int timeDifference = currentTime - eventTime;
-            if (timeDifference >= 100) {
+            if (timeDifference >= 60) {
                 timeDifference -= 40;
             }
             String timeText = timeDifference + " minutes ago";
