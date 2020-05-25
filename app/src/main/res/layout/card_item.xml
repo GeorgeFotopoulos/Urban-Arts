@@ -111,7 +111,7 @@
                 android:layout_marginStart="32dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/live_event_yes"
-                android:visibility="visible"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/commentImage"
                 app:layout_constraintStart_toEndOf="@+id/commentCount"
                 app:layout_constraintTop_toTopOf="@+id/commentImage" />

@@ -83,9 +83,6 @@ public class Feed extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
-
-
-
         if (intent.getStringExtra("FROM_ARTIST") != null) {
             artist_id = intent.getStringExtra("artist_id");
             artist_name = intent.getStringExtra("artist_name");
@@ -184,7 +181,7 @@ public class Feed extends AppCompatActivity {
                                     lastChoice = -1;
                                 }
                             } else {
-                                Toast.makeText(Feed.this,"Event is no longer available",LENGTH_LONG);
+                                Toast.makeText(Feed.this, "Event is no longer available", LENGTH_LONG);
                                 lastChoice = -1;
                             }
                         }
@@ -277,59 +274,65 @@ public class Feed extends AppCompatActivity {
                             docCommentCount = (List<String>) document.get("comments");
                             docComments = docCommentCount.size();
 
-                            if(docTime!=null){
-                                if(docLive){
+                            if (docTime != null) {
+                                if (docLive) {
                                     TimeZone tz = TimeZone.getTimeZone("UTC");
                                     DateFormat df = new SimpleDateFormat("HHmm"); // Quoted "Z" to indicate UTC, no timezone offset
                                     df.setTimeZone(tz);
                                     int currentTime = Integer.parseInt(df.format(new Date()));
-                                    int documentTime=Integer.parseInt(docTime);
+                                    int documentTime = Integer.parseInt(docTime);
                                     if ((currentTime - documentTime) < 0) {
                                         currentTime += 2400;
                                     }
-                                    if(currentTime-documentTime>=100){
+                                    if (currentTime - documentTime >= 100) {
                                         eventsReference.document(document.getId()).update("Live", false);
-                                        if(getIntent().getStringExtra("FROM_ARTIST") == null)
+                                        if (getIntent().getStringExtra("FROM_ARTIST") == null)
                                             toBeAdded = false;
                                     }
                                 }
-
                             }
 
-                            if(docTime!=null & docLive==false)
-                                if(getIntent().getStringExtra("FROM_ARTIST") == null)
+                            if (docTime != null & !docLive) {
+                                if (getIntent().getStringExtra("FROM_ARTIST") == null) {
                                     toBeAdded = false;
+                                }
+                            }
 
                             try {
                                 docLikes = Integer.parseInt(document.getString("likes"));
                             } catch (Exception ignore) {
 
                             }
+
                             docGallery = (List<String>) document.get("gallery");
                             try {
                                 docGalleryImage = docGallery.get(0);
                             } catch (Exception e) {
                                 docGalleryImage = "none";
                             }
+
                             docGenre = document.getString("genre");
                             docLocation = document.getString("location");
 
                             if (locationExists) {
-                                if (!location.equals(docLocation))
+                                if (!location.equals(docLocation)) {
                                     toBeAdded = false;
+                                }
                             }
+
                             if (nameExists) {
                                 if (!docArtist.toLowerCase().contains(name.toLowerCase()))
                                     toBeAdded = false;
                             }
+
                             if (typeOfArtExists) {
                                 if (!typeOfArt.equals(docGenre))
                                     toBeAdded = false;
                             }
+
                             if (live != null) {
                                 if (!(live == docLive)) {
                                     toBeAdded = false;
-                                    return;
                                 }
                             }
 
