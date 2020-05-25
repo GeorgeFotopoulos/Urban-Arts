@@ -462,6 +462,14 @@ public class Event extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Intent intent= getIntent();
+        if(  intent.getStringExtra("fromCreate")!=null){
+            Intent intent2 = new Intent(Event.this, HomePage.class);
+            startActivity(intent2);
+            Animatoo.animateFade(Event.this);
+            finish();
+        }
+
         super.onBackPressed();
         Animatoo.animateFade(this);
         finish();

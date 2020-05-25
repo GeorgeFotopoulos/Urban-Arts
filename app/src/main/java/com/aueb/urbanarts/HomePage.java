@@ -336,6 +336,10 @@ public class HomePage extends AppCompatActivity {
         dialog.show();
     }
 
+    public void onBackPressed(){
+        finishAffinity();
+     }
+
     private void goEditAccount() {
         Intent intent = new Intent(this, EditAccountActivity.class);
         startActivity(intent);

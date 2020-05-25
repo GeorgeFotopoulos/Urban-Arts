@@ -216,9 +216,11 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                                             public void onSuccess(Void aVoid) {
                                                 Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
                                                 myIntent.putExtra("eventID", ID);
+                                                myIntent.putExtra("fromCreate", "True");
                                                 startActivity(myIntent);
                                                 Animatoo.animateFade(ShowPostOnMapActivity.this);
                                                 Log.d("TAG", "DocumentSnapshot successfully updated!");
+                                                finish();
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -239,8 +241,10 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         } catch (Exception e) {
             Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
             myIntent.putExtra("eventID", ID);
+            myIntent.putExtra("fromCreate", "True");
             startActivity(myIntent);
             Animatoo.animateFade(ShowPostOnMapActivity.this);
+            finish();
         }
     }
 
