@@ -99,6 +99,17 @@ public class ArtistProfileActivity extends AppCompatActivity {
             }
         });
 
+        TextView appName = findViewById(R.id.appName);
+        appName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ArtistProfileActivity.this, HomePage.class);
+                startActivity(intent);
+                Animatoo.animateZoom(ArtistProfileActivity.this);
+                finish();
+            }
+        });
+
         final Button follow = findViewById(R.id.follow_button);
 
         if (user != null) {

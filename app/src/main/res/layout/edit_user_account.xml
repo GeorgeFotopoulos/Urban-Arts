@@ -91,13 +91,12 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/logo_transparent" />
 
-
                 <EditText
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/circleImageView"
-                    android:layout_alignStart="@+id/circleImageView"
+                    android:layout_below="@+id/request_artist"
+                    android:layout_alignStart="@+id/request_artist"
                     android:layout_marginTop="32dp"
                     android:ems="10"
                     android:hint="Username"
