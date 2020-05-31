@@ -38,7 +38,7 @@ public class SearchAdapter extends ArrayAdapter<ExampleItem> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(
-                        R.layout.itemsearched, parent, false
+                        R.layout.item_searched, parent, false
                 );
             }
 

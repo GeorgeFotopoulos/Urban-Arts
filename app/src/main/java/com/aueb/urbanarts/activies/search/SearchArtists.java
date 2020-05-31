@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.aueb.urbanarts.R;
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
 import com.aueb.urbanarts.adapters.SearchAdapter;
 import com.aueb.urbanarts.items.ExampleItem;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
@@ -59,7 +59,7 @@ public class SearchArtists extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_artists_with_filters);
+        setContentView(R.layout.activity_search_artists_with_filters);
 
         retrieveList();
 
@@ -85,7 +85,7 @@ public class SearchArtists extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent intent = new Intent(SearchArtists.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent intent = new Intent(SearchArtists.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         intent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(intent);
                                         Animatoo.animateFade(SearchArtists.this);
@@ -176,7 +176,7 @@ public class SearchArtists extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     final DocumentSnapshot documentArt = task.getResult();
                                     if (documentArt.exists()) {
-                                        Intent intent = new Intent(SearchArtists.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent intent = new Intent(SearchArtists.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         intent.putExtra("ARTIST_DOCUMENT_ID", ID);
                                         Log.d("", ID);
                                         startActivity(intent);

@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aueb.urbanarts.R;
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
 import com.aueb.urbanarts.adapters.FavoritesAdapter;
-import com.aueb.urbanarts.items.item;
+import com.aueb.urbanarts.items.EventItem;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -43,7 +43,7 @@ public class SearchArtistsResult extends AppCompatActivity {
     String docArtist, docDescription, docProfileImage, docGenre, docYear, docArtistType, TAG;
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     List<String> addedArtists = new ArrayList<>();
-    List<item> mList = new ArrayList<>();
+    List<EventItem> mList = new ArrayList<>();
     private FirebaseAuth mAuth;
     FavoritesAdapter adapter;
     ProgressBar progressBar;
@@ -86,7 +86,7 @@ public class SearchArtistsResult extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent intent = new Intent(SearchArtistsResult.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent intent = new Intent(SearchArtistsResult.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         intent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(intent);
                                         Animatoo.animateFade(SearchArtistsResult.this);
@@ -139,7 +139,7 @@ public class SearchArtistsResult extends AppCompatActivity {
                         docYear = document.getString("year");
                         docArtistType = document.getString("artist_type");
                         if (tobeadded) {
-                            mList.add(new item(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
+                            mList.add(new EventItem(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
                             addedArtists.add(document.getId());
                         }
                         recyclerView.setAdapter(adapter);
@@ -155,7 +155,7 @@ public class SearchArtistsResult extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             DocumentSnapshot document = task.getResult();
                                             if (document.exists()) {
-                                                Intent intent = new Intent(SearchArtistsResult.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                                Intent intent = new Intent(SearchArtistsResult.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                                 intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
                                                 startActivity(intent);
                                                 Animatoo.animateFade(SearchArtistsResult.this);

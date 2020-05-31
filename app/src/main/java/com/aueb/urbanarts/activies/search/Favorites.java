@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
 import com.aueb.urbanarts.adapters.FavoritesAdapter;
 import com.aueb.urbanarts.R;
-import com.aueb.urbanarts.items.item;
+import com.aueb.urbanarts.items.EventItem;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -46,7 +46,7 @@ public class Favorites extends AppCompatActivity {
     Map<String, Boolean> followedUsersMap = new HashMap<>();
     String docArtist, docDescription, docProfileImage, docGenre, docYear, docArtistType, TAG;
     List<String> addedArtists = new ArrayList<>();
-    List<item> mList = new ArrayList<>();
+    List<EventItem> mList = new ArrayList<>();
     private FirebaseAuth mAuth;
     FavoritesAdapter adapter;
     ProgressBar progressBar;
@@ -86,7 +86,7 @@ public class Favorites extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(Favorites.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent myIntent = new Intent(Favorites.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(Favorites.this);
@@ -142,7 +142,7 @@ public class Favorites extends AppCompatActivity {
                                                 docGenre = document.getString("genre");
                                                 docYear = document.getString("year");
                                                 docArtistType = document.getString("artist_type");
-                                                mList.add(new item(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
+                                                mList.add(new EventItem(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
 
                                                 addedArtists.add(document.getId());
                                                 recyclerView.setAdapter(adapter);
@@ -158,7 +158,7 @@ public class Favorites extends AppCompatActivity {
                                                                 if (task.isSuccessful()) {
                                                                     DocumentSnapshot document = task.getResult();
                                                                     if (document.exists()) {
-                                                                        Intent intent = new Intent(Favorites.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                                                        Intent intent = new Intent(Favorites.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                                                         intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
                                                                         startActivity(intent);
                                                                         Animatoo.animateFade(Favorites.this);

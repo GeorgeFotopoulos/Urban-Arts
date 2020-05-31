@@ -32,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aueb.urbanarts.R;
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
 import com.aueb.urbanarts.activies.authentication.LogIn;
 import com.aueb.urbanarts.activies.authentication.SignUp;
 import com.aueb.urbanarts.activies.report.ReportEvent;
@@ -92,7 +92,7 @@ public class Event extends AppCompatActivity {
         Intent intent = getIntent();
         final String document_id = intent.getStringExtra("eventID");
         ID = document_id;
-        setContentView(R.layout.event);
+        setContentView(R.layout.activity_event);
         carouselView = findViewById(R.id.gallery);
         no_image_view = findViewById(R.id.no_image_view);
         carouselView.setPageCount(Images.size());
@@ -164,7 +164,7 @@ public class Event extends AppCompatActivity {
                                             Icon.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    Intent intent = new Intent(Event.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                                    Intent intent = new Intent(Event.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                                     intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
                                                     Log.d("", ArtistID);
                                                     startActivity(intent);
@@ -219,7 +219,7 @@ public class Event extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 final DocumentSnapshot documentArt = task.getResult();
                                                 if (documentArt.exists()) {
-                                                    Intent intent = new Intent(Event.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                                    Intent intent = new Intent(Event.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                                     intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
                                                     Log.d("", ArtistID);
                                                     startActivity(intent);
@@ -586,7 +586,7 @@ public class Event extends AppCompatActivity {
     protected void openDialog() {
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.login_dialog);
+        dialog.setContentView(R.layout.dialog_login);
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 

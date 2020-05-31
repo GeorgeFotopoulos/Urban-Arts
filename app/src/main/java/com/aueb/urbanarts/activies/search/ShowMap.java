@@ -60,7 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
+public class ShowMap extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
 
     GoogleMap map;
     Marker marker;
@@ -87,7 +87,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_map);
+        setContentView(R.layout.activity_show_map);
         checkPermission();
 
         mapConst = findViewById(R.id.map_constraint);
@@ -301,7 +301,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
                     onPause();
 
-                    geocoder = new Geocoder(ShowMapActivity.this);
+                    geocoder = new Geocoder(ShowMap.this);
                     try {
 
                         addressList = geocoder.getFromLocationName(String.valueOf(showAddress.getText()), 5);
@@ -383,7 +383,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
         lon = location.getLongitude();
         position = new LatLng(lat, lon);
 
-        geocoder = new Geocoder(ShowMapActivity.this);
+        geocoder = new Geocoder(ShowMap.this);
 
         try {
             addressList = geocoder.getFromLocation(lat, lon, 1);
@@ -457,12 +457,12 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(ShowMapActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ShowMap.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(ShowMapActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ShowMap.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -605,7 +605,7 @@ public class ShowMapActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     private void goEvent(String eventID) {
-        Intent intent = new Intent(ShowMapActivity.this, Event.class);
+        Intent intent = new Intent(ShowMap.this, Event.class);
         intent.putExtra("eventID", eventID);
         startActivity(intent);
         Animatoo.animateFade(this);

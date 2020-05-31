@@ -67,7 +67,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ArtistAccountRequestActivity extends AppCompatActivity {
+public class ArtistAccountRequest extends AppCompatActivity {
     private final List<String> artistType = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -83,7 +83,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.request_artist_profile);
+        setContentView(R.layout.activity_request_artist_profile);
         requestStoragePermission();
         storageReference = FirebaseStorage.getInstance().getReference();
 
@@ -144,7 +144,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 artistType.add(document.getId());
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(ArtistAccountRequestActivity.this, android.R.layout.simple_spinner_item, artistType);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(ArtistAccountRequest.this, android.R.layout.simple_spinner_item, artistType);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             sItems = findViewById(R.id.genre);
                             sItems.setAdapter(adapter);
@@ -370,7 +370,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
     }
 
     private void goHomePage() {
-        Intent myIntent = new Intent(ArtistAccountRequestActivity.this, HomePage.class);
+        Intent myIntent = new Intent(ArtistAccountRequest.this, HomePage.class);
         startActivity(myIntent);
         Animatoo.animateZoom(this);
         finish();
@@ -398,7 +398,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.artist_profile);
+            setContentView(R.layout.activity_artist_profile);
 
             ProgressBar imageProg = findViewById(R.id.progress_bar);
             imageProg.setVisibility(View.VISIBLE);
@@ -734,7 +734,7 @@ public class ArtistAccountRequestActivity extends AppCompatActivity {
         }
 
         private void goEditAccount() {
-            startActivity(new Intent(this, EditAccountActivity.class));
+            startActivity(new Intent(this, EditAccount.class));
             Animatoo.animateFade(this);
             finish();
         }

@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aueb.urbanarts.R;
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
 import com.aueb.urbanarts.activies.endpoints.Event;
-import com.aueb.urbanarts.adapters.Adapter;
-import com.aueb.urbanarts.items.item;
+import com.aueb.urbanarts.adapters.FeedAdapter;
+import com.aueb.urbanarts.items.EventItem;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -68,11 +68,11 @@ public class Feed extends AppCompatActivity {
     List<String> docCommentCount = new ArrayList<>();
     List<String> eventsList = new ArrayList<>();
     List<String> docGallery = new ArrayList<>();
-    List<item> mList = new ArrayList<>();
+    List<EventItem> mList = new ArrayList<>();
     int docLikes = 0, docComments = 0;
     private FirebaseAuth mAuth;
     ProgressBar progressBar;
-    Adapter adapter;
+    FeedAdapter adapter;
     Boolean live;
     int lastChoice = -1;
 
@@ -81,7 +81,7 @@ public class Feed extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        adapter = new Adapter(Feed.this, mList);
+        adapter = new FeedAdapter(Feed.this, mList);
 
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         Intent intent = getIntent();
@@ -141,7 +141,7 @@ public class Feed extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(Feed.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent myIntent = new Intent(Feed.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(Feed.this);
@@ -167,7 +167,7 @@ public class Feed extends AppCompatActivity {
             }
         });
 
-        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new FeedAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 if (lastChoice != position) {
@@ -382,7 +382,7 @@ public class Feed extends AppCompatActivity {
     public void addItem(String docArtistProfilePicture, String docArtist, QueryDocumentSnapshot document) {
         try {
             if (toBeAdded) {
-                mList.add(new item(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked, docTime));
+                mList.add(new EventItem(docArtistProfilePicture, docGalleryImage, docArtist, docGenre, docLocation, docLive, docLikes, docComments, liked, docTime));
                 eventsList.add(document.getId());
             }
         } catch (Exception ignore) {

@@ -198,8 +198,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/gallery_text"
-                tools:context="com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity$ArtistProfileActivity"
-                tools:showIn="@layout/artist_profile">
+                tools:context="com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest$ArtistProfileActivity"
+                tools:showIn="@layout/activity_artist_profile">
 
                 <com.synnapps.carouselview.CarouselView
                     android:id="@+id/gallery"

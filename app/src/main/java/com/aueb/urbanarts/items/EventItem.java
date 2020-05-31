@@ -1,11 +1,11 @@
 package com.aueb.urbanarts.items;
 
-public class item {
+public class EventItem {
     private String artistName, typeOfArt, location, eventPhoto, profilePhoto, artistDescription, year, artistType, livetime;
     private int likeCount, commentCount;
     private boolean liveEvent, liked;
 
-    public item(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount, boolean liked, String livetime) {
+    public EventItem(String profilePhoto, String eventPhoto, String artistName, String typeOfArt, String location, boolean liveEvent, int likeCount, int commentCount, boolean liked, String livetime) {
         this.profilePhoto = profilePhoto;
         this.eventPhoto = eventPhoto;
         this.artistName = artistName;
@@ -18,7 +18,7 @@ public class item {
         this.livetime = livetime;
     }
 
-    public item(String profilePhoto, String artistName, String artistDescription, String typeOfArt, String year, String artistType) {
+    public EventItem(String profilePhoto, String artistName, String artistDescription, String typeOfArt, String year, String artistType) {
         this.profilePhoto = profilePhoto;
         this.artistName = artistName;
         this.artistDescription = artistDescription;

@@ -77,7 +77,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 @SuppressWarnings("deprecation")
-public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class ShowPostOnMap extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     Button b;
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     GoogleMap map;
@@ -107,7 +107,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_post_on_map);
+        setContentView(R.layout.activity_show_post_on_map);
 
         Intent intent = getIntent();
         if (intent.getStringExtra("name") != null) {
@@ -184,7 +184,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         try {
             if (!filePathStr.isEmpty()) {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
-                ProgressDialog dialog = ProgressDialog.show(ShowPostOnMapActivity.this, "",
+                ProgressDialog dialog = ProgressDialog.show(ShowPostOnMap.this, "",
                         "Uploading photo and loading your post. Please wait...", true);
                 // [START upload_create_reference]
                 // Create a storage reference from our app
@@ -216,11 +216,11 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
+                                                Intent myIntent = new Intent(ShowPostOnMap.this, Event.class);
                                                 myIntent.putExtra("eventID", ID);
                                                 myIntent.putExtra("fromCreate", "True");
                                                 startActivity(myIntent);
-                                                Animatoo.animateFade(ShowPostOnMapActivity.this);
+                                                Animatoo.animateFade(ShowPostOnMap.this);
                                                 Log.d("TAG", "DocumentSnapshot successfully updated!");
                                                 finish();
                                             }
@@ -241,11 +241,11 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
                 });
             }
         } catch (Exception e) {
-            Intent myIntent = new Intent(ShowPostOnMapActivity.this, Event.class);
+            Intent myIntent = new Intent(ShowPostOnMap.this, Event.class);
             myIntent.putExtra("eventID", ID);
             myIntent.putExtra("fromCreate", "True");
             startActivity(myIntent);
-            Animatoo.animateFade(ShowPostOnMapActivity.this);
+            Animatoo.animateFade(ShowPostOnMap.this);
             finish();
         }
     }
@@ -256,7 +256,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         }
         currDialog = new Dialog(this, android.R.style.Theme_Dialog);
         currDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        currDialog.setContentView(R.layout.create_post_popup);
+        currDialog.setContentView(R.layout.dialog_same_post_popup);
 
         currDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -507,7 +507,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
                     onPause();
 
-                    geocoder = new Geocoder(ShowPostOnMapActivity.this);
+                    geocoder = new Geocoder(ShowPostOnMap.this);
                     try {
 
                         addressList = geocoder.getFromLocationName(String.valueOf(showAddress.getText()), 5);
@@ -575,7 +575,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
         lon = location.getLongitude();
         position = new LatLng(lat, lon);
 
-        geocoder = new Geocoder(ShowPostOnMapActivity.this);
+        geocoder = new Geocoder(ShowPostOnMap.this);
 
         try {
             addressList = geocoder.getFromLocation(lat, lon, 1);
@@ -613,7 +613,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(ShowPostOnMapActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ShowPostOnMap.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -622,7 +622,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     private double getLat(String addresName) {
-        geocoder = new Geocoder(ShowPostOnMapActivity.this);
+        geocoder = new Geocoder(ShowPostOnMap.this);
         try {
             addressList = geocoder.getFromLocationName(addresName, 1);
             if (!addressList.isEmpty()) {
@@ -641,7 +641,7 @@ public class ShowPostOnMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     private double getLon(String addresName) {
-        geocoder = new Geocoder(ShowPostOnMapActivity.this);
+        geocoder = new Geocoder(ShowPostOnMap.this);
         try {
             addressList = geocoder.getFromLocationName(addresName, 1);
             if (!addressList.isEmpty()) {

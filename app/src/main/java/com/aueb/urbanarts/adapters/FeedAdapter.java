@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aueb.urbanarts.R;
-import com.aueb.urbanarts.items.item;
+import com.aueb.urbanarts.items.EventItem;
 import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +22,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.myViewHolder> {
     private Context mContext;
-    private List<item> mData;
+    private List<EventItem> mData;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
@@ -35,7 +35,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         this.mListener = mListener;
     }
 
-    public Adapter(Context mContext, List<item> mData) {
+    public FeedAdapter(Context mContext, List<EventItem> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }
@@ -44,7 +44,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
     @Override
     public myViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View v = inflater.inflate(R.layout.card_item, parent, false);
+        View v = inflater.inflate(R.layout.item_card, parent, false);
         return new myViewHolder(v, mListener);
     }
 

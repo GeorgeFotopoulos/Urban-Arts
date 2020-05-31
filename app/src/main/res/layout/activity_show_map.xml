@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:context=".activies.search.ShowMapActivity" />
+            tools:context=".activies.search.ShowMap" />
 
         <RelativeLayout
             android:id="@+id/address_search"

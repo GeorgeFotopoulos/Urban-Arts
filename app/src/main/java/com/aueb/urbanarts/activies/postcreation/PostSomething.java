@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.aueb.urbanarts.R;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
 import com.aueb.urbanarts.activies.HomePage;
 import com.aueb.urbanarts.adapters.SearchAdapter;
 import com.aueb.urbanarts.items.ExampleItem;
@@ -64,7 +64,7 @@ public class PostSomething extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.make_post);
+        setContentView(R.layout.activity_make_post);
         retrieveList();
         mAuth = FirebaseAuth.getInstance();
         final List<String> genres = new ArrayList<>();
@@ -91,7 +91,7 @@ public class PostSomething extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(PostSomething.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent myIntent = new Intent(PostSomething.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(PostSomething.this);
@@ -191,7 +191,7 @@ public class PostSomething extends AppCompatActivity {
                                 if (document.exists()) {
 
                                     String userName = document.getString("username");
-                                    Intent intent = new Intent(PostSomething.this, ShowPostOnMapActivity.class);
+                                    Intent intent = new Intent(PostSomething.this, ShowPostOnMap.class);
                                     if (!name.contains(" (UA User)")) {
                                         ID = "";
                                     } else {

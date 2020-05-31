@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aueb.urbanarts.R;
-import com.aueb.urbanarts.items.item;
+import com.aueb.urbanarts.items.EventItem;
 import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ import java.util.List;
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.myViewHolder> {
     private FavoritesAdapter.OnItemClickListener mListener;
     private Context mContext;
-    private List<item> mData;
+    private List<EventItem> mData;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -31,7 +31,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.myVi
         this.mListener = mListener;
     }
 
-    public FavoritesAdapter(Context mContext, List<item> mData) {
+    public FavoritesAdapter(Context mContext, List<EventItem> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }
@@ -40,7 +40,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.myVi
     @Override
     public FavoritesAdapter.myViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View v = inflater.inflate(R.layout.favorites_item, parent, false);
+        View v = inflater.inflate(R.layout.item_favorites, parent, false);
         return new FavoritesAdapter.myViewHolder(v, mListener);
     }
 

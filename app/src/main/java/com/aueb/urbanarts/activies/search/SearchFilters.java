@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.aueb.urbanarts.R;
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -55,7 +55,7 @@ public class SearchFilters extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_with_filters);
+        setContentView(R.layout.activity_search_events_with_filters);
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
@@ -79,7 +79,7 @@ public class SearchFilters extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent intent = new Intent(SearchFilters.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent intent = new Intent(SearchFilters.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         intent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(intent);
                                         Animatoo.animateFade(SearchFilters.this);

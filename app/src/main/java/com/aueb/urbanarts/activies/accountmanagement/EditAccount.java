@@ -31,7 +31,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aueb.urbanarts.R;
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.adapters.GridViewAdapter;
+import com.aueb.urbanarts.adapters.GalleryAdapter;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -67,7 +67,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class EditAccountActivity extends AppCompatActivity {
+public class EditAccount extends AppCompatActivity {
     final String TAG = "123";
     private final int PICK_IMAGE_REQUEST = 22;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -85,7 +85,7 @@ public class EditAccountActivity extends AppCompatActivity {
     String artistDescription;
     List<String> artistGallery;
     final List<String> artist_type = new ArrayList<>();
-    GridViewAdapter gridViewAdapter;
+    GalleryAdapter gridViewAdapter;
     ScrollView scrollView;
 
     @Override
@@ -102,7 +102,7 @@ public class EditAccountActivity extends AppCompatActivity {
                         if (document.exists()) {
 // ARTIST
                             if (document.getBoolean("is_artist")) {
-                                setContentView(R.layout.edit_artist_account);
+                                setContentView(R.layout.activity_edit_artist_account);
                                 scrollView = findViewById(R.id.scrollView4);
                                 scrollView.post(new Runnable() {
                                     @Override
@@ -142,9 +142,9 @@ public class EditAccountActivity extends AppCompatActivity {
                                 appName.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        Intent intent = new Intent(EditAccountActivity.this, HomePage.class);
+                                        Intent intent = new Intent(EditAccount.this, HomePage.class);
                                         startActivity(intent);
-                                        Animatoo.animateZoom(EditAccountActivity.this);
+                                        Animatoo.animateZoom(EditAccount.this);
                                         finish();
                                     }
                                 });
@@ -220,7 +220,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                 });
 // USER
                             } else {
-                                setContentView(R.layout.edit_user_account);
+                                setContentView(R.layout.activity_edit_user_account);
                                 scrollView = findViewById(R.id.scrollView4);
                                 scrollView.post(new Runnable() {
                                     @Override
@@ -235,9 +235,9 @@ public class EditAccountActivity extends AppCompatActivity {
                                 appName.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        Intent intent = new Intent(EditAccountActivity.this, HomePage.class);
+                                        Intent intent = new Intent(EditAccount.this, HomePage.class);
                                         startActivity(intent);
-                                        Animatoo.animateZoom(EditAccountActivity.this);
+                                        Animatoo.animateZoom(EditAccount.this);
                                         finish();
                                     }
                                 });
@@ -335,7 +335,7 @@ public class EditAccountActivity extends AppCompatActivity {
         final ConstraintLayout dialogBox = findViewById(R.id.dialog);
         final RelativeLayout wholeLayout = findViewById(R.id.constraint);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccount.this);
         builder.setTitle("WARNING!");
         builder.setMessage("\nThis image will actually get deleted! This is PERMANENT. Are you sure?");
 
@@ -530,9 +530,9 @@ public class EditAccountActivity extends AppCompatActivity {
             }
             noGallery.setText("What are you waiting for?\nUpload something!!!");
         } else {
-            gridViewAdapter = new GridViewAdapter(this, artistGallery);
+            gridViewAdapter = new GalleryAdapter(this, artistGallery);
             gridViewXML.setAdapter(gridViewAdapter);
-            GridViewAdapter.setDynamicHeight(gridViewXML);
+            GalleryAdapter.setDynamicHeight(gridViewXML);
             noGallery.setText("");
         }
 
@@ -574,10 +574,10 @@ public class EditAccountActivity extends AppCompatActivity {
 
         final String[] m_Text = {""};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccount.this);
         builder.setTitle("WARNING!");
         builder.setMessage("\nThis action will actually TERMINATE your account! This is PERMANENT. Are you sure? \n\n\nConfirm with Password: \n");
-        final EditText input = new EditText(EditAccountActivity.this);
+        final EditText input = new EditText(EditAccount.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         builder.setView(input);
 
@@ -704,10 +704,10 @@ public class EditAccountActivity extends AppCompatActivity {
         userMap.put("is_artist", false);
         final String[] m_Text = {""};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccountActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditAccount.this);
         builder.setTitle("WARNING!");
         builder.setMessage("\nThis action will actually DEACTIVATE your account! Your Artist Account will be deleted. This is PERMANENT. Are you sure? \n\n\nConfirm with Password: \n");
-        final EditText input = new EditText(EditAccountActivity.this);
+        final EditText input = new EditText(EditAccount.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         builder.setView(input);
 
@@ -888,7 +888,7 @@ public class EditAccountActivity extends AppCompatActivity {
                                 if (!document.getId().equals(artistGenre))
                                     artist_type.add(document.getId());
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(EditAccountActivity.this, android.R.layout.simple_spinner_item, artist_type);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(EditAccount.this, android.R.layout.simple_spinner_item, artist_type);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             sItems = (Spinner) findViewById(R.id.genre);
                             sItems.setAdapter(adapter);
@@ -1222,21 +1222,21 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     public void goHomePage() {
-        Intent myIntent = new Intent(EditAccountActivity.this, HomePage.class);
+        Intent myIntent = new Intent(EditAccount.this, HomePage.class);
         startActivity(myIntent);
         Animatoo.animateFade(this);
         finish();
     }
 
     private void goArtistProfile() {
-        Intent intent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+        Intent intent = new Intent(EditAccount.this, ArtistAccountRequest.ArtistProfileActivity.class);
         intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
         startActivity(intent);
         Animatoo.animateFade(this);
     }
 
     private void goArtistAccountRequest() {
-        Intent intent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.class);
+        Intent intent = new Intent(EditAccount.this, ArtistAccountRequest.class);
         startActivity(intent);
         Animatoo.animateFade(this);
     }

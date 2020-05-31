@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.aueb.urbanarts.R;
 import com.aueb.urbanarts.activies.search.Feed;
 import com.aueb.urbanarts.activies.HomePage;
-import com.aueb.urbanarts.activies.accountmanagement.EditAccountActivity;
+import com.aueb.urbanarts.activies.accountmanagement.EditAccount;
 import com.aueb.urbanarts.activies.report.ReportUser;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
@@ -46,7 +46,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ArtistProfileActivity extends AppCompatActivity {
+public class ArtistProfile extends AppCompatActivity {
     final String TAG = "123";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CarouselView carouselView;
@@ -68,7 +68,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.artist_profile);
+        setContentView(R.layout.activity_artist_profile);
 
         ProgressBar imageProg = findViewById(R.id.progress_bar);
         imageProg.setVisibility(View.VISIBLE);
@@ -108,9 +108,9 @@ public class ArtistProfileActivity extends AppCompatActivity {
         appName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ArtistProfileActivity.this, HomePage.class);
+                Intent intent = new Intent(ArtistProfile.this, HomePage.class);
                 startActivity(intent);
-                Animatoo.animateZoom(ArtistProfileActivity.this);
+                Animatoo.animateZoom(ArtistProfile.this);
                 finish();
             }
         });
@@ -145,7 +145,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
         follow.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (user == null) {
-                    Toast.makeText(ArtistProfileActivity.this, "You have to create an account in order to follow an artist!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ArtistProfile.this, "You have to create an account in order to follow an artist!", Toast.LENGTH_SHORT).show();
                 } else {
                     final DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -404,13 +404,13 @@ public class ArtistProfileActivity extends AppCompatActivity {
     }
 
     private void goEditAccount() {
-        startActivity(new Intent(this, EditAccountActivity.class));
+        startActivity(new Intent(this, EditAccount.class));
         Animatoo.animateFade(this);
         finish();
     }
 
     private void goFeed(String artist_id, String artist_name, String artist_image) {
-        Intent intent = new Intent(ArtistProfileActivity.this, Feed.class);
+        Intent intent = new Intent(ArtistProfile.this, Feed.class);
         intent.putExtra("artist_id", artist_id);
         intent.putExtra("artist_name", artist_name);
         intent.putExtra("artist_image", artist_image);
@@ -420,7 +420,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
     }
 
     private void goReportUser(String artist_id) {
-        Intent intent = new Intent(ArtistProfileActivity.this, ReportUser.class);
+        Intent intent = new Intent(ArtistProfile.this, ReportUser.class);
         intent.putExtra("artist_id", artist_id);
         startActivity(intent);
         Animatoo.animateFade(this);

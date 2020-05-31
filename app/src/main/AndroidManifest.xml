@@ -22,19 +22,19 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".items.item"
+            android:name=".items.EventItem"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".adapters.Adapter"
+            android:name=".adapters.FeedAdapter"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activies.accountmanagement.ArtistAccountRequestActivity"
+            android:name=".activies.accountmanagement.ArtistAccountRequest"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activies.accountmanagement.EditAccountActivity"
+            android:name=".activies.accountmanagement.EditAccount"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -42,7 +42,7 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activies.search.ShowMapActivity"
+            android:name=".activies.search.ShowMap"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -66,7 +66,7 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activies.accountmanagement.ArtistAccountRequestActivity$ArtistProfileActivity"
+            android:name=".activies.accountmanagement.ArtistAccountRequest$ArtistProfileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -78,7 +78,7 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activies.postcreation.ShowPostOnMapActivity"
+            android:name=".activies.postcreation.ShowPostOnMap"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity

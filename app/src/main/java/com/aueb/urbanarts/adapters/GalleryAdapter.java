@@ -14,14 +14,14 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class GridViewAdapter extends BaseAdapter {
+public class GalleryAdapter extends BaseAdapter {
 
     Context context;
     private final List<String> images;
     View view;
     LayoutInflater layoutInFlater;
 
-    public GridViewAdapter(Context context, List<String> images) {
+    public GalleryAdapter(Context context, List<String> images) {
         this.context = context;
         this.images = images;
     }
@@ -79,7 +79,7 @@ public class GridViewAdapter extends BaseAdapter {
 
         if (convertView == null) {
             view = new View(context);
-            view = layoutInFlater.inflate(R.layout.grid_item, null);
+            view = layoutInFlater.inflate(R.layout.item_gallery, null);
             ImageView imageDisplay = view.findViewById(R.id.image);
             Glide.with(context)
                     .load(images.get(position))

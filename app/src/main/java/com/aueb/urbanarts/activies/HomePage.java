@@ -28,8 +28,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.aueb.urbanarts.R;
-import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
-import com.aueb.urbanarts.activies.accountmanagement.EditAccountActivity;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequest;
+import com.aueb.urbanarts.activies.accountmanagement.EditAccount;
 import com.aueb.urbanarts.activies.authentication.LogIn;
 import com.aueb.urbanarts.activies.authentication.SignUp;
 import com.aueb.urbanarts.activies.postcreation.PostSomething;
@@ -37,7 +37,7 @@ import com.aueb.urbanarts.activies.search.Favorites;
 import com.aueb.urbanarts.activies.search.Feed;
 import com.aueb.urbanarts.activies.search.SearchArtists;
 import com.aueb.urbanarts.activies.search.SearchFilters;
-import com.aueb.urbanarts.activies.search.ShowMapActivity;
+import com.aueb.urbanarts.activies.search.ShowMap;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -146,7 +146,7 @@ public class HomePage extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(HomePage.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        Intent myIntent = new Intent(HomePage.this, ArtistAccountRequest.ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(HomePage.this);
@@ -233,7 +233,7 @@ public class HomePage extends AppCompatActivity {
         mapActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomePage.this, ShowMapActivity.class);
+                Intent intent = new Intent(HomePage.this, ShowMap.class);
                 startActivity(intent);
                 Animatoo.animateFade(HomePage.this);
             }
@@ -310,7 +310,7 @@ public class HomePage extends AppCompatActivity {
     protected void openDialog() {
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.login_dialog);
+        dialog.setContentView(R.layout.dialog_login);
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -368,7 +368,7 @@ public class HomePage extends AppCompatActivity {
 
 
     private void goEditAccount() {
-        Intent intent = new Intent(this, EditAccountActivity.class);
+        Intent intent = new Intent(this, EditAccount.class);
         startActivity(intent);
         Animatoo.animateFade(this);
     }
