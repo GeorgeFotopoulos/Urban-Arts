@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.items;
 
 public class item {
     private String artistName, typeOfArt, location, eventPhoto, profilePhoto, artistDescription, year, artistType, livetime;

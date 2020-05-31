@@ -1,18 +1,24 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.report;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -21,43 +27,33 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SearchArtistsResult extends AppCompatActivity {
-    String docArtist, docDescription, docProfileImage, docGenre, docYear, docArtistType, TAG;
+public class ReportEvent extends AppCompatActivity {
     FirebaseFirestore database = FirebaseFirestore.getInstance();
-    List<String> addedArtists = new ArrayList<>();
-    List<item> mList = new ArrayList<>();
-    private FirebaseAuth mAuth;
-    FavoritesAdapter adapter;
-    ProgressBar progressBar;
-    TextView empty;
+    String text, rg_value, artistID, eventID, TAG;
+    TextInputEditText fullNameInput, textInput;
+    FirebaseAuth mAuth;
+    RadioGroup rg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorites_feed);
+        setContentView(R.layout.activity_report_event);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Intent intent = getIntent();
-        final String name = intent.getStringExtra("name");
-        final String typeOfArt = intent.getStringExtra("typeOfArt");
-        empty = findViewById(R.id.empty);
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
+        artistID = intent.getStringExtra("artist_id");
+        eventID = intent.getStringExtra("event_id");
 
-        adapter = new FavoritesAdapter(SearchArtistsResult.this, mList);
-        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        rg = findViewById(R.id.radioGroup);
+        rg_value = ((RadioButton) findViewById(rg.getCheckedRadioButtonId())).getText().toString();
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
@@ -81,10 +77,10 @@ public class SearchArtistsResult extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent intent = new Intent(SearchArtistsResult.this, ArtistProfileActivity.class);
-                                        intent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
-                                        startActivity(intent);
-                                        Animatoo.animateFade(SearchArtistsResult.this);
+                                        Intent myIntent = new Intent(ReportEvent.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
+                                        startActivity(myIntent);
+                                        Animatoo.animateFade(ReportEvent.this);
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -100,79 +96,30 @@ public class SearchArtistsResult extends AppCompatActivity {
         appName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SearchArtistsResult.this, HomePage.class);
+                Intent intent = new Intent(ReportEvent.this, HomePage.class);
                 startActivity(intent);
-                Animatoo.animateZoom(SearchArtistsResult.this);
+                Animatoo.animateZoom(ReportEvent.this);
                 finish();
             }
         });
 
-        final CollectionReference artistCollection = database.collection("artists");
-        artistCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Button reportButton = findViewById(R.id.reportButton);
+        reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    boolean tobeadded;
-                    for (final QueryDocumentSnapshot document : task.getResult()) {
-                        tobeadded = true;
-                        docArtist = document.getString("display_name");
-                        if (!((docArtist.toLowerCase()).contains(name.toLowerCase()) || name.isEmpty()))
-                            tobeadded = false;
-                        docGenre = document.getString("genre");
-                        if (!(docGenre.equals(typeOfArt) || typeOfArt.isEmpty()))
-                            tobeadded = false;
-                        docDescription = document.getString("description");
-                        try {
-                            if (document.getString("profile_image_url").equals("")) {
-                                docProfileImage = "none";
-                            } else {
-                                docProfileImage = document.getString("profile_image_url");
-                            }
-                        } catch (Exception e) {
-                            Log.d(TAG, "Error!");
-                        }
-                        docYear = document.getString("year");
-                        docArtistType = document.getString("artist_type");
-                        if (tobeadded) {
-                            mList.add(new item(docProfileImage, docArtist, docDescription, docGenre, docYear, docArtistType));
-                            addedArtists.add(document.getId());
-                        }
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(SearchArtistsResult.this));
-                        adapter.setOnItemClickListener(new FavoritesAdapter.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(int position) {
-                                final String artistID = addedArtists.get(position);
-                                DocumentReference docRef = database.collection("artists").document(artistID);
-                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
-                                            if (document.exists()) {
-                                                Intent intent = new Intent(SearchArtistsResult.this, ArtistProfileActivity.class);
-                                                intent.putExtra("ARTIST_DOCUMENT_ID", artistID);
-                                                startActivity(intent);
-                                                Animatoo.animateFade(SearchArtistsResult.this);
-                                            } else {
-                                                Log.d(TAG, "No such document");
-                                            }
-                                        } else {
-                                            Log.d(TAG, "get failed with ", task.getException());
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    if (addedArtists.size() == 0) {
-                        empty.setVisibility(View.VISIBLE);
-                    }
-                }
-                progressBar.setVisibility(View.INVISIBLE);
+            public void onClick(View v) {
+                fullNameInput = findViewById(R.id.fullNameInput);
+                String fullName = fullNameInput.getText().toString();
+
+                textInput = findViewById(R.id.textInput);
+                text = "Name: " + fullName + "\nEvent ID: " + eventID + "\n\n" + textInput.getText().toString();
+
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "giorgos.fotopoulos7@gmail.com", null));
+                intent.putExtra(Intent.EXTRA_SUBJECT, rg_value);
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                startActivity(intent);
+                Animatoo.animateFade(ReportEvent.this);
             }
         });
-
     }
 
     @Override
@@ -246,5 +193,4 @@ public class SearchArtistsResult extends AppCompatActivity {
             }
         });
     }
-
 }

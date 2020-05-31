@@ -9,7 +9,7 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:visibility="visible"
-    tools:context="com.aueb.urbanarts.PostSomething">
+    tools:context="com.aueb.urbanarts.activies.postcreation.PostSomething">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"

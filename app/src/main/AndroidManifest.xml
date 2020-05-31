@@ -14,79 +14,79 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoLabel">
         <activity
-            android:name=".Feed"
+            android:name=".activies.search.Feed"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".PostSomething"
+            android:name=".activies.postcreation.PostSomething"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".item"
+            android:name=".items.item"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Adapter"
+            android:name=".adapters.Adapter"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ArtistAccountRequestActivity"
+            android:name=".activies.accountmanagement.ArtistAccountRequestActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".EditAccountActivity"
+            android:name=".activies.accountmanagement.EditAccountActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Favorites"
+            android:name=".activies.search.Favorites"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ShowMapActivity"
+            android:name=".activies.search.ShowMapActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ReportUser"
+            android:name=".activies.report.ReportUser"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ReportEvent"
+            android:name=".activies.report.ReportEvent"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".SearchFilters"
+            android:name=".activies.search.SearchFilters"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".HomePage"
+            android:name=".activies.HomePage"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Event"
+            android:name=".activies.endpoints.Event"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ArtistProfileActivity"
+            android:name=".activies.accountmanagement.ArtistAccountRequestActivity$ArtistProfileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".SearchArtistsResult"
+            android:name=".activies.search.SearchArtistsResult"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".SearchArtists"
+            android:name=".activies.search.SearchArtists"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ShowPostOnMapActivity"
+            android:name=".activies.postcreation.ShowPostOnMapActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".SignUp"
+            android:name=".activies.authentication.SignUp"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".LogIn"
+            android:name=".activies.authentication.LogIn"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>

@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.endpoints;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.search.Feed;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.activies.accountmanagement.EditAccountActivity;
+import com.aueb.urbanarts.activies.report.ReportUser;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;

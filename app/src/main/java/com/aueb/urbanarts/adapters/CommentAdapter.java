@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.aueb.urbanarts.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +19,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.myViewHo
     private List<String> Usernames;
     private List<String> Comments;
 
-    CommentAdapter(Context mContext, List<String> Usernames,List<String>Comments) {
+    public CommentAdapter(Context mContext, List<String> Usernames, List<String> Comments) {
         this.mContext = mContext;
         this.Usernames = Usernames;
         this.Comments = Comments;

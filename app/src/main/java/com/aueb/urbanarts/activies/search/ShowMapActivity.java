@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.search;
 
 import android.Manifest;
 import android.content.Context;
@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
-import android.hardware.camera2.CaptureRequest;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -32,6 +29,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.endpoints.Event;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;

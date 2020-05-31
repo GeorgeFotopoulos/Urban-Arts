@@ -1,12 +1,10 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.accountmanagement;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,8 +28,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.adapters.GridViewAdapter;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -59,14 +59,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -1232,7 +1229,7 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void goArtistProfile() {
-        Intent intent = new Intent(EditAccountActivity.this, ArtistProfileActivity.class);
+        Intent intent = new Intent(EditAccountActivity.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
         intent.putExtra("ARTIST_DOCUMENT_ID", user.getUid());
         startActivity(intent);
         Animatoo.animateFade(this);

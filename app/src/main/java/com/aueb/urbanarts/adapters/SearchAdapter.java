@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.search.SearchArtists;
+import com.aueb.urbanarts.activies.postcreation.PostSomething;
+import com.aueb.urbanarts.items.ExampleItem;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;

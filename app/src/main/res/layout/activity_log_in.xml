@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="auto"
     android:focusableInTouchMode="true"
-    tools:context=".LogIn">
+    tools:context=".activies.authentication.LogIn">
 
     <ProgressBar
         android:id="@+id/progressBar"

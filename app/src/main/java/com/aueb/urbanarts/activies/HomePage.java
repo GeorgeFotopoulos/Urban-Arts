@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies;
 
 import android.Manifest;
 import android.app.ActionBar;
@@ -27,6 +27,17 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.accountmanagement.EditAccountActivity;
+import com.aueb.urbanarts.activies.authentication.LogIn;
+import com.aueb.urbanarts.activies.authentication.SignUp;
+import com.aueb.urbanarts.activies.postcreation.PostSomething;
+import com.aueb.urbanarts.activies.search.Favorites;
+import com.aueb.urbanarts.activies.search.Feed;
+import com.aueb.urbanarts.activies.search.SearchArtists;
+import com.aueb.urbanarts.activies.search.SearchFilters;
+import com.aueb.urbanarts.activies.search.ShowMapActivity;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -135,7 +146,7 @@ public class HomePage extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(HomePage.this, ArtistProfileActivity.class);
+                                        Intent myIntent = new Intent(HomePage.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(HomePage.this);

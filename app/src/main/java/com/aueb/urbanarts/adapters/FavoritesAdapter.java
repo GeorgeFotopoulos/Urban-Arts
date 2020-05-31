@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.items.item;
 import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +31,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.myVi
         this.mListener = mListener;
     }
 
-    FavoritesAdapter(Context mContext, List<item> mData) {
+    public FavoritesAdapter(Context mContext, List<item> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }

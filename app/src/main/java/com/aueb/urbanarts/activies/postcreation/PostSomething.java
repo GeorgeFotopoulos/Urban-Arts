@@ -1,6 +1,7 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.postcreation;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.adapters.SearchAdapter;
+import com.aueb.urbanarts.items.ExampleItem;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -39,24 +46,28 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SearchArtists extends AppCompatActivity {
+public class PostSomething extends AppCompatActivity {
+    String TAG, name = "", typeOfArt = "", live = "", comment = "";
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private List<ExampleItem> AppArtists = new ArrayList<>();
-    String TAG, name = "", typeOfArt = "";
+    private static final int PICK_IMAGE_REQUEST = 22;
     public static String ID = "";
-    AutoCompleteTextView tv_name;
+    Button btnUpload, btnProceed;
+    EditText tv_name, tv_comment;
     private FirebaseAuth mAuth;
-    EditText artname;
-    Button btnSearch;
+    boolean yesFilter = false;
+    private Uri filePath;
+    Switch aSwitch;
     Spinner sItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_artists_with_filters);
-
+        setContentView(R.layout.make_post);
         retrieveList();
+        mAuth = FirebaseAuth.getInstance();
+        final List<String> genres = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
@@ -80,10 +91,11 @@ public class SearchArtists extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent intent = new Intent(SearchArtists.this, ArtistProfileActivity.class);
-                                        intent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
-                                        startActivity(intent);
-                                        Animatoo.animateFade(SearchArtists.this);
+                                        Intent myIntent = new Intent(PostSomething.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
+                                        startActivity(myIntent);
+                                        Animatoo.animateFade(PostSomething.this);
+                                        finish();
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -99,57 +111,45 @@ public class SearchArtists extends AppCompatActivity {
         appName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SearchArtists.this, HomePage.class);
+                Intent intent = new Intent(PostSomething.this, HomePage.class);
                 startActivity(intent);
-                Animatoo.animateZoom(SearchArtists.this);
+                Animatoo.animateZoom(PostSomething.this);
                 finish();
             }
         });
 
-        final List<String> genres = new ArrayList<>();
-        fStore.collection("genre").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    genres.add("Choose...");
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        genres.add(document.getId() + "");
+        fStore.collection("genre")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            genres.add("Choose...");
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                genres.add(document.getId() + "");
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(PostSomething.this, android.R.layout.simple_spinner_item, genres);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            sItems = findViewById(R.id.genreSpinner);
+                            sItems.setAdapter(adapter);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(SearchArtists.this, android.R.layout.simple_spinner_item, genres);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    sItems = findViewById(R.id.genreSpinner);
-                    sItems.setAdapter(adapter);
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
+                });
 
-        btnSearch = findViewById(R.id.search);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
+        btnUpload = findViewById(R.id.uploadFile);
+        btnUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                artname = findViewById(R.id.artname);
-                if (!TextUtils.isEmpty(artname.getText())) {
-                    name = artname.getText().toString().trim();
-                } else {
-                    name = "";
+                if (v == btnUpload) {
+                    showFileChooser();
+                    yesFilter = true;
                 }
-                if (sItems != null) {
-                    typeOfArt = sItems.getSelectedItem().toString().trim();
-                    if (typeOfArt.equals("Choose...")) {
-                        typeOfArt = "";
-                    }
-                }
-                Intent intent = new Intent(SearchArtists.this, SearchArtistsResult.class);
-                intent.putExtra("name", name);
-                intent.putExtra("typeOfArt", typeOfArt);
-                startActivity(intent);
-                Animatoo.animateFade(SearchArtists.this);
             }
         });
 
-        findViewById(R.id.searchSpecificArtist).setOnClickListener(new View.OnClickListener() {
+        btnProceed = findViewById(R.id.proceed);
+        btnProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tv_name = findViewById(R.id.actv);
@@ -158,35 +158,63 @@ public class SearchArtists extends AppCompatActivity {
                 } else {
                     name = "";
                 }
-                if (!name.contains(" (UA User)")) {
-                    ID = "";
-                    Toast toast = Toast.makeText(getApplicationContext(), "You should select an Artist from the List", Toast.LENGTH_SHORT);
-                    toast.show();
+
+                tv_comment = findViewById(R.id.comment);
+                if (!TextUtils.isEmpty(tv_comment.getText())) {
+                    comment = tv_comment.getText().toString().trim();
                 } else {
-                    try {
-                        DocumentReference docRef2 = fStore.collection("artists").document(ID);
-                        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    final DocumentSnapshot documentArt = task.getResult();
-                                    if (documentArt.exists()) {
-                                        Intent intent = new Intent(SearchArtists.this, ArtistProfileActivity.class);
-                                        intent.putExtra("ARTIST_DOCUMENT_ID", ID);
-                                        Log.d("", ID);
-                                        startActivity(intent);
-                                        Animatoo.animateFade(SearchArtists.this);
+                    comment = "";
+                }
+
+
+                if (sItems != null) {
+                    typeOfArt = sItems.getSelectedItem().toString().trim();
+                    if (!typeOfArt.equals("Choose...")) {
+                        yesFilter = true;
+                    }
+                }
+
+                aSwitch = findViewById(R.id.aSwitch);
+                if (aSwitch.isChecked()) {
+                    live = "true";
+                } else if (!aSwitch.isChecked()) {
+                    live = "false";
+                }
+
+                if (!typeOfArt.contains("Choose")) {
+                    DocumentReference docUser = fStore.collection("users").document(mAuth.getUid());
+                    docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+
+                                    String userName = document.getString("username");
+                                    Intent intent = new Intent(PostSomething.this, ShowPostOnMapActivity.class);
+                                    if (!name.contains(" (UA User)")) {
+                                        ID = "";
                                     } else {
-                                        Toast toast = Toast.makeText(getApplicationContext(), "Oops. Seems that the Artist is no longer using our App", Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        name = name.replace(" (UA User)", "");
                                     }
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("postedBy", userName);
+                                    intent.putExtra("comment", comment);
+                                    intent.putExtra("typeOfArt", typeOfArt);
+                                    intent.putExtra("live", live);
+                                    intent.putExtra("ID", ID);
+                                    if (filePath != null) {
+                                        intent.putExtra("filePath", filePath.toString());
+                                    }
+                                    startActivity(intent);
+                                    Animatoo.animateFade(PostSomething.this);
                                 }
                             }
-                        });
-                    } catch (Exception e) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Oops. Seems that the Artist is no longer using our App", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
+                        }
+                    });
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Field \"Art Genre\" is required.", Toast.LENGTH_LONG);
+                    toast.show();
                 }
             }
         });
@@ -229,8 +257,32 @@ public class SearchArtists extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+            TextView filepath = findViewById(R.id.filepath);
+            filepath.setText("Image File: " + filePath);
+        }
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Animatoo.animateFade(this);
+        finish();
+    }
+
     private void showUserInfo(final ProgressBar loadingImage) {
-        DocumentReference docUser = fStore.collection("users").document(mAuth.getUid());
+        DocumentReference docUser = database.collection("users").document(mAuth.getUid());
         docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -244,7 +296,7 @@ public class SearchArtists extends AppCompatActivity {
                         displayName.setText(userName);
                         if (document.getBoolean("is_artist")) {
                             loadingImage.setVisibility(View.VISIBLE);
-                            DocumentReference docArtist = fStore.collection("artists").document(mAuth.getUid());
+                            DocumentReference docArtist = database.collection("artists").document(mAuth.getUid());
                             docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -292,12 +344,5 @@ public class SearchArtists extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Animatoo.animateFade(this);
-        finish();
     }
 }

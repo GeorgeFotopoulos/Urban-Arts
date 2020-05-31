@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.postcreation;
 
 
 import android.Manifest;
@@ -37,6 +37,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.endpoints.Event;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;

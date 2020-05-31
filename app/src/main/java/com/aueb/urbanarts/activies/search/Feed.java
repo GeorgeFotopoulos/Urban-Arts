@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.search;
 
 import android.content.Intent;
 import android.location.Address;
@@ -17,6 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.endpoints.Event;
+import com.aueb.urbanarts.adapters.Adapter;
+import com.aueb.urbanarts.items.item;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -135,7 +141,7 @@ public class Feed extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(Feed.this, ArtistProfileActivity.class);
+                                        Intent myIntent = new Intent(Feed.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
                                         Animatoo.animateFade(Feed.this);

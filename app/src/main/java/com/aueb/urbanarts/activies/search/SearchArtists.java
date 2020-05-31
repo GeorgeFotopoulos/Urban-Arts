@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.search;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,11 +6,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.adapters.SearchAdapter;
+import com.aueb.urbanarts.items.ExampleItem;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -27,6 +32,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,21 +44,24 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SearchFilters extends AppCompatActivity {
-    String TAG, location = "", name = "", typeOfArt = "", live = "";
+public class SearchArtists extends AppCompatActivity {
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    EditText tv_location, tv_name;
-    boolean yesFilter = false;
-    FirebaseAuth mAuth;
+    private List<ExampleItem> AppArtists = new ArrayList<>();
+    String TAG, name = "", typeOfArt = "";
+    public static String ID = "";
+    AutoCompleteTextView tv_name;
+    private FirebaseAuth mAuth;
+    EditText artname;
     Button btnSearch;
-    Switch aSwitch;
     Spinner sItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_with_filters);
+        setContentView(R.layout.search_artists_with_filters);
+
+        retrieveList();
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
@@ -76,10 +85,10 @@ public class SearchFilters extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent intent = new Intent(SearchFilters.this, ArtistProfileActivity.class);
+                                        Intent intent = new Intent(SearchArtists.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
                                         intent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(intent);
-                                        Animatoo.animateFade(SearchFilters.this);
+                                        Animatoo.animateFade(SearchArtists.this);
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -95,93 +104,138 @@ public class SearchFilters extends AppCompatActivity {
         appName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SearchFilters.this, HomePage.class);
+                Intent intent = new Intent(SearchArtists.this, HomePage.class);
                 startActivity(intent);
-                Animatoo.animateZoom(SearchFilters.this);
+                Animatoo.animateZoom(SearchArtists.this);
                 finish();
             }
         });
 
         final List<String> genres = new ArrayList<>();
-        fStore.collection("genre")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            genres.add("Choose...");
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                genres.add(document.getId() + "");
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(SearchFilters.this, android.R.layout.simple_spinner_item, genres);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            sItems = findViewById(R.id.genreSpinner);
-                            sItems.setAdapter(adapter);
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
+        fStore.collection("genre").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    genres.add("Choose...");
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        genres.add(document.getId() + "");
                     }
-                });
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(SearchArtists.this, android.R.layout.simple_spinner_item, genres);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    sItems = findViewById(R.id.genreSpinner);
+                    sItems.setAdapter(adapter);
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
 
         btnSearch = findViewById(R.id.search);
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_location = findViewById(R.id.location);
-                if (!TextUtils.isEmpty(tv_location.getText())) {
-                    location = tv_location.getText().toString().trim();
-                    yesFilter = true;
+                artname = findViewById(R.id.artname);
+                if (!TextUtils.isEmpty(artname.getText())) {
+                    name = artname.getText().toString().trim();
+                } else {
+                    name = "";
                 }
-
-                tv_name = findViewById(R.id.name);
-                if (!TextUtils.isEmpty(tv_name.getText())) {
-                    name = tv_name.getText().toString().trim();
-                    yesFilter = true;
-                }
-
                 if (sItems != null) {
                     typeOfArt = sItems.getSelectedItem().toString().trim();
-                    if (!typeOfArt.equals("Choose...")) {
-                        yesFilter = true;
+                    if (typeOfArt.equals("Choose...")) {
+                        typeOfArt = "";
                     }
                 }
+                Intent intent = new Intent(SearchArtists.this, SearchArtistsResult.class);
+                intent.putExtra("name", name);
+                intent.putExtra("typeOfArt", typeOfArt);
+                startActivity(intent);
+                Animatoo.animateFade(SearchArtists.this);
+            }
+        });
 
-                aSwitch = findViewById(R.id.aSwitch);
-                if (aSwitch.isChecked()) {
-                    live = "true";
-                    yesFilter = true;
-                } else if (!aSwitch.isChecked()) {
-                    live = "false";
-                    yesFilter = true;
-                }
-
-                if (yesFilter) {
-                    Intent intent = new Intent(SearchFilters.this, Feed.class);
-                    if (!location.equals("")) intent.putExtra("location", location);
-                    if (!name.equals("")) intent.putExtra("name", name);
-                    if (!typeOfArt.equals("Choose...")) intent.putExtra("typeOfArt", typeOfArt);
-                    if (!live.equals("")) {
-                        intent.putExtra("live", live);
-                    }
-                    startActivity(intent);
-                    Animatoo.animateFade(SearchFilters.this);
+        findViewById(R.id.searchSpecificArtist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_name = findViewById(R.id.actv);
+                if (!TextUtils.isEmpty(tv_name.getText())) {
+                    name = tv_name.getText().toString().trim();
                 } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "No filters were selected.", Toast.LENGTH_LONG);
+                    name = "";
+                }
+                if (!name.contains(" (UA User)")) {
+                    ID = "";
+                    Toast toast = Toast.makeText(getApplicationContext(), "You should select an Artist from the List", Toast.LENGTH_SHORT);
                     toast.show();
+                } else {
+                    try {
+                        DocumentReference docRef2 = fStore.collection("artists").document(ID);
+                        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    final DocumentSnapshot documentArt = task.getResult();
+                                    if (documentArt.exists()) {
+                                        Intent intent = new Intent(SearchArtists.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
+                                        intent.putExtra("ARTIST_DOCUMENT_ID", ID);
+                                        Log.d("", ID);
+                                        startActivity(intent);
+                                        Animatoo.animateFade(SearchArtists.this);
+                                    } else {
+                                        Toast toast = Toast.makeText(getApplicationContext(), "Oops. Seems that the Artist is no longer using our App", Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    }
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Oops. Seems that the Artist is no longer using our App", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 }
             }
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Animatoo.animateFade(this);
-        finish();
+    private void onsuccess() {
+        AutoCompleteTextView editText = findViewById(R.id.actv);
+        SearchAdapter adapter = new SearchAdapter(this, AppArtists);
+        editText.setAdapter(adapter);
+    }
+
+    private void retrieveList() {
+        final CollectionReference eventsCollection = fStore.collection("artists");
+        eventsCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (final QueryDocumentSnapshot document : task.getResult()) {
+                        final ExampleItem itemtoadd = new ExampleItem();
+                        itemtoadd.setID(document.getId());
+                        DocumentReference docRef = fStore.collection("artists").document(document.getId());
+                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot artistinfo = task.getResult();
+                                    if (artistinfo.exists()) {
+                                        itemtoadd.setText1(artistinfo.getString("display_name"));
+                                        itemtoadd.setImageResource(artistinfo.getString("profile_image_url"));
+                                        itemtoadd.setText2(artistinfo.getString("genre"));
+                                    }
+                                    AppArtists.add(itemtoadd);
+                                    onsuccess();
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void showUserInfo(final ProgressBar loadingImage) {
-        DocumentReference docUser = database.collection("users").document(mAuth.getUid());
+        DocumentReference docUser = fStore.collection("users").document(mAuth.getUid());
         docUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -195,7 +249,7 @@ public class SearchFilters extends AppCompatActivity {
                         displayName.setText(userName);
                         if (document.getBoolean("is_artist")) {
                             loadingImage.setVisibility(View.VISIBLE);
-                            DocumentReference docArtist = database.collection("artists").document(mAuth.getUid());
+                            DocumentReference docArtist = fStore.collection("artists").document(mAuth.getUid());
                             docArtist.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -243,5 +297,12 @@ public class SearchFilters extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Animatoo.animateFade(this);
+        finish();
     }
 }

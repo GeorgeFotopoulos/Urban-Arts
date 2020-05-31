@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,11 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
-import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
+import com.aueb.urbanarts.R;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -29,7 +26,7 @@ public class GridViewAdapter extends BaseAdapter {
         this.images = images;
     }
 
-    static void setDynamicHeight(GridView gridView) {
+    public static void setDynamicHeight(GridView gridView) {
         ListAdapter gridViewAdapter = gridView.getAdapter();
         if (gridViewAdapter == null) {
             // pre-condition

@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.items.item;
 import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +35,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.myViewHolder> {
         this.mListener = mListener;
     }
 
-    Adapter(Context mContext, List<item> mData) {
+    public Adapter(Context mContext, List<item> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }

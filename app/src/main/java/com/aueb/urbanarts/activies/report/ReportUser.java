@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.report;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -16,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -32,22 +35,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ReportEvent extends AppCompatActivity {
+public class ReportUser extends AppCompatActivity {
     FirebaseFirestore database = FirebaseFirestore.getInstance();
-    String text, rg_value, artistID, eventID, TAG;
     TextInputEditText fullNameInput, textInput;
+    String text, rg_value, artistID, TAG;
     FirebaseAuth mAuth;
     RadioGroup rg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report_event);
+        setContentView(R.layout.activity_report_user);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Intent intent = getIntent();
         artistID = intent.getStringExtra("artist_id");
-        eventID = intent.getStringExtra("event_id");
 
         rg = findViewById(R.id.radioGroup);
         rg_value = ((RadioButton) findViewById(rg.getCheckedRadioButtonId())).getText().toString();
@@ -74,10 +76,10 @@ public class ReportEvent extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     if (document.getBoolean("is_artist")) {
-                                        Intent myIntent = new Intent(ReportEvent.this, ArtistProfileActivity.class);
+                                        Intent myIntent = new Intent(ReportUser.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
                                         myIntent.putExtra("ARTIST_DOCUMENT_ID", mAuth.getUid());
                                         startActivity(myIntent);
-                                        Animatoo.animateFade(ReportEvent.this);
+                                        Animatoo.animateFade(ReportUser.this);
                                     }
                                 } else {
                                     Log.d(TAG, "get failed with ", task.getException());
@@ -93,9 +95,9 @@ public class ReportEvent extends AppCompatActivity {
         appName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ReportEvent.this, HomePage.class);
+                Intent intent = new Intent(ReportUser.this, HomePage.class);
                 startActivity(intent);
-                Animatoo.animateZoom(ReportEvent.this);
+                Animatoo.animateZoom(ReportUser.this);
                 finish();
             }
         });
@@ -108,13 +110,13 @@ public class ReportEvent extends AppCompatActivity {
                 String fullName = fullNameInput.getText().toString();
 
                 textInput = findViewById(R.id.textInput);
-                text = "Name: " + fullName + "\nEvent ID: " + eventID + "\n\n" + textInput.getText().toString();
+                text = "Name: " + fullName + "\nArtist ID: " + artistID + "\n\n" + textInput.getText().toString();
 
                 Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "giorgos.fotopoulos7@gmail.com", null));
                 intent.putExtra(Intent.EXTRA_SUBJECT, rg_value);
                 intent.putExtra(Intent.EXTRA_TEXT, text);
                 startActivity(intent);
-                Animatoo.animateFade(ReportEvent.this);
+                Animatoo.animateFade(ReportUser.this);
             }
         });
     }

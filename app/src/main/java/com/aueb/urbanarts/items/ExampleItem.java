@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.items;
 
 public class ExampleItem {
     private String imageResource;

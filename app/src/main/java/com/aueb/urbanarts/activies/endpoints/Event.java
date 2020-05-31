@@ -1,4 +1,4 @@
-package com.aueb.urbanarts;
+package com.aueb.urbanarts.activies.endpoints;
 
 import android.app.ActionBar;
 import android.app.Dialog;
@@ -30,6 +30,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aueb.urbanarts.R;
+import com.aueb.urbanarts.activies.HomePage;
+import com.aueb.urbanarts.activies.accountmanagement.ArtistAccountRequestActivity;
+import com.aueb.urbanarts.activies.authentication.LogIn;
+import com.aueb.urbanarts.activies.authentication.SignUp;
+import com.aueb.urbanarts.activies.report.ReportEvent;
+import com.aueb.urbanarts.adapters.CommentAdapter;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -73,7 +80,7 @@ public class Event extends AppCompatActivity {
     List<String> Comments = new ArrayList<>();
     List<String> Users = new ArrayList<>();
     ArrayList<String> UsersAndComments;
-    CommentAdapter CommentAdapter;
+    com.aueb.urbanarts.adapters.CommentAdapter CommentAdapter;
     private static final int PICK_IMAGE_REQUEST = 22;
     String ID;
 
@@ -157,7 +164,7 @@ public class Event extends AppCompatActivity {
                                             Icon.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    Intent intent = new Intent(Event.this, ArtistProfileActivity.class);
+                                                    Intent intent = new Intent(Event.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
                                                     intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
                                                     Log.d("", ArtistID);
                                                     startActivity(intent);
@@ -212,7 +219,7 @@ public class Event extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 final DocumentSnapshot documentArt = task.getResult();
                                                 if (documentArt.exists()) {
-                                                    Intent intent = new Intent(Event.this, ArtistProfileActivity.class);
+                                                    Intent intent = new Intent(Event.this, ArtistAccountRequestActivity.ArtistProfileActivity.class);
                                                     intent.putExtra("ARTIST_DOCUMENT_ID", ArtistID);
                                                     Log.d("", ArtistID);
                                                     startActivity(intent);

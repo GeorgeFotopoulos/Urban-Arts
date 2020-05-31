@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="auto"
     android:focusableInTouchMode="true"
-    tools:context=".ReportUser">
+    tools:context=".activies.report.ReportUser">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
