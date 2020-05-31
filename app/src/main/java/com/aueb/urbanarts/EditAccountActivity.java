@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.bumptech.glide.Glide;
@@ -44,6 +47,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,11 +59,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -451,6 +458,7 @@ public class EditAccountActivity extends AppCompatActivity {
     private void updateInfo() {
         Map<String, Object> userMap = new HashMap<>();
         final Map<String, Object> artistMap = new HashMap<>();
+        final Map<String, Object> eventsMap = new HashMap<>();
         EditText username = findViewById(R.id.username);
         EditText description = findViewById(R.id.description);
         String artistType = sItems.getSelectedItem().toString();
@@ -459,6 +467,23 @@ public class EditAccountActivity extends AppCompatActivity {
         if (!username.getText().toString().equals("")) {
             userMap.put("username", username.getText().toString());
             artistMap.put("display_name", username.getText().toString());
+            eventsMap.put("Artist", username.getText().toString());
+
+            final CollectionReference docEvents = db.collection("events");
+            docEvents.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (final QueryDocumentSnapshot document : task.getResult()) {
+                            if (document.getString("ArtistID").equals(user.getUid())) {
+                                docEvents.document(document.getId()).update(eventsMap);
+                            }
+                        }
+                    }
+
+                }
+            });
+
             changedSomething[0] = true;
         }
 
