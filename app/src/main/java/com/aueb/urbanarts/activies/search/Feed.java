@@ -321,7 +321,7 @@ public class Feed extends AppCompatActivity {
                             docLocation = document.getString("location");
 
                             if (locationExists) {
-                                if (!location.equals(docLocation)) {
+                                if (!(docLocation.toLowerCase()).contains(location.toLowerCase())) {
                                     toBeAdded = false;
                                 }
                             }
