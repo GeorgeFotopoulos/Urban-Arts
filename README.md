@@ -13,7 +13,7 @@ The main idea behind the project is to create an android application (media type
 
 Feel free to contact us on : geopatrikis12@gmail.com 
 
-For the completion of the project we used Android Studio and the database we are using is a firebase db. A noSql database that allows you to send requests for database data directly from the code.
+For the completion of the project we used Android Studio (Java) and the database we are using is a firebase db. A noSql database that allows you to send requests for database data directly from the code.
 
 ## DB Structure 
 keep in mind that firebase is a noSQL database so maybe some fields may differ between simillar collections
