@@ -25,3 +25,5 @@ keep in mind that firebase is a noSQL database so maybe some fields may differ b
 * We could be using sorting depending on the likes of the post and the amount of people that follows a certain artist. This only makes sence when a certain ammount of people are using the database.
 
 * Posts should also have a title. In most cases it is not needed but in others seems important.
+
+* A share button at posts and artist profiles to send urls to other media to open the application in the exact page.
