@@ -11,6 +11,8 @@ The main idea behind the project is to create an android application (media type
 * Panagiotis Ntymenos
 * Giorgos Patrikis
 
+Feel free to contact us on : geopatrikis12@gmail.com 
+
 For the completion of the project we used Android Studio and the database we are using is a firebase db. A noSql database that allows you to send requests for database data directly from the code.
 
 ## DB Structure 
